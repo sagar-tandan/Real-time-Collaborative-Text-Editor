@@ -18,3 +18,4 @@ int main()
 }
 
 // In case of vector we are using for each loop and in that loop val represent value not index
+// Aslo here we used bitwise XOR to solve this problem
