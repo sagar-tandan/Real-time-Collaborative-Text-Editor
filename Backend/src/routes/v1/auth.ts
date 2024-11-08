@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getUser } from "../../controllers/user.controller";
+import { createUser, getUser } from "../../controllers/user.controller";
 
 export const AuthRouter = Router();
 
@@ -16,3 +16,4 @@ export const AuthRouter = Router();
 // });
 
 AuthRouter.get("/getalluser", getUser);
+AuthRouter.post("/registerUser", createUser);

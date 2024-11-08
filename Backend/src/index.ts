@@ -1,12 +1,15 @@
 import dotenv from "dotenv";
-dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import { AuthRouter } from "./routes/v1/auth";
 import { errorHandler } from "./middleware/errorHandler";
+import morgan from "morgan";
 
+dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(morgan("dev"));
 
 app.use(express.json());
 
