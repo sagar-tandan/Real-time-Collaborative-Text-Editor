@@ -1,15 +1,17 @@
 import { Router } from "express";
 
-export const router = Router();
+export const AuthRouter = Router();
 
-router.get("/signup", (req, res) => {
+AuthRouter.get("/signup", (req, res) => {
   res.json({
     message: "Signup",
   });
 });
 
-router.get("/signin", (req, res) => {
+AuthRouter.get("/signin", (req, res) => {
   res.json({
     message: "Signin",
   });
 });
+
+
