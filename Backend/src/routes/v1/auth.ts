@@ -1,19 +1,14 @@
 import { Router } from "express";
-import { createUser, getUser } from "../../controllers/user.controller";
+import {
+  createUser,
+  getUser,
+  userLogin,
+} from "../../controllers/user.controller";
+import { authMiddleware } from "../../middleware/authMiddleware";
 
 export const AuthRouter = Router();
 
-// AuthRouter.get("/signup", (req, res) => {
-//   res.json({
-//     message: "Signup",
-//   });
-// });
-
-// AuthRouter.get("/signin", (req, res) => {
-//   res.json({
-//     message: "Signin",
-//   });
-// });
-
 AuthRouter.get("/getalluser", getUser);
 AuthRouter.post("/registerUser", createUser);
+AuthRouter.post("/login", userLogin);
+AuthRouter.get("/check", authMiddleware, getUser);

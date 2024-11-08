@@ -1,11 +1,13 @@
 import { RequestHandler } from "express";
 import User from "../models/user.model";
 import bcrypt from "bcrypt";
+import { generateJWT } from "../utils/jwtUtils";
 
 export const getUser: RequestHandler = async (req, res, next) => {
   try {
-    const allUser = await User.find().exec();
-    res.status(200).json(allUser);
+    const userId = (req as any).userId;
+    const user = await User.findById(userId).exec();
+    res.status(200).json(user);
   } catch (error) {
     next(error);
   }
@@ -44,6 +46,28 @@ export const createUser: RequestHandler = async (req, res, next) => {
     });
 
     res.status(201).json(newUser);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const userLogin: RequestHandler = async (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  try {
+    const user = await User.findOne({ email }).select("+password").exec();
+    if (!user) {
+      res.status(400);
+      return next("Invalid Credentials!");
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      res.status(400);
+      return next("Invalid Credentials!");
+    }
+
+    const token = generateJWT(user._id.toString());
+    res.json({ token: token });
   } catch (error) {
     next(error);
   }
