@@ -13,7 +13,7 @@ app.use(morgan("dev"));
 
 app.use(express.json());
 
-app.use("/api/v1", AuthRouter);
+app.use("/api/auth", AuthRouter);
 
 app.use(errorHandler);
 

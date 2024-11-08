@@ -9,3 +9,9 @@ export const generateJWT = (userId: string): string => {
 export const verifyJWT = (token: string): any => {
   return jwt.verify(token, process.env.JWT_SECRET!);
 };
+
+export const generateforgetPasswordToken = (email: string): string => {
+  return jwt.sign({ email }, process.env.JWT_SECRET!, {
+    expiresIn: process.env.JWT_EXPIRES_FP,
+  });
+};
