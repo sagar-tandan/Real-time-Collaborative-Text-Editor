@@ -57,7 +57,7 @@ export const createUser: RequestHandler = async (req, res, next) => {
   }
 };
 
-// LOGIN
+// LOGIN WITH DATA
 export const userLogin: RequestHandler = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
@@ -186,7 +186,7 @@ export const forgetPasswordToken: RequestHandler = async (req, res, next) => {
   }
 };
 
-//RESET PASSWORD
+//VERIFY TOKEN TO RESET PASSWORD
 export const verifyTokenForReset: RequestHandler = async (req, res, next) => {
   const { token } = req.params;
   try {
@@ -199,6 +199,8 @@ export const verifyTokenForReset: RequestHandler = async (req, res, next) => {
   }
 };
 
+
+//ACTUAL RESET PASSWORD 
 export const resetPassword: RequestHandler = async (req, res, next) => {
   const password = req.body.password;
   const email = (req as any).email;
