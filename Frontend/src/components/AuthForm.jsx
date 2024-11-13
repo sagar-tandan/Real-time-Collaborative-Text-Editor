@@ -17,6 +17,8 @@ export default function AuthForm() {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setLoading] = useState(false);
 
+  const { user, setUser } = useContext(MyContext);
+
   const navigate = useNavigate();
 
   const [loginForm, setLoginForm] = useState({
@@ -56,7 +58,8 @@ export default function AuthForm() {
         });
         if (response.status == 200) {
           localStorage.setItem("token", response.data.token);
-          navigate("/");
+          navigate("/home");
+          setUser(response.data.token);
           toast.success("Login Successfull!");
           resetFrom();
         }

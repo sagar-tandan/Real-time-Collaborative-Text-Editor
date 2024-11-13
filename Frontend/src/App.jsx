@@ -1,12 +1,25 @@
-import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useContext, useState } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
-import Login from "./components/loginComps/Login.jsx";
 import AuthForm from "./components/AuthForm.jsx";
 import Header from "./components/Header/Header.jsx";
 import HomePage from "./components/HomePage/HomePage.jsx";
+import MyContext from "./Context/MyContext.jsx";
 
 function App() {
+  const { user, setUser } = useContext(MyContext);
+
+  useState(() => {
+    if (localStorage.getItem("token")) {
+      setUser(localStorage.getItem("token"));
+    }
+  }, []);
+
   return (
     <Router>
       <div className="w-full max-w-screen-2xl mx-auto font-inter">
@@ -14,8 +27,14 @@ function App() {
         <Header />
 
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<AuthForm />} />
+          <Route
+            path="/home"
+            element={user ? <HomePage /> : <Navigate to="/" />}
+          />
+          <Route
+            path="/"
+            element={user ? <Navigate to="/home" /> : <AuthForm />}
+          />
 
           {/* <Route path="*" element={<NotFound />} /> */}
         </Routes>

@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Code2, Menu, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import MyContext from "../../Context/MyContext";
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const { user, setUser } = useContext(MyContext);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -56,20 +59,37 @@ export default function Header() {
                 {item}
               </a>
             ))}
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => {
-                  navigate("/login");
-                }}
-                className={`px-6 py-[6px] rounded-md font-semibold transition-colors duration-200 ${
-                  isScrolled
-                    ? "text-blue-900 bg-blue-100"
-                    : "text-blue-900 bg-white"
-                }`}
-              >
-                Login
-              </button>
-            </div>
+            {user && (
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() => {
+                    localStorage.removeItem("token");
+                    setUser(null);
+                    navigate("/");
+                  }}
+                  className={`px-6 py-[6px] rounded-md font-semibold transition-colors duration-200 ${
+                    isScrolled
+                      ? "text-blue-900 bg-blue-100"
+                      : "text-blue-900 bg-white"
+                  }`}
+                >
+                  Logout
+                </button>
+              </div>
+              // ) : (
+              //   <div className="flex items-center space-x-4">
+              //     <button
+              //       onClick={() => {}}
+              //       className={`px-6 py-[6px] rounded-md font-semibold transition-colors duration-200 ${
+              //         isScrolled
+              //           ? "text-blue-900 bg-blue-100"
+              //           : "text-blue-900 bg-white"
+              //       }`}
+              //     >
+              //       Login
+              //     </button>
+              //   </div>
+            )}
           </nav>
 
           {/* Mobile Menu Button */}
