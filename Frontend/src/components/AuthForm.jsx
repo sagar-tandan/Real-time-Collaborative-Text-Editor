@@ -114,7 +114,7 @@ export default function AuthForm() {
 
   return (
     <div className="w-full justify-center flex pt-16 bg-[#212746] text-white h-screen">
-      <div className="w-full max-w-md flex flex-col gap-2">
+      <div className="w-full px-3 sm:px-0 max-w-md flex flex-col gap-2">
         {/* LOGO */}
         <div className="text-center flex flex-col items-center mb-4 ">
           <img className="w-[150px]" src={logo2} alt="" />
@@ -207,7 +207,7 @@ export default function AuthForm() {
 
           {isSignIn && (
             <div className="w-full flex justify-end">
-              <p className=" cursor-pointer w-fit hover:text-blue-400">
+              <p className=" cursor-pointer w-fit hover:text-blue-400 text-[16px]">
                 Forget Password?
               </p>
             </div>
