@@ -5,7 +5,7 @@ const MyContext = createContext();
 
 // 2. Create a provider component
 export const MyProvider = ({ children }) => {
-  const [endPoint, setEndPoint] = useState("http://localhost:8000/");
+  const [endPoint, setEndPoint] = useState("http://localhost:8000");
 
   return (
     <MyContext.Provider value={{ endPoint, setEndPoint }}>

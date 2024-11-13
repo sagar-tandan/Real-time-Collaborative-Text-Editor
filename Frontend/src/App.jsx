@@ -9,7 +9,7 @@ import HomePage from "./components/HomePage/HomePage.jsx";
 function App() {
   return (
     <Router>
-      <div className="w-full max-w-screen-2xl mx-auto font-urbanist">
+      <div className="w-full max-w-screen-2xl mx-auto font-inter">
         {/* navigation bar or header here */}
         <Header />
 

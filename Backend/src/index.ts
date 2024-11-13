@@ -5,12 +5,14 @@ import { AuthRouter } from "./routes/v1/auth";
 import { errorHandler } from "./middleware/errorHandler";
 import morgan from "morgan";
 import http from "http";
+import cors from "cors";
 
 dotenv.config();
 const app = express();
 const server = http.createServer(app);
 const port = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 

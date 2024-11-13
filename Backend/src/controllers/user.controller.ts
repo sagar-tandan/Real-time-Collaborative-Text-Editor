@@ -33,7 +33,7 @@ export const createUser: RequestHandler = async (req, res, next) => {
     const existingUserName = await User.findOne({ name: name }).exec();
 
     if (existingUserName) {
-      res.status(409);
+      res.status(408);
       return next("User with username already exists.");
     }
 
@@ -51,7 +51,7 @@ export const createUser: RequestHandler = async (req, res, next) => {
       password: passwordHashed,
     });
 
-    res.status(201).json(newUser);
+    res.status(200).json(newUser);
   } catch (error) {
     next(error);
   }
