@@ -49,7 +49,7 @@ export default function Header() {
             {["Home", "Testimonials", "Projects"].map((item) => (
               <a
                 key={item}
-                href={`#${item.toLowerCase()}`}
+                // href={`#${item.toLowerCase()}`}
                 className={`${
                   isScrolled
                     ? "text-gray-700 hover:text-blue-900"

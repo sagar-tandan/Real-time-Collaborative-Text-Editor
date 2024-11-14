@@ -4,7 +4,7 @@ import TrialSection from "./TrialSection";
 
 const HomePage = () => {
   return (
-    <div className="w-full pt-14">
+    <div className="w-full pt-14 text-white">
       <HeroSection />
       <TrialSection />
     </div>
