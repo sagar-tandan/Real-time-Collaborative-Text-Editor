@@ -199,7 +199,6 @@ export const verifyTokenForReset: RequestHandler = async (req, res, next) => {
   }
 };
 
-
 //ACTUAL RESET PASSWORD 
 export const resetPassword: RequestHandler = async (req, res, next) => {
   const password = req.body.password;
