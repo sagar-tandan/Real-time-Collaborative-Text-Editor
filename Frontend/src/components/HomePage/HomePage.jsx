@@ -6,7 +6,7 @@ import TrialSection from "./TrialSection";
 
 const HomePage = () => {
   return (
-    <div className="w-full pt-14 text-white">
+    <div className="w-full pt-16 text-white">
       <HeroSection />
       <TrialSection />
     </div>
