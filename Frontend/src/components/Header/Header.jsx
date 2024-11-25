@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Code2, Menu, X } from "lucide-react";
+import { Code2, Menu, Trophy, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import MyContext from "../../Context/MyContext";
 
@@ -11,17 +11,13 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed w-full top-0 z-50 transition-all duration-300 bg-white
-      `}
+      className={`fixed w-full mx-auto top-0 z-50 transition-all duration-300 bg-white/30 backdrop-blur-md shadow-md text-blue-600`}
     >
-      <div className="w-[95%] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="w-full flex justify-between items-center h-[72px] max-w-screen-2xl ">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <Code2
-              className={`w-8 h-8 
-                `}
-            />
+            <Trophy className="w-6 h-6 text-blue-600" />
             <span className={`font-bold text-xl`}>CodeTracker</span>
           </div>
 
