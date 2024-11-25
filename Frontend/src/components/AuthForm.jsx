@@ -113,7 +113,7 @@ export default function AuthForm() {
   };
 
   return (
-    <div className="w-full justify-center flex pt-16 bg-[#212746] text-white h-screen">
+    <div className="w-full justify-center flex pt-16 bg-white text-black h-screen">
       <div className="w-full px-3 sm:px-0 max-w-md flex flex-col gap-2">
         {/* LOGO */}
         <div className="text-center flex flex-col items-center mb-4 ">
@@ -131,7 +131,7 @@ export default function AuthForm() {
                 setError(false);
                 setErrorMessage("");
               }}
-              className="text-white hover:text-purple-500 font-medium"
+              className="text-black hover:text-purple-500 font-medium"
             >
               {isSignIn ? "Sign up" : "Sign in"}
             </button>
@@ -146,7 +146,7 @@ export default function AuthForm() {
 
         <form onSubmit={handleSubmit} className="space-y-3">
           {!isSignIn && (
-            <div className="w-full px-4 py-3 rounded-sm bg-white/10 backdrop-blur-sm  focus:ring-2 focus:ring-purple-600 outline-none transition flex gap-2">
+            <div className="w-full px-2 py-3 rounded-md bg-white/10 backdrop-blur-sm  focus:ring-2 focus:ring-purple-600 transition flex gap-2  border-[2px] border-black">
               <User />
               <input
                 type="text"
@@ -155,13 +155,13 @@ export default function AuthForm() {
                 value={loginForm.username}
                 onChange={handleChange}
                 autoComplete="off"
-                className="bg-transparent outline-none w-full"
+                className="bg-transparent outline-none w-full "
                 required
               />
             </div>
           )}
 
-          <div className="w-full px-4 py-3 rounded-sm bg-white/10 backdrop-blur-sm  focus:ring-2 focus:ring-purple-600 outline-none transition flex gap-2">
+          <div className="w-full px-2 py-3 rounded-md bg-white/10 backdrop-blur-sm  focus:ring-2 focus:ring-purple-600 transition flex gap-2  border-[2px] border-black">
             <Mail />
             <input
               type="email"
@@ -175,7 +175,7 @@ export default function AuthForm() {
             />
           </div>
 
-          <div className="w-full px-4 py-3 rounded-sm bg-white/10 backdrop-blur-sm  focus:ring-2 focus:ring-purple-600 outline-none transition flex gap-2">
+          <div className="w-full px-2 py-3 rounded-md bg-white/10 backdrop-blur-sm  focus:ring-2 focus:ring-purple-600 transition flex gap-2  border-[2px] border-black">
             <Lock />
             <input
               type="password"
@@ -190,7 +190,7 @@ export default function AuthForm() {
           </div>
 
           {!isSignIn && (
-            <div className="w-full px-4 py-3 rounded-sm bg-white/10 backdrop-blur-sm  focus:ring-2 focus:ring-purple-600 outline-none transition flex gap-2">
+            <div className="w-full px-2 py-3 rounded-md bg-white/10 backdrop-blur-sm  focus:ring-2 focus:ring-purple-600 transition flex gap-2  border-[2px] border-black">
               <LockKeyhole />
               <input
                 type="password"
@@ -215,7 +215,7 @@ export default function AuthForm() {
 
           <button
             type="submit"
-            className="w-full bg-blue-900 text-white rounded-sm px-4 py-3 font-medium hover:bg-blue-800  transition flex items-center justify-center"
+            className="w-full bg-blue-900 text-white rounded-md px-4 py-3 font-medium hover:bg-blue-800  transition flex items-center justify-center"
           >
             {isLoading ? (
               <SpinnerCircular
