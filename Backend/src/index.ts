@@ -20,6 +20,7 @@ app.use(express.json());
 app.use("/api/auth", AuthRouter);
 app.use("/api/leetcode", LeetCodeRouter);
 
+
 app.use(errorHandler);
 
 mongoose
