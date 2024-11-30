@@ -8,8 +8,8 @@ import {
   updateData,
   userLogin,
   verifyTokenForReset,
-} from "../../controllers/user.controller";
-import { authMiddleware } from "../../middleware/authMiddleware";
+} from "../../controllers/user.controller.js";
+import { authMiddleware } from "../../middleware/authMiddleware.js";
 
 export const AuthRouter = Router();
 

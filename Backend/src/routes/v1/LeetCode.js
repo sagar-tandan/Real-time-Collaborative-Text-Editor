@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   getLeetCodeInfo,
   getRecentProblems,
-} from "../../controllers/leetCode.controller";
+} from "../../controllers/leetCode.controller.js";
 
 export const LeetCodeRouter = Router();
 

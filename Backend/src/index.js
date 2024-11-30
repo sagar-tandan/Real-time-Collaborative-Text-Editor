@@ -1,12 +1,12 @@
 import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
-import { AuthRouter } from "./routes/v1/auth";
-import { errorHandler } from "./middleware/errorHandler";
+import { errorHandler } from "./middleware/errorHandler.js";
 import morgan from "morgan";
 import http from "http";
 import cors from "cors";
-import { LeetCodeRouter } from "./routes/v1/LeetCode";
+import { AuthRouter } from "./routes/v1/auth.js";
+import { LeetCodeRouter } from "./routes/v1/LeetCode.js";
 
 dotenv.config();
 const app = express();
@@ -20,11 +20,10 @@ app.use(express.json());
 app.use("/api/auth", AuthRouter);
 app.use("/api/leetcode", LeetCodeRouter);
 
-
 app.use(errorHandler);
 
 mongoose
-  .connect(process.env.MONGO_CONNECTION_STRING!)
+  .connect(process.env.MONGO_CONNECTION_STRING)
   .then(() => {
     console.log("DB Connected.");
   })

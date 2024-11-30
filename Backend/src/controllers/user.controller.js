@@ -1,16 +1,15 @@
-import { RequestHandler } from "express";
-import User from "../models/user.model";
+import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import {
   generateJWT,
   generateforgetPasswordToken,
   verifyJWT,
-} from "../utils/jwtUtils";
+} from "../utils/jwtUtils.js";
 
 //GET USER DATA BASED ON ID
-export const getUser: RequestHandler = async (req, res, next) => {
+export const getUser = async (req, res, next) => {
   try {
-    const userId = (req as any).userId;
+    const userId = req.userId;
     const user = await User.findById(userId).exec();
     res.status(200).json(user);
   } catch (error) {
@@ -19,7 +18,7 @@ export const getUser: RequestHandler = async (req, res, next) => {
 };
 
 //CREATE NEW ACCOUNT
-export const createUser: RequestHandler = async (req, res, next) => {
+export const createUser = async (req, res, next) => {
   const name = req.body.name;
   const email = req.body.email;
   const passwordRaw = req.body.password;
@@ -58,7 +57,7 @@ export const createUser: RequestHandler = async (req, res, next) => {
 };
 
 // LOGIN WITH DATA
-export const userLogin: RequestHandler = async (req, res, next) => {
+export const userLogin = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   try {
@@ -81,10 +80,10 @@ export const userLogin: RequestHandler = async (req, res, next) => {
 };
 
 //UPDATE USERNAME AND EMAIL
-export const updateData: RequestHandler = async (req, res, next) => {
+export const updateData= async (req, res, next) => {
   const { newUsername, newEmail } = req.body;
   try {
-    const userId = (req as any).userId;
+    const userId = req.userId;
     const user = await User.findById(userId).exec();
     if (!user) {
       res.status(404).json({ message: "User not found" });
@@ -116,7 +115,7 @@ export const updateData: RequestHandler = async (req, res, next) => {
 };
 
 //CHANGE PASSWORD
-export const changePassword: RequestHandler = async (req, res, next) => {
+export const changePassword = async (req, res, next) => {
   const { oldPassword, newPassword } = req.body;
   if (!oldPassword || !newPassword) {
     res
@@ -138,7 +137,7 @@ export const changePassword: RequestHandler = async (req, res, next) => {
     return;
   }
   try {
-    const userId = (req as any).userId;
+    const userId = req.userId;
     const user = await User.findById(userId).select("+password").exec();
     if (!user) {
       res.status(404).json({ message: "User not found" });
@@ -166,7 +165,7 @@ export const changePassword: RequestHandler = async (req, res, next) => {
 
 //FORGET PASSWORD: GENERATE TOKEN
 
-export const forgetPasswordToken: RequestHandler = async (req, res, next) => {
+export const forgetPasswordToken= async (req, res, next) => {
   const { email } = req.body;
   if (!email) {
     res.status(400).json({ message: "Enter email address" });
@@ -187,11 +186,11 @@ export const forgetPasswordToken: RequestHandler = async (req, res, next) => {
 };
 
 //VERIFY TOKEN TO RESET PASSWORD
-export const verifyTokenForReset: RequestHandler = async (req, res, next) => {
+export const verifyTokenForReset = async (req, res, next) => {
   const { token } = req.params;
   try {
     const decoded = verifyJWT(token.toString());
-    (req as any).email = decoded.email;
+    req.email = decoded.email;
     next();
   } catch (error) {
     res.status(401).json({ error: "Invalid token" });
@@ -201,9 +200,9 @@ export const verifyTokenForReset: RequestHandler = async (req, res, next) => {
 
 
 //ACTUAL RESET PASSWORD 
-export const resetPassword: RequestHandler = async (req, res, next) => {
+export const resetPassword= async (req, res, next) => {
   const password = req.body.password;
-  const email = (req as any).email;
+  const email = req.email;
   console.log(email);
   if (password.trim().length < 6) {
     res

@@ -1,8 +1,7 @@
 import axios from "axios";
-import { RequestHandler } from "express";
 
 //GET USER DATA BASED ON ID
-export const getLeetCodeInfo: RequestHandler = async (req, res, next) => {
+export const getLeetCodeInfo = async (req, res, next) => {
   const username = req.body.username;
   const query = `
       {
@@ -28,7 +27,7 @@ export const getLeetCodeInfo: RequestHandler = async (req, res, next) => {
   }
 };
 
-export const getRecentProblems: RequestHandler = async (req, res, next) => {
+export const getRecentProblems = async (req, res, next) => {
   const username = req.body.username;
   const query = `
     query recentSubmissions($username: String!) {
