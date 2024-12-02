@@ -6,7 +6,6 @@ import morgan from "morgan";
 import http from "http";
 import cors from "cors";
 import { AuthRouter } from "./routes/v1/auth.js";
-import { LeetCodeRouter } from "./routes/v1/LeetCode.js";
 
 dotenv.config();
 const app = express();
@@ -18,7 +17,6 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 app.use("/api/auth", AuthRouter);
-app.use("/api/leetcode", LeetCodeRouter);
 
 app.use(errorHandler);
 
