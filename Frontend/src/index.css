@@ -4,24 +4,59 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-  .card {
-    @apply bg-white/80 backdrop-blur-sm border border-blue-50 rounded-lg p-6 shadow-sm;
+/* CSS for the tiptap Editor */
+
+.tiptap {
+  /* List styles */
+  ul,
+  ol {
+    padding: 0 1rem;
+    margin: 1.25rem 1rem 1.25rem 0.4rem;
   }
 
-  .stat-value {
-    @apply text-2xl font-bold text-blue-900 mt-1;
+  ul li {
+    list-style-type: disc;
+    p {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+    }
   }
 
-  .stat-label {
-    @apply text-sm text-blue-600 font-medium;
+  ol li {
+    list-style-type: decimal;
+    p {
+      margin-top: 0.25em;
+      margin-bottom: 0.25em;
+    }
   }
 
-  .progress-bar {
-    @apply bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all duration-500;
-  }
+  /* Task list specific styles */
+  ul[data-type="taskList"] {
+    list-style: none;
+    margin-left: 0;
+    padding: 0;
 
-  .platform-icon {
-    @apply p-2 bg-blue-50 text-blue-600 rounded-md transition-colors;
+    li {
+      align-items: flex-start;
+      display: flex;
+
+      > label {
+        flex: 0 0 auto;
+        margin-right: 0.5rem;
+        user-select: none;
+      }
+
+      > div {
+        flex: 1 1 auto;
+      }
+    }
+
+    input[type="checkbox"] {
+      cursor: pointer;
+    }
+
+    ul[data-type="taskList"] {
+      margin: 0;
+    }
   }
 }
