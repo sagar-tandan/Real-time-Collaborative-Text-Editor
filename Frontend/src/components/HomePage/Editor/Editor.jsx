@@ -7,6 +7,8 @@ import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
+import Image from "@tiptap/extension-image";
+import ImageResize from "tiptap-extension-resize-image";
 
 // define your extension array
 const extensions = [
@@ -19,6 +21,8 @@ const extensions = [
   TableRow,
   TableHeader,
   TableCell,
+  Image,
+  ImageResize,
 ];
 
 const Editor = () => {
