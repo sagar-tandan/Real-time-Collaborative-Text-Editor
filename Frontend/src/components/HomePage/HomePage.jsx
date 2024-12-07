@@ -1,14 +1,10 @@
 import React from "react";
-import HeroSection from "./HeroSection";
-import TrialSection from "./TrialSection";
-
-
+import Editor from "./Editor/Editor.jsx";
 
 const HomePage = () => {
   return (
-    <div className="w-full pt-16 text-white">
-      <HeroSection />
-      <TrialSection />
+    <div className="w-full">
+      This is homepage.
     </div>
   );
 };
