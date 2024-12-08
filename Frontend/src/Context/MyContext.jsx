@@ -7,9 +7,12 @@ const MyContext = createContext();
 export const MyProvider = ({ children }) => {
   const [endPoint, setEndPoint] = useState("http://localhost:8000");
   const [user, setUser] = useState(localStorage.getItem("token"));
+  const [editor, setEditor] = useState(null); // Manage the editor state
 
   return (
-    <MyContext.Provider value={{ endPoint, setEndPoint, user, setUser }}>
+    <MyContext.Provider
+      value={{ endPoint, setEndPoint, user, setUser, editor, setEditor }}
+    >
       {children}
     </MyContext.Provider>
   );
