@@ -69,17 +69,20 @@ const Toolbar = () => {
     {
       label: "Bold",
       Icon: BoldIcon,
-      onClick: () => editor?.chain().focus().undo().run(),
+      isActive: editor?.isActive("bold"),
+      onClick: () => editor?.chain().focus().toggleBold().run(),
     },
     {
       label: "Italic",
       Icon: ItalicIcon,
-      onClick: () => editor?.chain().focus().redo().run(),
+      isActive: editor?.isActive("italic"),
+      onClick: () => editor?.chain().focus().toggleItalic().run(),
     },
     {
       label: "Undeline",
       Icon: Underline,
-      onClick: () => editor?.chain().focus().redo().run(),
+      isActive: editor?.isActive("underline"),
+      onClick: () => editor?.chain().focus().toggleUnderline().run(),
     },
   ];
   return (

@@ -10,6 +10,7 @@ import TableRow from "@tiptap/extension-table-row";
 import Image from "@tiptap/extension-image";
 import ImageResize from "tiptap-extension-resize-image";
 import MyContext from "../../../Context/MyContext";
+import Underline from "@tiptap/extension-underline";
 
 // define your extension array
 const extensions = [
@@ -24,6 +25,7 @@ const extensions = [
   TableCell,
   Image,
   ImageResize,
+  Underline
 ];
 
 const Editor = () => {
