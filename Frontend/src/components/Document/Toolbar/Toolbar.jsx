@@ -1,6 +1,16 @@
 import React, { useContext } from "react";
 import MyContext from "../../../Context/MyContext";
-import { Redo2, Undo2 } from "lucide-react";
+import {
+  Bold,
+  BoldIcon,
+  Italic,
+  ItalicIcon,
+  Printer,
+  Redo2,
+  SpellCheck,
+  Underline,
+  Undo2,
+} from "lucide-react";
 
 //For ToolBarButtons
 const ToolbarButton = ({ onClick, isActive, Icon, label }) => {
@@ -32,7 +42,7 @@ const Toolbar = () => {
   const { editor } = useContext(MyContext);
   // console.log("Toolbar Editor : ", editor);
 
-  const allIcons = [
+  const Icons1 = [
     {
       label: "Undo",
       Icon: Undo2,
@@ -43,10 +53,45 @@ const Toolbar = () => {
       Icon: Redo2,
       onClick: () => editor?.chain().focus().redo().run(),
     },
+    {
+      label: "Print",
+      Icon: Printer,
+      onClick: () => window.print(),
+    },
+    {
+      label: "Spell",
+      Icon: SpellCheck,
+      onClick: () => console.log("Grammer Check"),
+    },
+  ];
+
+  const Icons2 = [
+    {
+      label: "Bold",
+      Icon: BoldIcon,
+      onClick: () => editor?.chain().focus().undo().run(),
+    },
+    {
+      label: "Italic",
+      Icon: ItalicIcon,
+      onClick: () => editor?.chain().focus().redo().run(),
+    },
+    {
+      label: "Undeline",
+      Icon: Underline,
+      onClick: () => editor?.chain().focus().redo().run(),
+    },
   ];
   return (
     <div className="bg-[#f1f4f9] min-h-[40px] px-5 py-0.5 rounded-[24px] flex items-center gap-1">
-      {allIcons.map((icons) => (
+      {Icons1.map((icons) => (
+        <ToolbarButton key={icons.label} {...icons} />
+      ))}
+
+      {/* SEPARATOR */}
+      <div className="h-6 w-[1px] bg-neutral-300" />
+
+      {Icons2.map((icons) => (
         <ToolbarButton key={icons.label} {...icons} />
       ))}
     </div>
