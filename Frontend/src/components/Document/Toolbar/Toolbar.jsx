@@ -1,10 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import MyContext from "../../../Context/MyContext";
 import {
-  Bold,
   BoldIcon,
-  Italic,
   ItalicIcon,
+  ListTodoIcon,
   Printer,
   Redo2,
   SpellCheck,
@@ -12,35 +11,52 @@ import {
   Undo2,
 } from "lucide-react";
 
-//For ToolBarButtons
-const ToolbarButton = ({ onClick, isActive, Icon, label }) => {
+const ToolbarButton = ({ label, Icon, isActive, onClick }) => {
   return (
     <button
       onClick={onClick}
       className={`relative text-sm h-7 min-w-7 flex items-center justify-center rounded-sm hover:bg-neutral-200/80 group ${
-        isActive && "bg-neutral-200/80"
+        isActive ? "bg-neutral-200/80" : ""
       }`}
     >
-      {/* Tooltip */}
-      {/* <p
-        className="absolute -bottom-6 bg-black text-white px-2 py-0.5 rounded-[4px] 
-        opacity-0 group-hover:opacity-100 group-hover:visible 
-        visibility-hidden transition-opacity delay-3000 duration-500 ease-in-out"
-      >
-        {label}
-      </p> */}
-
-      {/* Icon */}
-      <Icon className="size-4" />
+      <Icon className={`size-4`} />
     </button>
   );
 };
 
-//Main Component Starts Here
-
 const Toolbar = () => {
   const { editor } = useContext(MyContext);
-  // console.log("Toolbar Editor : ", editor);
+  const [activeMarks, setActiveMarks] = useState({
+    bold: false,
+    italic: false,
+    underline: false,
+    taskList: false,
+  });
+
+  useEffect(() => {
+    if (!editor) return;
+
+    const updateActiveMarks = () => {
+      setActiveMarks({
+        bold: editor.isActive("bold"),
+        italic: editor.isActive("italic"),
+        underline: editor.isActive("underline"),
+        taskList: editor.isActive("taskList"),
+      });
+    };
+
+    // Initial check
+    updateActiveMarks();
+
+    // Subscribe to selection changes
+    editor.on("selectionUpdate", updateActiveMarks);
+    editor.on("transaction", updateActiveMarks);
+
+    return () => {
+      editor.off("selectionUpdate", updateActiveMarks);
+      editor.off("transaction", updateActiveMarks);
+    };
+  }, [editor]);
 
   const Icons1 = [
     {
@@ -61,7 +77,7 @@ const Toolbar = () => {
     {
       label: "Spell",
       Icon: SpellCheck,
-      onClick: () => console.log("Grammer Check"),
+      onClick: () => console.log("Grammar Check"),
     },
   ];
 
@@ -69,29 +85,35 @@ const Toolbar = () => {
     {
       label: "Bold",
       Icon: BoldIcon,
-      isActive: editor?.isActive("bold"),
+      isActive: activeMarks.bold,
       onClick: () => editor?.chain().focus().toggleBold().run(),
     },
     {
       label: "Italic",
       Icon: ItalicIcon,
-      isActive: editor?.isActive("italic"),
+      isActive: activeMarks.italic,
       onClick: () => editor?.chain().focus().toggleItalic().run(),
     },
     {
-      label: "Undeline",
+      label: "Underline",
       Icon: Underline,
-      isActive: editor?.isActive("underline"),
+      isActive: activeMarks.underline,
       onClick: () => editor?.chain().focus().toggleUnderline().run(),
     },
+    {
+      label: "Tasklist",
+      Icon: ListTodoIcon,
+      isActive: activeMarks.taskList,
+      onClick: () => editor?.chain().focus().toggleTaskList().run(),
+    },
   ];
+
   return (
     <div className="bg-[#f1f4f9] min-h-[40px] px-5 py-0.5 rounded-[24px] flex items-center gap-1">
       {Icons1.map((icons) => (
         <ToolbarButton key={icons.label} {...icons} />
       ))}
 
-      {/* SEPARATOR */}
       <div className="h-6 w-[1px] bg-neutral-300" />
 
       {Icons2.map((icons) => (
