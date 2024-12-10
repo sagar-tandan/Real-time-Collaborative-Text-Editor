@@ -11,6 +11,8 @@ import Image from "@tiptap/extension-image";
 import ImageResize from "tiptap-extension-resize-image";
 import MyContext from "../../../Context/MyContext";
 import Underline from "@tiptap/extension-underline";
+import FontFamily from "@tiptap/extension-font-family";
+import TextStyle from "@tiptap/extension-text-style";
 
 // define your extension array
 const extensions = [
@@ -25,7 +27,9 @@ const extensions = [
   TableCell,
   Image,
   ImageResize,
-  Underline
+  Underline,
+  TextStyle,
+  FontFamily,
 ];
 
 const Editor = () => {

@@ -6,10 +6,12 @@ import {
   ListTodoIcon,
   Printer,
   Redo2,
+  RemoveFormattingIcon,
   SpellCheck,
   Underline,
   Undo2,
 } from "lucide-react";
+import FontFamily from "./FontFamily";
 
 const ToolbarButton = ({ label, Icon, isActive, onClick }) => {
   return (
@@ -106,6 +108,11 @@ const Toolbar = () => {
       isActive: activeMarks.taskList,
       onClick: () => editor?.chain().focus().toggleTaskList().run(),
     },
+    {
+      label: "Remove Formatting",
+      Icon: RemoveFormattingIcon,
+      onClick: () => editor?.chain().focus().unsetAllMarks().run(),
+    },
   ];
 
   return (
@@ -114,6 +121,8 @@ const Toolbar = () => {
         <ToolbarButton key={icons.label} {...icons} />
       ))}
 
+      <div className="h-6 w-[1px] bg-neutral-300" />
+      <FontFamily />
       <div className="h-6 w-[1px] bg-neutral-300" />
 
       {Icons2.map((icons) => (
