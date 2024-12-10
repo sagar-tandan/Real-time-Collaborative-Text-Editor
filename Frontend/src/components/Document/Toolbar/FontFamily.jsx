@@ -13,6 +13,12 @@ const FontFamily = () => {
     { label: "Courier New", value: "Courier New" },
     { label: "Georgia", value: "Georgia" },
     { label: "Verdana", value: "Verdana" },
+    { label: "Impact", value: "Impact" },
+    { label: "Courier", value: "Courier" },
+    { label: "Roboto", value: "Roboto" },
+    { label: "Poppins", value: "Poppins" },
+    { label: "Muli", value: "Muli" },
+  
   ];
 
   useEffect(() => {
@@ -48,7 +54,7 @@ const FontFamily = () => {
       {showDialog && (
         <div
           ref={dialogRef}
-          className="w-[130px] truncate overflow-hidden absolute -left-1 top-8 flex flex-col bg-white border-[1px] border-[#c1c1c1] rounded-sm shadow-[#c1c1c1] shadow-md"
+          className="w-[160px] max-h-[400px] truncate overflow-y-scroll overflow-x-hidden absolute -left-1 top-8 flex flex-col bg-white border-[1px] border-[#c1c1c1] rounded-sm shadow-[#c1c1c1] shadow-md"
         >
           {fonts.map(({ label, value }) => (
             <button
