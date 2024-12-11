@@ -14,6 +14,8 @@ import Underline from "@tiptap/extension-underline";
 import FontFamily from "@tiptap/extension-font-family";
 import TextStyle from "@tiptap/extension-text-style";
 import Heading from "@tiptap/extension-heading";
+import Highlight from "@tiptap/extension-highlight";
+import { Color } from "@tiptap/extension-color";
 
 // define your extension array
 const extensions = [
@@ -32,6 +34,8 @@ const extensions = [
   TextStyle,
   FontFamily,
   Heading,
+  Highlight.configure({ multicolor: true }),
+  Color,
 ];
 
 const Editor = () => {

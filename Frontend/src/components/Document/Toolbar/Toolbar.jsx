@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import FontFamily from "./FontFamily";
 import Heading from "./HeadingTool";
+import TextColorButton from "./TextColorButton";
 
 const ToolbarButton = ({ label, Icon, isActive, onClick }) => {
   return (
@@ -125,16 +126,16 @@ const Toolbar = () => {
       {/* SEPARATOR */}
       <div className="h-6 w-[1px] bg-neutral-300" />
       <Heading />
-      
 
       {/* SEPARATOR */}
       <div className="h-6 w-[1px] bg-neutral-300" />
       <FontFamily />
 
-      {/* SEPARATOR */}
-
       <div className="h-6 w-[1px] bg-neutral-300" />
+      <TextColorButton />
 
+      {/* SEPARATOR */}
+      <div className="h-6 w-[1px] bg-neutral-300" />
       {Icons2.map((icons) => (
         <ToolbarButton key={icons.label} {...icons} />
       ))}
