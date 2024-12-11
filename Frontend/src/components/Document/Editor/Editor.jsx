@@ -13,6 +13,7 @@ import MyContext from "../../../Context/MyContext";
 import Underline from "@tiptap/extension-underline";
 import FontFamily from "@tiptap/extension-font-family";
 import TextStyle from "@tiptap/extension-text-style";
+import Heading from "@tiptap/extension-heading";
 
 // define your extension array
 const extensions = [
@@ -30,6 +31,7 @@ const extensions = [
   Underline,
   TextStyle,
   FontFamily,
+  Heading,
 ];
 
 const Editor = () => {

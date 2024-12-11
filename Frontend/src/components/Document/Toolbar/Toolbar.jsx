@@ -12,6 +12,7 @@ import {
   Undo2,
 } from "lucide-react";
 import FontFamily from "./FontFamily";
+import Heading from "./Heading";
 
 const ToolbarButton = ({ label, Icon, isActive, onClick }) => {
   return (
@@ -121,8 +122,17 @@ const Toolbar = () => {
         <ToolbarButton key={icons.label} {...icons} />
       ))}
 
+      {/* SEPARATOR */}
       <div className="h-6 w-[1px] bg-neutral-300" />
       <FontFamily />
+
+      {/* SEPARATOR */}
+
+      <div className="h-6 w-[1px] bg-neutral-300" />
+      <Heading />
+
+      {/* SEPARATOR */}
+
       <div className="h-6 w-[1px] bg-neutral-300" />
 
       {Icons2.map((icons) => (
