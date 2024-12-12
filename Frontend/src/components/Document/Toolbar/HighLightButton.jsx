@@ -4,29 +4,30 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
+import { HighlighterIcon } from "lucide-react";
 import React, { useContext, useState, useEffect } from "react";
 import { SketchPicker } from "react-color";
 
-const TextColorButton = () => {
+const HighLightButton = () => {
   const { editor } = useContext(MyContext);
-  const initialColor = editor?.getAttributes("textStyle").color || "#000000";
+  const initialColor = editor?.getAttributes("textStyle").color || "#FFFFFF";
   const [color, setColor] = useState(initialColor);
 
   useEffect(() => {
     // Update the color if the editor's textStyle color changes
-    setColor(editor?.getAttributes("textStyle").color || "#000000");
+    setColor(editor?.isActive("highlight") || "#FFFFFF");
   }, [editor]);
 
   const handleColorChange = (newColor) => {
     setColor(newColor.hex); // Update the local state to reflect the new color
-    editor?.chain().focus().setColor(newColor.hex).run(); // Apply the color to the editor
+    editor?.chain().focus().toggleHighlight({ color: newColor.hex }).run(); // Apply the color to the editor
   };
 
   return (
     <DropdownMenu className="z-10">
       <DropdownMenuTrigger>
         <button className="h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80 text-sm px-2 overflow-hidden">
-          <span className="text-sm">A</span>
+          <HighlighterIcon className="size-4" />
           <div
             className="h-1 w-[20px]"
             style={{ backgroundColor: color }}
@@ -43,4 +44,4 @@ const TextColorButton = () => {
   );
 };
 
-export default TextColorButton;
+export default HighLightButton;

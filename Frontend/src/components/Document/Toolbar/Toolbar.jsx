@@ -14,6 +14,7 @@ import {
 import FontFamily from "./FontFamily";
 import Heading from "./HeadingTool";
 import TextColorButton from "./TextColorButton";
+import HighLightButton from "./HighLightButton";
 
 const ToolbarButton = ({ label, Icon, isActive, onClick }) => {
   return (
@@ -133,6 +134,9 @@ const Toolbar = () => {
 
       <div className="h-6 w-[1px] bg-neutral-300" />
       <TextColorButton />
+
+      <div className="h-6 w-[1px] bg-neutral-300" />
+      <HighLightButton />
 
       {/* SEPARATOR */}
       <div className="h-6 w-[1px] bg-neutral-300" />
