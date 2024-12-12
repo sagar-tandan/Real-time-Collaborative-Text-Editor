@@ -17,6 +17,7 @@ import TextColorButton from "./TextColorButton";
 import HighLightButton from "./HighLightButton";
 import LinkButton from "./LinkButton";
 import ImageButton from "./ImageButton";
+import TextAlignButton from "./TextAlignButton";
 
 const ToolbarButton = ({ label, Icon, isActive, onClick }) => {
   return (
@@ -107,6 +108,9 @@ const Toolbar = () => {
       isActive: activeMarks.underline,
       onClick: () => editor?.chain().focus().toggleUnderline().run(),
     },
+  ];
+
+  const Icons3 = [
     {
       label: "Tasklist",
       Icon: ListTodoIcon,
@@ -119,7 +123,6 @@ const Toolbar = () => {
       onClick: () => editor?.chain().focus().unsetAllMarks().run(),
     },
   ];
-
   return (
     <div className="bg-[#f1f4f9] min-h-[40px] px-5 py-0.5 rounded-[24px] flex items-center gap-1">
       {Icons1.map((icons) => (
@@ -134,19 +137,23 @@ const Toolbar = () => {
       <div className="h-6 w-[1px] bg-neutral-300" />
       <FontFamily />
 
-      <div className="h-6 w-[1px] bg-neutral-300" />
-      <TextColorButton />
-
-      <div className="h-6 w-[1px] bg-neutral-300" />
-      <HighLightButton />
-
-      <div className="h-6 w-[1px] bg-neutral-300" />
-      <LinkButton />
-      <ImageButton />
-
       {/* SEPARATOR */}
       <div className="h-6 w-[1px] bg-neutral-300" />
       {Icons2.map((icons) => (
+        <ToolbarButton key={icons.label} {...icons} />
+      ))}
+      <TextColorButton />
+      <HighLightButton />
+
+      {/* SEPARATOR */}
+      <div className="h-6 w-[1px] bg-neutral-300" />
+      <LinkButton />
+      <ImageButton />
+      <TextAlignButton />
+
+      {/* SEPARATOR */}
+      <div className="h-6 w-[1px] bg-neutral-300" />
+      {Icons3.map((icons) => (
         <ToolbarButton key={icons.label} {...icons} />
       ))}
     </div>

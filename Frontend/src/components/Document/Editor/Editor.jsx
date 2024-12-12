@@ -17,6 +17,7 @@ import Heading from "@tiptap/extension-heading";
 import Highlight from "@tiptap/extension-highlight";
 import { Color } from "@tiptap/extension-color";
 import Link from "@tiptap/extension-link";
+import TextAlign from "@tiptap/extension-text-align";
 
 // define your extension array
 const extensions = [
@@ -41,6 +42,9 @@ const extensions = [
     openOnClick: false,
     autolink: true,
     defaultProtocol: "https",
+  }),
+  TextAlign.configure({
+    types: ["heading", "paragraph"],
   }),
 ];
 

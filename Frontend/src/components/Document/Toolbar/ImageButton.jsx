@@ -55,7 +55,6 @@ const ImageButton = () => {
         onChange(imageUrl);
       }
     };
-
     input.click();
   };
 
@@ -67,7 +66,7 @@ const ImageButton = () => {
             <ImageIcon className="size-4" />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="z-10 bg-white shadow-sm shadow-gray-300 rounded-sm">
+        <DropdownMenuContent className="mt-2 z-10 bg-white shadow-sm shadow-gray-300 rounded-sm">
           <DropdownMenuItem
             onClick={() => onUpload()}
             className="flex gap-2 items-center p-2.5 cursor-pointer outline-none hover:bg-neutral-200/80"
