@@ -43,6 +43,22 @@ const ImageButton = () => {
     }
   };
 
+  const onUpload = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const imageUrl = URL.createObjectURL(file);
+        onChange(imageUrl);
+      }
+    };
+
+    input.click();
+  };
+
   return (
     <>
       <DropdownMenu className="z-10">
@@ -52,7 +68,10 @@ const ImageButton = () => {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="z-10 bg-white shadow-sm shadow-gray-300 rounded-sm">
-          <DropdownMenuItem className="flex gap-2 items-center p-2.5 cursor-pointer outline-none hover:bg-neutral-200/80">
+          <DropdownMenuItem
+            onClick={() => onUpload()}
+            className="flex gap-2 items-center p-2.5 cursor-pointer outline-none hover:bg-neutral-200/80"
+          >
             <UploadIcon className="size-4" />
             <span>Upload</span>
           </DropdownMenuItem>
