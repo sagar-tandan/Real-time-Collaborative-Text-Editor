@@ -16,6 +16,7 @@ import Heading from "./HeadingTool";
 import TextColorButton from "./TextColorButton";
 import HighLightButton from "./HighLightButton";
 import LinkButton from "./LinkButton";
+import ImageButton from "./ImageButton";
 
 const ToolbarButton = ({ label, Icon, isActive, onClick }) => {
   return (
@@ -141,6 +142,7 @@ const Toolbar = () => {
 
       <div className="h-6 w-[1px] bg-neutral-300" />
       <LinkButton />
+      <ImageButton />
 
       {/* SEPARATOR */}
       <div className="h-6 w-[1px] bg-neutral-300" />
