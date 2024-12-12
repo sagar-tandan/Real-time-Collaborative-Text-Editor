@@ -4,6 +4,8 @@ import {
   AlignJustifyIcon,
   AlignLeftIcon,
   AlignRightIcon,
+  ListIcon,
+  ListOrderedIcon,
 } from "lucide-react";
 import React, { useContext } from "react";
 
@@ -13,45 +15,35 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 
-const TextAlignButton = () => {
+const ListButton = () => {
   const { editor } = useContext(MyContext);
-  const alignButton = [
+  const listItem = [
     {
-      label: "Align Left",
-      value: "left",
-      icon: AlignLeftIcon,
+      label: "Bullet List",
+      icon: ListIcon,
+      onClick: () => editor?.chain().focus().toggleBulletList().run(),
+      isActive: editor?.isActive("BulletList"),
     },
     {
-      label: "Align Right",
-      value: "right",
-      icon: AlignRightIcon,
-    },
-    {
-      label: "Align Center",
-      value: "center",
-      icon: AlignCenterIcon,
-    },
-    {
-      label: "Align Justify",
-      value: "justify",
-      icon: AlignJustifyIcon,
+      label: "Ordered List",
+      icon: ListOrderedIcon,
+      onClick: () => editor?.chain().focus().toggleOrderedList().run(),
+      isActive: editor?.isActive("orderedList"),
     },
   ];
   return (
     <DropdownMenu className="z-10">
       <DropdownMenuTrigger>
         <button className="h-7 min-w-7 shrink-0 flex flex-col items-center justify-center rounded-sm hover:bg-neutral-200/80 text-sm px-2 overflow-hidden">
-          <AlignLeftIcon className="size-4" />
+          <ListIcon className="size-4" />
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="mt-2 z-10 flex flex-col items-start gap-1.5 bg-white rounded-sm shadow-[#c1c1c1] shadow-sm">
-        {alignButton.map(({ label, value, icon: Icon }) => (
+        {listItem.map(({ label, isActive, onClick, icon: Icon }) => (
           <button
-            onClick={() => {
-              editor.chain().focus().setTextAlign(value).run();
-            }}
-            className={`py-1 px-3 w-full flex gap-x-2 hover:bg-neutral-200/80 cursor-pointer items-center ${
-              editor?.isActive({ textAlign: value }) && "bg-neutral-200/80"
+            onClick={onClick}
+            className={`py-1 px-3 gap-x-2 w-full flex hover:bg-neutral-200/80 cursor-pointer items-center ${
+              isActive && "bg-neutral-200/80"
             }`}
           >
             <Icon className="size-4" />
@@ -63,4 +55,4 @@ const TextAlignButton = () => {
   );
 };
 
-export default TextAlignButton;
+export default ListButton;

@@ -18,6 +18,9 @@ import Highlight from "@tiptap/extension-highlight";
 import { Color } from "@tiptap/extension-color";
 import Link from "@tiptap/extension-link";
 import TextAlign from "@tiptap/extension-text-align";
+import BulletList from "@tiptap/extension-bullet-list";
+import OrderedList from "@tiptap/extension-ordered-list";
+import ListItem from "@tiptap/extension-list-item";
 
 // define your extension array
 const extensions = [
@@ -46,6 +49,9 @@ const extensions = [
   TextAlign.configure({
     types: ["heading", "paragraph"],
   }),
+  BulletList,
+  OrderedList,
+  ListItem,
 ];
 
 const Editor = () => {

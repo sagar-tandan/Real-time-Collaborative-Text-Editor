@@ -18,6 +18,7 @@ import HighLightButton from "./HighLightButton";
 import LinkButton from "./LinkButton";
 import ImageButton from "./ImageButton";
 import TextAlignButton from "./TextAlignButton";
+import ListButton from "./ListButton";
 
 const ToolbarButton = ({ label, Icon, isActive, onClick }) => {
   return (
@@ -150,9 +151,8 @@ const Toolbar = () => {
       <LinkButton />
       <ImageButton />
       <TextAlignButton />
+      <ListButton />
 
-      {/* SEPARATOR */}
-      <div className="h-6 w-[1px] bg-neutral-300" />
       {Icons3.map((icons) => (
         <ToolbarButton key={icons.label} {...icons} />
       ))}
