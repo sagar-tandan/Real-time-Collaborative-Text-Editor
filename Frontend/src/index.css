@@ -7,6 +7,17 @@
 /* CSS for the tiptap Editor */
 
 .tiptap {
+  /* Link styles */
+  a {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:hover {
+      color: blue;
+    }
+  }
+
   /* Table-specific styling */
   table {
     border-collapse: collapse;
