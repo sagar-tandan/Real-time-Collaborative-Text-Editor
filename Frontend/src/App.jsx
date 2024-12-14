@@ -29,7 +29,7 @@ function App() {
           /> */}
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/document" element={<Page />} />
+          <Route path="/document/:id" element={<Page />} />
         </Routes>
       </div>
     </Router>
