@@ -5,7 +5,6 @@ import {
   MenubarContent,
   MenubarItem,
   MenubarMenu,
-  MenubarSeparator,
   MenubarShortcut,
   MenubarTrigger,
 } from "@/components/ui/menubar";
@@ -151,11 +150,15 @@ const Navbar = () => {
                 Edit
               </MenubarTrigger>
               <MenubarContent className="print:hidden">
-                <MenubarItem>
+                <MenubarItem
+                  onClick={() => editor?.chain().focus().undo().run()}
+                >
                   <Undo2Icon className="size-4 mr-2" />
                   Undo
                 </MenubarItem>
-                <MenubarItem>
+                <MenubarItem
+                  onClick={() => editor?.chain().focus().redo().run()}
+                >
                   <Redo2Icon className="size-4 mr-2" />
                   Redo
                 </MenubarItem>
@@ -192,26 +195,46 @@ const Navbar = () => {
                     Text
                   </MenubarSubTrigger>
                   <MenubarSubContent className="bg-white px-2 min-w-[150px] border-[#c1c1c1] border-[1px] rounded-sm">
-                    <MenubarItem className="hover:bg-[#fafbfd] cursor-pointer">
+                    <MenubarItem
+                      onClick={() => editor?.chain().focus().toggleBold().run()}
+                      className="hover:bg-[#fafbfd] cursor-pointer"
+                    >
                       <BoldIcon className="size-4 mr-2" />
                       Bold <MenubarShortcut> Ctrl+B</MenubarShortcut>
                     </MenubarItem>
-                    <MenubarItem className="hover:bg-[#fafbfd] cursor-pointer">
+                    <MenubarItem
+                      onClick={() =>
+                        editor?.chain().focus().toggleItalic().run()
+                      }
+                      className="hover:bg-[#fafbfd] cursor-pointer"
+                    >
                       <ItalicIcon className="size-4 mr-2" />
                       Italic <MenubarShortcut> Ctrl+I</MenubarShortcut>
                     </MenubarItem>
-                    <MenubarItem className="hover:bg-[#fafbfd] cursor-pointer">
+                    <MenubarItem
+                      onClick={() =>
+                        editor?.chain().focus().toggleUnderline().run()
+                      }
+                      className="hover:bg-[#fafbfd] cursor-pointer"
+                    >
                       <UnderlineIcon className="size-4 mr-2" />
                       Underline <MenubarShortcut> Ctrl+U</MenubarShortcut>
                     </MenubarItem>
-                    <MenubarItem className="hover:bg-[#fafbfd] cursor-pointer">
+                    <MenubarItem
+                      onClick={() =>
+                        editor?.chain().focus().toggleStrike().run()
+                      }
+                      className="hover:bg-[#fafbfd] cursor-pointer"
+                    >
                       <StrikethroughIcon className="size-4 mr-2" />
                       Strikethrough&nbsp;&nbsp;
                       <MenubarShortcut> Ctrl+S</MenubarShortcut>
                     </MenubarItem>
                   </MenubarSubContent>
                 </MenubarSub>
-                <MenubarItem>
+                <MenubarItem
+                  onClick={() => editor?.chain().focus().unsetAllMarks().run()}
+                >
                   <RemoveFormattingIcon className="size-4 mr-2" />
                   Clear Formatting
                 </MenubarItem>
