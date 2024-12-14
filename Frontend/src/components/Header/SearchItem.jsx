@@ -15,9 +15,18 @@ const SearchItem = () => {
     e.preventDefault();
     setValue("");
   };
+
+  const handleSubmit = () => {
+    console.log(value);
+  };
+  
   return (
     <div className="w-full flex items-center justify-center">
-      <form className="max-w-[720px] relative w-full" action="">
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-[720px] relative w-full"
+        action=""
+      >
         <input
           value={value}
           onChange={handleChange}

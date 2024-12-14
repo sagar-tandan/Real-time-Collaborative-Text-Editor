@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../Header/Header";
 import { Link } from "react-router-dom";
+import Templategallery from "../Template/Templategallery";
 
 const HomePage = () => {
   return (
@@ -9,11 +10,12 @@ const HomePage = () => {
         <Header />
       </div>
       <div className="mt-16">
-        Click
+        {/* Click
         <Link to="/document/1234">
           <span className="text-blue-500"> here </span>
         </Link>
-        to go to document id
+        to go to document id */}
+        <Templategallery />
       </div>
     </div>
   );
