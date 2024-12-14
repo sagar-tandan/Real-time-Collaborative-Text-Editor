@@ -139,8 +139,6 @@ const Toolbar = () => {
       <div className="h-6 w-[1px] bg-neutral-300" />
       <FontFamily />
 
-      <div className="h-6 w-[1px] bg-neutral-300" />
-      {/* <FontSizeButton /> */}
 
       {/* SEPARATOR */}
       <div className="h-6 w-[1px] bg-neutral-300" />

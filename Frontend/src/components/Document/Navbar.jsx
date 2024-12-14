@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import DocumentInput from "./DocumentInput";
 import {
   Menubar,
@@ -35,8 +35,28 @@ import {
   Undo2Icon,
 } from "lucide-react";
 import logo from "/logo.svg";
+import MyContext from "@/Context/MyContext";
 
 const Navbar = () => {
+  const { editor } = useContext(MyContext);
+
+  const onDownload = (blob, fileName) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    a.click();
+  };
+
+  const onSaveJSON = () => {
+    if (!editor) return;
+    const content = editor.getJSON();
+    const blob = new Blob([JSON.stringify(content)], {
+      type: "application/json",
+    });
+    onDownload(blob, "document.json");
+  };
+
   return (
     <nav className="flex items-center">
       <div className="flex gap-2 items-center">
@@ -59,7 +79,12 @@ const Navbar = () => {
                     Save
                   </MenubarSubTrigger>
                   <MenubarSubContent className="bg-white px-2 min-w-[150px] border-[#c1c1c1] border-[1px] rounded-sm">
-                    <MenubarItem className="hover:bg-[#fafbfd] cursor-pointer">
+                    <MenubarItem
+                      onClick={() => {
+                        onSaveJSON();
+                      }}
+                      className="hover:bg-[#fafbfd] cursor-pointer"
+                    >
                       <FileJsonIcon className="size-4 mr-2" />
                       JSON
                     </MenubarItem>
