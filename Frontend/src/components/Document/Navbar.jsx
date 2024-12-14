@@ -57,6 +57,24 @@ const Navbar = () => {
     onDownload(blob, "document.json");
   };
 
+  const onSaveHTML = () => {
+    if (!editor) return;
+    const content = editor.getHTML();
+    const blob = new Blob(content, {
+      type: "text/html",
+    });
+    onDownload(blob, "document.html");
+  };
+
+  const onSaveText = () => {
+    if (!editor) return;
+    const content = editor.getText();
+    const blob = new Blob(content, {
+      type: "text/plain",
+    });
+    onDownload(blob, "document.txt");
+  };
+
   return (
     <nav className="flex items-center">
       <div className="flex gap-2 items-center">
@@ -80,23 +98,30 @@ const Navbar = () => {
                   </MenubarSubTrigger>
                   <MenubarSubContent className="bg-white px-2 min-w-[150px] border-[#c1c1c1] border-[1px] rounded-sm">
                     <MenubarItem
-                      onClick={() => {
-                        onSaveJSON();
-                      }}
+                      onClick={onSaveJSON}
                       className="hover:bg-[#fafbfd] cursor-pointer"
                     >
                       <FileJsonIcon className="size-4 mr-2" />
                       JSON
                     </MenubarItem>
-                    <MenubarItem className="hover:bg-[#fafbfd] cursor-pointer">
+                    <MenubarItem
+                      onClick={onSaveHTML}
+                      className="hover:bg-[#fafbfd] cursor-pointer"
+                    >
                       <GlobeIcon className="size-4 mr-2" />
                       HTML
                     </MenubarItem>
-                    <MenubarItem className="hover:bg-[#fafbfd] cursor-pointer">
+                    <MenubarItem
+                      onClick={() => window.print()}
+                      className="hover:bg-[#fafbfd] cursor-pointer"
+                    >
                       <FileIcon className="size-4 mr-2" />
                       PDF
                     </MenubarItem>
-                    <MenubarItem className="hover:bg-[#fafbfd] cursor-pointer">
+                    <MenubarItem
+                      onClick={onSaveText}
+                      className="hover:bg-[#fafbfd] cursor-pointer"
+                    >
                       <FileTextIcon className="size-4 mr-2" />
                       Text
                     </MenubarItem>
