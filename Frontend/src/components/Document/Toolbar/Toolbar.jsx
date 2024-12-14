@@ -19,6 +19,7 @@ import LinkButton from "./LinkButton";
 import ImageButton from "./ImageButton";
 import TextAlignButton from "./TextAlignButton";
 import ListButton from "./ListButton";
+import FontSizeButton from "./FontSizeButton";
 
 const ToolbarButton = ({ label, Icon, isActive, onClick }) => {
   return (
@@ -137,6 +138,9 @@ const Toolbar = () => {
       {/* SEPARATOR */}
       <div className="h-6 w-[1px] bg-neutral-300" />
       <FontFamily />
+
+      <div className="h-6 w-[1px] bg-neutral-300" />
+      {/* <FontSizeButton /> */}
 
       {/* SEPARATOR */}
       <div className="h-6 w-[1px] bg-neutral-300" />
