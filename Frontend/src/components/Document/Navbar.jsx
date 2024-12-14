@@ -39,6 +39,14 @@ import MyContext from "@/Context/MyContext";
 const Navbar = () => {
   const { editor } = useContext(MyContext);
 
+  const insertTable = (row, col) => {
+    editor
+      ?.chain()
+      .focus()
+      .insertTable({ rows: row, cols: col, withHeaderRow: false })
+      .run();
+  };
+
   const onDownload = (blob, fileName) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -175,10 +183,18 @@ const Navbar = () => {
                     Table
                   </MenubarSubTrigger>
                   <MenubarSubContent className="bg-white px-1 min-w-[150px] border-[#c1c1c1] border-[1px] rounded-sm">
-                    <MenubarItem>1 X 1</MenubarItem>
-                    <MenubarItem>2 X 2</MenubarItem>
-                    <MenubarItem>3 X 3</MenubarItem>
-                    <MenubarItem>4 X 4</MenubarItem>
+                    <MenubarItem onClick={() => insertTable(1, 1)}>
+                      1 X 1
+                    </MenubarItem>
+                    <MenubarItem onClick={() => insertTable(2, 2)}>
+                      2 X 2
+                    </MenubarItem>
+                    <MenubarItem onClick={() => insertTable(3, 3)}>
+                      3 X 3
+                    </MenubarItem>
+                    <MenubarItem onClick={() => insertTable(4, 4)}>
+                      4 X 4
+                    </MenubarItem>
                   </MenubarSubContent>
                 </MenubarSub>
               </MenubarContent>
