@@ -24,16 +24,31 @@ const io = new Server(server, {
   },
 });
 
-io.on("connection", (socket) => {
-  console.log("A user connected", socket.id);
+// io.on("connection", (socket) => {
+//   console.log("A user connected", socket.id);
 
-  socket.on("send-message", (data) => {
-    socket.broadcast.emit("recieve-changes", data);
-    console.log(data);
+//   socket.on("send-message", (data) => {
+//     socket.broadcast.emit("recieve-changes", data);
+//     console.log(data);
+//   });
+
+//   socket.on("disconnect", () => {
+//     console.log("User disconnected: ", socket.id);
+//   });
+// });
+
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  // Listen for text updates (deltas)
+  socket.on("send-update", (delta) => {
+    // Broadcast the delta to other clients
+    socket.broadcast.emit("receive-update", delta);
+    console.log(delta);
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected: ", socket.id);
+    console.log("User disconnected:", socket.id);
   });
 });
 

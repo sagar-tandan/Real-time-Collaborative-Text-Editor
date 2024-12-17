@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TaskItem from "@tiptap/extension-task-item";
@@ -21,6 +21,11 @@ import TextAlign from "@tiptap/extension-text-align";
 import BulletList from "@tiptap/extension-bullet-list";
 import OrderedList from "@tiptap/extension-ordered-list";
 import ListItem from "@tiptap/extension-list-item";
+import socket, {
+  sendUpdate,
+  onReceiveUpdate,
+  cleanupSocket,
+} from "@/Socket/Socket";
 
 // define your extension array
 const extensions = [
@@ -56,16 +61,26 @@ const extensions = [
 
 const Editor = () => {
   const { setEditor } = useContext(MyContext);
+  // const { editorContent, setEditorContent } = useContext(MyContext);
+  // const { socket } = useContext(MyContext);
+  const previousContent = useRef("");
 
   const editor = useEditor({
     onCreate({ editor }) {
       setEditor(editor);
+      previousContent.current = editor.getHTML();
     },
     onDestroy() {
       setEditor(null);
     },
     onUpdate({ editor }) {
-      setEditor(editor);
+      // setEditor(editor);
+      const currentContent = editor.getHTML();
+      if (currentContent !== previousContent.current) {
+        const delta = getDelta(previousContent.current, currentContent);
+        sendUpdate(delta); // Send delta updates to the server
+        previousContent.current = currentContent;
+      }
     },
     onSelectionUpdate({ editor }) {
       setEditor(editor);
@@ -90,7 +105,28 @@ const Editor = () => {
       },
     },
     extensions,
+    // content: editorContent,
   });
+
+  useEffect(() => {
+    // Receive updates and apply them to the editor
+    onReceiveUpdate((delta) => {
+      if (editor) {
+        editor.commands.setContent(delta);
+      }
+    });
+
+    return () => {
+      cleanupSocket();
+    };
+  }, [editor]);
+
+  // Utility function to calculate the difference (delta)
+  function getDelta(oldContent, newContent) {
+    const diff = newContent.replace(oldContent, ""); // Simple difference logic
+    return diff;
+  }
+
   return (
     <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:overflow-visible print:bg-white">
       <div className="min-w-max flex justify-center w-[816px] py-4 mx-auto print:py-0 print:w-full print:min-w-0">
