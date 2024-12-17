@@ -24,19 +24,6 @@ const io = new Server(server, {
   },
 });
 
-// io.on("connection", (socket) => {
-//   console.log("A user connected", socket.id);
-
-//   socket.on("send-message", (data) => {
-//     socket.broadcast.emit("recieve-changes", data);
-//     console.log(data);
-//   });
-
-//   socket.on("disconnect", () => {
-//     console.log("User disconnected: ", socket.id);
-//   });
-// });
-
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 

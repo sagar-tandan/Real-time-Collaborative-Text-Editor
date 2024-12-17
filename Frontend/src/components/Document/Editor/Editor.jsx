@@ -68,19 +68,21 @@ const Editor = () => {
   const editor = useEditor({
     onCreate({ editor }) {
       setEditor(editor);
-      previousContent.current = editor.getHTML();
+      previousContent.current = editor.getJSON();
     },
     onDestroy() {
       setEditor(null);
     },
     onUpdate({ editor }) {
       // setEditor(editor);
-      const currentContent = editor.getHTML();
-      if (currentContent !== previousContent.current) {
-        const delta = getDelta(previousContent.current, currentContent);
-        sendUpdate(delta); // Send delta updates to the server
-        previousContent.current = currentContent;
-      }
+      const currentContent = editor.getJSON();
+      // if (currentContent !== previousContent.current) {
+      //   const delta = getDelta(previousContent.current, currentContent);
+      //   sendUpdate(delta); // Send delta updates to the server
+      //   previousContent.current = currentContent;
+      // }
+      sendUpdate(currentContent); // Send delta updates to the server
+
     },
     onSelectionUpdate({ editor }) {
       setEditor(editor);
@@ -121,11 +123,11 @@ const Editor = () => {
     };
   }, [editor]);
 
-  // Utility function to calculate the difference (delta)
-  function getDelta(oldContent, newContent) {
-    const diff = newContent.replace(oldContent, ""); // Simple difference logic
-    return diff;
-  }
+  // // Utility function to calculate the difference (delta)
+  // function getDelta(oldContent, newContent) {
+  //   const diff = newContent.replace(oldContent, ""); // Simple difference logic
+  //   return diff;
+  // }
 
   return (
     <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:overflow-visible print:bg-white">
