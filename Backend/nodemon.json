@@ -1,6 +1,6 @@
 {
-    "watch": ["src"],
-    "ext": "js",
-    "ignore": ["dist"],
-    "exec": "ts-node ./src/index.js"
-  }
+  "watch": ["src"],
+  "ext": "js",
+  "ignore": ["dist"],
+  "exec": "node ./src/index.js"
+}

@@ -5,6 +5,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import morgan from "morgan";
 import http from "http";
 import cors from "cors";
+import { Server } from "socket.io";
 import { AuthRouter } from "./routes/v1/auth.js";
 
 dotenv.config();
@@ -15,6 +16,26 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
+
+// Initialize Socket.IO
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("A user connected", socket.id);
+
+  socket.on("send-message", (data) => {
+    socket.broadcast.emit("recieve-changes", data);
+    console.log(data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected: ", socket.id);
+  });
+});
 
 app.use("/api/auth", AuthRouter);
 
