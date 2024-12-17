@@ -6,6 +6,10 @@ export const sendUpdate = (delta) => {
   socket.emit("send-update", delta);
 };
 
+export const sendDocumentId = (id) => {
+  socket.emit("get-document", id);
+};
+
 export const onReceiveUpdate = (callback) => {
   socket.on("receive-update", callback);
 };

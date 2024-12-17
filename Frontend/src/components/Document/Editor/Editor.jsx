@@ -25,7 +25,9 @@ import socket, {
   sendUpdate,
   onReceiveUpdate,
   cleanupSocket,
+  sendDocumentId,
 } from "@/Socket/Socket";
+import { useParams } from "react-router-dom";
 
 // define your extension array
 const extensions = [
@@ -61,14 +63,16 @@ const extensions = [
 
 const Editor = () => {
   const { setEditor } = useContext(MyContext);
-  // const { editorContent, setEditorContent } = useContext(MyContext);
-  // const { socket } = useContext(MyContext);
-  const previousContent = useRef("");
+  const documentId = useParams();
+
+  useEffect(() => {
+    sendDocumentId(documentId);
+  }, []);
 
   const editor = useEditor({
     onCreate({ editor }) {
       setEditor(editor);
-      previousContent.current = editor.getJSON();
+      // previousContent.current = editor.getJSON();
     },
     onDestroy() {
       setEditor(null);
@@ -82,7 +86,6 @@ const Editor = () => {
       //   previousContent.current = currentContent;
       // }
       sendUpdate(currentContent); // Send delta updates to the server
-
     },
     onSelectionUpdate({ editor }) {
       setEditor(editor);
