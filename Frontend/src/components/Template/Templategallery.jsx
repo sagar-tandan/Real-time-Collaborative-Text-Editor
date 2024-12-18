@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Carousel,
   CarouselContent,
@@ -9,6 +9,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import MyContext from "@/Context/MyContext";
 
 const templates = [
   {
@@ -51,19 +52,23 @@ const templates = [
 const Templategallery = () => {
   const [isCreating, setIsCreating] = useState(false);
   const naviagte = useNavigate();
+  const { endPoint } = useContext(MyContext);
 
   const createDocument = async () => {
     setIsCreating(true);
     const newDocId = uuidv4();
     try {
-      const response = await axios.post("/api/document/createDocument", {
-        doc_id: newDocId,
-        content: "",
-      });
+      const response = await axios.post(
+        `${endPoint}/api/document/createDocument`,
+        {
+          doc_id: newDocId,
+          content: "Here is the trial content",
+        }
+      );
 
       if (response.status === 200) {
         console.log(response);
-        naviagte(`/document/${response.doc_id}`);
+        naviagte(`/document/${response.data.doc_id}`);
       } else {
         console.log("error");
       }

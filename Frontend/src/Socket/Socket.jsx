@@ -14,6 +14,10 @@ export const onReceiveUpdate = (callback) => {
   socket.on("receive-update", callback);
 };
 
+export const onLoadDocument = (callback) => {
+  socket.on("load-document", callback);
+};
+
 export const cleanupSocket = () => {
   socket.off("receive-update");
 };

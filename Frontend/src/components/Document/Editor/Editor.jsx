@@ -26,6 +26,7 @@ import socket, {
   onReceiveUpdate,
   cleanupSocket,
   sendDocumentId,
+  onLoadDocument,
 } from "@/Socket/Socket";
 import { useParams } from "react-router-dom";
 
@@ -67,6 +68,12 @@ const Editor = () => {
 
   useEffect(() => {
     sendDocumentId(documentId);
+
+    onLoadDocument((content) => {
+      if (editor) {
+        editor.commands.setContent(content);
+      }
+    });
   }, []);
 
   const editor = useEditor({

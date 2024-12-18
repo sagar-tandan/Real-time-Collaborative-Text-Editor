@@ -9,6 +9,7 @@ import { Server } from "socket.io";
 import { AuthRouter } from "./routes/v1/auth.js";
 import { createDocument } from "./controllers/document.controller.js";
 import { DocumentRouter } from "./routes/v1/document.js";
+import Document from "./models/document.model.js";
 
 dotenv.config();
 const app = express();
@@ -28,17 +29,34 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
-  socket.on("get-document", ({ id: document_id }) => {
-    console.log(document_id);
-    // Storing new document id into Database
-    // createDocument(document_id);
+  socket.on("get-document", async ({ id: document_id }) => {
+    try {
+      console.log(document_id);
+      // Verify document exists in database before joining
+      const document = await Document.findOne({ doc_id: document_id });
 
-    socket.join(document_id);
+      if (document) {
+        socket.join(document_id);
 
-    socket.on("send-update", (delta) => {
-      socket.broadcast.to(document_id).emit("receive-update", delta);
-      console.log(delta);
-    });
+        // Send the stored content back to the client
+        socket.emit("load-document", document.content);
+
+        socket.on("send-update", (delta) => {
+          socket.broadcast.to(document_id).emit("receive-update", delta);
+        });
+      } else {
+        // Handle case where document doesn't exist
+        // socket.emit("document-not-found");
+        console.log("Doc not found!!");
+      }
+    } catch (error) {
+      console.error("Document retrieval error:", error);
+    }
+
+    // socket.on("send-update", (delta) => {
+    //   socket.broadcast.to(document_id).emit("receive-update", delta);
+    //   console.log(delta);
+    // });
   });
 
   socket.on("disconnect", () => {
