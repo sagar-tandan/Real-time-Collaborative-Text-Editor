@@ -52,7 +52,7 @@ const templates = [
 const Templategallery = () => {
   const [isCreating, setIsCreating] = useState(false);
   const naviagte = useNavigate();
-  const { endPoint } = useContext(MyContext);
+  const { endPoint, token, user } = useContext(MyContext);
 
   const createDocument = async () => {
     setIsCreating(true);
@@ -62,7 +62,16 @@ const Templategallery = () => {
         `${endPoint}/api/document/createDocument`,
         {
           doc_id: newDocId,
-          content: "",
+          content: "Start documenting....",
+          ownerId: user?._id,
+          ownerName: user?.name,
+          ownerEmail: user?.email,
+          doc_title: "Untitled Document",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 

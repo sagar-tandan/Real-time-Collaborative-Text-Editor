@@ -11,6 +11,7 @@ export const MyProvider = ({ children }) => {
   const [editor, setEditor] = useState(null); // Manage the editor state
   // const socket = io("http://localhost:8000");
   const [editorContent, setEditorContent] = useState("");
+  const [token, setToken] = useState(localStorage.getItem("docsToken"));
 
   return (
     <MyContext.Provider
@@ -23,6 +24,8 @@ export const MyProvider = ({ children }) => {
         setEditor,
         editorContent,
         setEditorContent,
+        token,
+        setToken,
       }}
     >
       {children}
