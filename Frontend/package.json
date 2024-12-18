@@ -53,7 +53,8 @@
     "spinners-react": "^1.0.10",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "tiptap-extension-resize-image": "^1.2.1"
+    "tiptap-extension-resize-image": "^1.2.1",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

@@ -6,6 +6,8 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { v4 as uuidv4 } from "uuid";
+import { useNavigate } from "react-router-dom";
 
 const templates = [
   {
@@ -47,6 +49,14 @@ const templates = [
 
 const Templategallery = () => {
   const [isCreating, setIsCreating] = useState(false);
+  const naviagte = useNavigate();
+
+  const createDocument = () => {
+    setIsCreating(true);
+    naviagte(`/document/${uuidv4()}`);
+    setIsCreating(false);
+  };
+
   return (
     <div className="bg-[#f1f3f4]">
       <div className="max-w-screen-xl mx-auto px-16 py-6 flex flex-col gap-y-4">
@@ -59,6 +69,7 @@ const Templategallery = () => {
                 className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 2xl:basis-[14.285%] pl-4"
               >
                 <div
+                  onClick={createDocument}
                   className={`aspect-[3/4] flex flex-col gap-y-3 ${
                     isCreating && "pointer-events-none opacity-50"
                   }`}

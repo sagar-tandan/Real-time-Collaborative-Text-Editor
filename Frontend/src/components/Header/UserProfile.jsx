@@ -35,7 +35,7 @@ const UserProfile = () => {
           </HoverCardContent>
         </HoverCard>
 
-        <PopoverContent className="flex flex-col items-center bg-blue-50 mx-4 min-w-[350px]">
+        <PopoverContent className="flex flex-col items-center bg-blue-50 mx-4 min-w-[350px] z-10">
           <div className="w-full justify-between flex ">
             <span></span>
             <p className="text-center text-sm font-semibold">
