@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import SearchItem from "./SearchItem";
+import UserProfile from "./UserProfile";
 
 export default function Header() {
   return (
@@ -12,7 +13,7 @@ export default function Header() {
       </div>
       <SearchItem />
 
-      <div></div>
+      <UserProfile />
     </header>
   );
 }

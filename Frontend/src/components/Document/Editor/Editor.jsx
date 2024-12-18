@@ -110,7 +110,6 @@ const Editor = () => {
       },
     },
     extensions,
-    // content: editorContent,
   });
 
   useEffect(() => {
@@ -118,6 +117,8 @@ const Editor = () => {
     onReceiveUpdate((delta) => {
       if (editor) {
         editor.commands.setContent(delta);
+        // console.log(delta);
+        // localStorage.setItem("latest-update", delta);
       }
     });
 
