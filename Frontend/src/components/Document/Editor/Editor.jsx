@@ -125,9 +125,6 @@ const Editor = () => {
     };
   }, [documentId, editor]);
 
-
-
-
   // Periodic content saving
   useEffect(() => {
     if (!editor) return;
@@ -160,9 +157,6 @@ const Editor = () => {
     return () => clearInterval(intervalId);
   }, [editor, documentId, lastSavedContent]);
 
-
-
-
   // Receive updates from other clients
   useEffect(() => {
     const updateHandler = (delta) => {
@@ -186,9 +180,6 @@ const Editor = () => {
       socket.off("receive-update", updateHandler);
     };
   }, [editor]);
-
-
-  
 
   return (
     <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:overflow-visible print:bg-white">

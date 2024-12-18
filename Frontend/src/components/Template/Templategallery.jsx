@@ -62,7 +62,7 @@ const Templategallery = () => {
         `${endPoint}/api/document/createDocument`,
         {
           doc_id: newDocId,
-          content: "Start documenting....",
+          content: "",
           ownerId: user?._id,
           ownerName: user?.name,
           ownerEmail: user?.email,
