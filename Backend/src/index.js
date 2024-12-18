@@ -31,7 +31,6 @@ io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
   socket.on("get-document", async ({ id: document_id }) => {
     try {
-      console.log(document_id);
       // Verify document exists in database before joining
       const document = await Document.findOne({ doc_id: document_id });
 
@@ -43,6 +42,21 @@ io.on("connection", (socket) => {
 
         socket.on("send-update", (delta) => {
           socket.broadcast.to(document_id).emit("receive-update", delta);
+        });
+
+        socket.on("save-content", async (data) => {
+          // console.log("this is id", data.documentId.id);
+          // console.log("this is content", JSON.stringify(data.content));
+          try {
+            await Document.findOneAndUpdate(
+              { doc_id: data.documentId.id },
+              { content: JSON.stringify(data.content.content) },
+              { new: true }
+            );
+            console.log(`Document ${data.documentId.id} saved`);
+          } catch (error) {
+            console.error("Error saving document:", error);
+          }
         });
       } else {
         // Handle case where document doesn't exist

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TaskItem from "@tiptap/extension-task-item";
@@ -65,21 +65,11 @@ const extensions = [
 const Editor = () => {
   const { setEditor } = useContext(MyContext);
   const documentId = useParams();
-
-  useEffect(() => {
-    sendDocumentId(documentId);
-
-    onLoadDocument((content) => {
-      if (editor) {
-        editor.commands.setContent(content);
-      }
-    });
-  }, []);
+  const [lastSavedContent, setLastSavedContent] = useState(null);
 
   const editor = useEditor({
     onCreate({ editor }) {
       setEditor(editor);
-      // previousContent.current = editor.getJSON();
     },
     onDestroy() {
       setEditor(null);
@@ -87,11 +77,6 @@ const Editor = () => {
     onUpdate({ editor }) {
       // setEditor(editor);
       const currentContent = editor.getJSON();
-      // if (currentContent !== previousContent.current) {
-      //   const delta = getDelta(previousContent.current, currentContent);
-      //   sendUpdate(delta); // Send delta updates to the server
-      //   previousContent.current = currentContent;
-      // }
       sendUpdate(currentContent); // Send delta updates to the server
     },
     onSelectionUpdate({ editor }) {
@@ -119,26 +104,82 @@ const Editor = () => {
     extensions,
   });
 
+  // Document ID and initial loading
   useEffect(() => {
-    // Receive updates and apply them to the editor
-    onReceiveUpdate((delta) => {
+    if (documentId) {
+      sendDocumentId(documentId);
+    }
+
+    const loadDocumentHandler = (content) => {
       if (editor) {
-        editor.commands.setContent(delta);
-        // console.log(delta);
-        // localStorage.setItem("latest-update", delta);
+        editor.commands.setContent(JSON.parse(content));
+        setLastSavedContent(JSON.parse(content));
       }
-    });
+    };
+
+    onLoadDocument(loadDocumentHandler);
+
+    return () => {
+      // Remove the load document listener
+      socket.off("load-document", loadDocumentHandler);
+    };
+  }, [documentId, editor]);
+
+  // Periodic content saving
+  useEffect(() => {
+    if (!editor) return;
+
+    const saveContent = () => {
+      // Get current content as JSON
+      const currentContent = editor.getJSON();
+
+      // Convert to string for comparison
+      const currentContentString = JSON.stringify(currentContent);
+      const lastSavedContentString = JSON.stringify(lastSavedContent);
+
+      // Check if content has changed
+      if (currentContentString !== lastSavedContentString) {
+        // Emit save event
+        socket.emit("save-content", {
+          documentId,
+          content: currentContent,
+        });
+
+        // Update last saved content
+        setLastSavedContent(currentContent);
+      }
+    };
+
+    // Set up interval to save content every 5 seconds
+    const intervalId = setInterval(saveContent, 5000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
+  }, [editor, documentId, lastSavedContent]);
+
+  // Receive updates from other clients
+  useEffect(() => {
+    const updateHandler = (delta) => {
+      if (editor) {
+        // Prevent recursive updates
+        const currentContent = editor.getJSON();
+        const deltaString = JSON.stringify(delta);
+        const currentContentString = JSON.stringify(currentContent);
+
+        if (deltaString !== currentContentString) {
+          editor.commands.setContent(delta);
+          setLastSavedContent(delta);
+        }
+      }
+    };
+
+    onReceiveUpdate(updateHandler);
 
     return () => {
       cleanupSocket();
+      socket.off("receive-update", updateHandler);
     };
   }, [editor]);
-
-  // // Utility function to calculate the difference (delta)
-  // function getDelta(oldContent, newContent) {
-  //   const diff = newContent.replace(oldContent, ""); // Simple difference logic
-  //   return diff;
-  // }
 
   return (
     <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:overflow-visible print:bg-white">
