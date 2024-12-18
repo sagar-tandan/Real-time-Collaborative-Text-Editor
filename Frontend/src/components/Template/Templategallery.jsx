@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/carousel";
 import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const templates = [
   {
@@ -51,10 +52,26 @@ const Templategallery = () => {
   const [isCreating, setIsCreating] = useState(false);
   const naviagte = useNavigate();
 
-  const createDocument = () => {
+  const createDocument = async () => {
     setIsCreating(true);
-    naviagte(`/document/${uuidv4()}`);
-    setIsCreating(false);
+    const newDocId = uuidv4();
+    try {
+      const response = await axios.post("/api/document/createDocument", {
+        doc_id: newDocId,
+        content: "",
+      });
+
+      if (response.status === 200) {
+        console.log(response);
+        naviagte(`/document/${response.doc_id}`);
+      } else {
+        console.log("error");
+      }
+      setIsCreating(false);
+    } catch (error) {
+      console.log(error);
+      setIsCreating(false);
+    }
   };
 
   return (

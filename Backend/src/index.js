@@ -7,6 +7,8 @@ import http from "http";
 import cors from "cors";
 import { Server } from "socket.io";
 import { AuthRouter } from "./routes/v1/auth.js";
+import { createDocument } from "./controllers/document.controller.js";
+import { DocumentRouter } from "./routes/v1/document.js";
 
 dotenv.config();
 const app = express();
@@ -26,11 +28,12 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
-  socket.on("get-document", ({id: document_id}) => {
+  socket.on("get-document", ({ id: document_id }) => {
     console.log(document_id);
-    const data = "";
+    // Storing new document id into Database
+    // createDocument(document_id);
+
     socket.join(document_id);
-    // socket.emit("send_update", data);
 
     socket.on("send-update", (delta) => {
       socket.broadcast.to(document_id).emit("receive-update", delta);
@@ -44,6 +47,7 @@ io.on("connection", (socket) => {
 });
 
 app.use("/api/auth", AuthRouter);
+app.use("/api/document", DocumentRouter);
 
 app.use(errorHandler);
 
