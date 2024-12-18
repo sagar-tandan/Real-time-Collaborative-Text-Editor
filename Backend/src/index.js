@@ -7,7 +7,6 @@ import http from "http";
 import cors from "cors";
 import { Server } from "socket.io";
 import { AuthRouter } from "./routes/v1/auth.js";
-import { createDocument } from "./controllers/document.controller.js";
 import { DocumentRouter } from "./routes/v1/document.js";
 import Document from "./models/document.model.js";
 
@@ -66,11 +65,6 @@ io.on("connection", (socket) => {
     } catch (error) {
       console.error("Document retrieval error:", error);
     }
-
-    // socket.on("send-update", (delta) => {
-    //   socket.broadcast.to(document_id).emit("receive-update", delta);
-    //   console.log(delta);
-    // });
   });
 
   socket.on("disconnect", () => {

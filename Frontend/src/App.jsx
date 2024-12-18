@@ -1,70 +1,64 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import { Navigate } from "react-router-dom";
 import HomePage from "./components/HomePage/HomePage.jsx";
 import Page from "./components/Document/Page.jsx";
 import { io } from "socket.io-client";
 import { useContext, useEffect, useState } from "react";
 import MyContext from "./Context/MyContext.jsx";
+import AuthForm from "./components/AuthForm.jsx";
+import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 function App() {
-  // const { user, setUser } = useContext(MyContext);
+  const { user, setUser, endPoint } = useContext(MyContext);
 
-  // useEffect(() => {
-  //   if (localStorage.getItem("token")) {
-  //     setUser(localStorage.getItem("token"));
-  //   }
-  // }, []);
+  const fetchUserDetails = async (loginToken) => {
+    try {
+      const response = await axios.get(`${endPoint}/api/auth/getUser`, {
+        headers: {
+          Authorization: `Bearer ${loginToken}`, // Add the token to the Authorization header
+        },
+      });
 
-  // const { socket } = useContext(MyContext);
-  // const [text, setText] = useState("");
+      if (response && response.status === 200) {
+        setUser(response.data);
+      } else {
+        localStorage.removeItem("docsToken");
+      }
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      localStorage.removeItem("docsToken");
+    }
+  };
 
-  // const handleChange = (e) => {
-  //   const newText = e.target.value;
-  //   setText(newText);
-  //   socket.emit("send-message", newText);
-  // };
-
-  // useEffect(() => {
-  //   socket.on("recieve-changes", (data) => {
-  //     setText(data);
-  //     // console.log(data);
-  //   });
-  // });
-
-
+  useEffect(() => {
+    const verifyToken = async () => {
+      const loginToken = localStorage.getItem("docsToken");
+      if (loginToken) {
+        await fetchUserDetails(loginToken);
+      }
+    };
+    verifyToken();
+  }, []);
 
   return (
     <Router>
       <div className="w-full max-w-screen-2xl mx-auto font-inter">
         {/* navigation bar or header here */}
         {/* <Header /> */}
-
-        {/* <Routes>
-          <Route
-            path="/home"
-            element={user ? <HomePage /> : <Navigate to="/" />}
-          />
+        <Routes>
           <Route
             path="/"
-            element={user ? <Navigate to="/home" /> : <AuthForm />}
-          /> */}
-        <Routes>
-          <Route path="/" element={<HomePage />} />
+            element={user ? <HomePage /> : <Navigate to="/login" />}
+          />
           <Route path="/document/:id" element={<Page />} />
+          <Route
+            path="/login"
+            element={user ? <Navigate to="/" /> : <AuthForm />}
+          />
         </Routes>
       </div>
     </Router>
-
-    // <div style={{ margin: "50px" }}>
-    //   <h1>Real-Time Collaboration Editor</h1>
-    //   <textarea
-    //     value={text}
-    //     onChange={handleChange}
-    //     rows="10"
-    //     cols="50"
-    //     placeholder="Start typing..."
-    //   />
-    // </div>
   );
 }
 

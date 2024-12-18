@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   HoverCard,
   HoverCardContent,
@@ -11,8 +11,15 @@ import {
 } from "@/components/ui/popover";
 import { CrossIcon, EditIcon, LogOutIcon, PenIcon, X } from "lucide-react";
 import { PopoverClose } from "@radix-ui/react-popover";
+import MyContext from "@/Context/MyContext";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const UserProfile = () => {
+  const { user, setUser } = useContext(MyContext);
+  const navigate = useNavigate();
+  console.log(user);
+
   return (
     <div className="w-[100px] h-[42px] overflow-hidden flex justify-end font-inter">
       <Popover>
@@ -28,19 +35,15 @@ const UserProfile = () => {
           </HoverCardTrigger>
           <HoverCardContent className="bg-neutral-700/80 text-white mx-4 mt-1 flex flex-col p-2">
             <span className="font-medium">Doc Account</span>
-            <span className="text-sm text-neutral-200">Sagar Tandan</span>
-            <span className="text-sm text-neutral-200">
-              sagarchhetry333@gmail.com
-            </span>
+            <span className="text-sm text-neutral-200">{user?.email}</span>
+            <span className="text-sm text-neutral-200">{user?.name}</span>
           </HoverCardContent>
         </HoverCard>
 
         <PopoverContent className="flex flex-col items-center bg-blue-50 mx-4 min-w-[350px] z-10">
           <div className="w-full justify-between flex ">
             <span></span>
-            <p className="text-center text-sm font-semibold">
-              sagarchhetry333@gmail.com
-            </p>
+            <p className="text-center text-sm font-semibold">{user?.email}</p>
             <PopoverClose>
               <X className="size-6 text-neutral-600 hover:text-neutral-800 cursor-pointer" />
             </PopoverClose>
@@ -57,13 +60,20 @@ const UserProfile = () => {
               <PenIcon className="size-[14px]" />
             </div>
           </div>
-          <span className="text-center text-xl">Hi, Sagar!</span>
+          <span className="text-center text-xl">Hi, {user?.name} !</span>
           <div className="w-full mx-4 flex gap-2 mt-3">
             <button className=" py-3 px-4 rounded-l-full bg-white flex items-center gap-2 w-full hover:bg-neutral-300 transition-all ease-in-out duration-300">
               <EditIcon className="size-4" />
               <span>Edit</span>
             </button>
-            <button className=" py-3 px-4 rounded-r-full bg-white flex items-center gap-2 w-full hover:bg-neutral-300 transition-all ease-in-out duration-300">
+            <button
+              onClick={() => {
+                localStorage.removeItem("docsToken");
+                setUser("");
+                navigate("/");
+              }}
+              className=" py-3 px-4 rounded-r-full bg-white flex items-center gap-2 w-full hover:bg-neutral-300 transition-all ease-in-out duration-300"
+            >
               <LogOutIcon className="size-4" />
               <span>Sign out</span>
             </button>

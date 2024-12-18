@@ -1,6 +1,7 @@
 import React from "react";
 import Header from "../Header/Header";
 import Templategallery from "../Template/Templategallery";
+import AuthForm from "../AuthForm";
 
 const HomePage = () => {
   return (

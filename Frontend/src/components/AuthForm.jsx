@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { InfoIcon, Lock, LockIcon, LockKeyhole, User } from "lucide-react";
 import lgo from "../assets/lgo.png";
 import logo1 from "../assets/logo1.png";
@@ -57,8 +57,9 @@ export default function AuthForm() {
           password: loginForm.password,
         });
         if (response.status == 200) {
-          localStorage.setItem("token", response.data.token);
-          navigate("/home");
+          const token = response.data.token;
+          localStorage.setItem("docsToken", token);
+          navigate("/");
           setUser(response.data.token);
           toast.success("Login Successfull!");
           resetFrom();
@@ -117,7 +118,7 @@ export default function AuthForm() {
       <div className="w-full px-3 sm:px-0 max-w-md flex flex-col gap-2">
         {/* LOGO */}
         <div className="text-center flex flex-col items-center mb-4 ">
-          <img className="w-[150px]" src={logo2} alt="" />
+          <img className="w-[150px] p-3" src="/logo.svg" alt="" />
 
           <h2 className="text-2xl font-semibold mt-2">
             {isSignIn ? "Welcome back" : "Create an account."}
@@ -131,7 +132,7 @@ export default function AuthForm() {
                 setError(false);
                 setErrorMessage("");
               }}
-              className="text-black hover:text-purple-500 font-medium"
+              className="text-black hover:text-blue-500 font-medium"
             >
               {isSignIn ? "Sign up" : "Sign in"}
             </button>
@@ -207,7 +208,7 @@ export default function AuthForm() {
 
           {isSignIn && (
             <div className="w-full flex justify-end">
-              <p className=" cursor-pointer w-fit hover:text-blue-400 text-[16px]">
+              <p className=" cursor-pointer w-fit hover:text-blue-500 text-[16px]">
                 Forget Password?
               </p>
             </div>
@@ -215,7 +216,7 @@ export default function AuthForm() {
 
           <button
             type="submit"
-            className="w-full bg-blue-900 text-white rounded-md px-4 py-3 font-medium hover:bg-blue-800  transition flex items-center justify-center"
+            className="w-full bg-blue-700 text-white rounded-md px-4 py-3 font-medium hover:opacity-90  transition flex items-center justify-center"
           >
             {isLoading ? (
               <SpinnerCircular

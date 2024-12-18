@@ -62,7 +62,7 @@ const Templategallery = () => {
         `${endPoint}/api/document/createDocument`,
         {
           doc_id: newDocId,
-          content: "Here is the trial content",
+          content: "",
         }
       );
 
