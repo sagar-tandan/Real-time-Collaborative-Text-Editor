@@ -91,7 +91,7 @@ const Navbar = () => {
       </div>
       <div className="flex flex-col">
         <DocumentInput />
-        <div className="flex">
+        <div className="flex ml-1">
           <Menubar className="border-none bg-transparent shadow-none h-auto p-0">
             <MenubarMenu>
               <MenubarTrigger className=" text-sm px-[7px] py-0.5 font-normal rounded-sm hover:bg-neutral-200/80 h-auto cursor-pointer">

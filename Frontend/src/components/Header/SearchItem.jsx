@@ -19,9 +19,9 @@ const SearchItem = () => {
   const handleSubmit = () => {
     console.log(value);
   };
-  
+
   return (
-    <div className="w-full flex items-center justify-center">
+    <div className="w-[80%] flex items-center justify-center">
       <form
         onSubmit={handleSubmit}
         className="max-w-[720px] relative w-full"
