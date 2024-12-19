@@ -7,7 +7,9 @@ const MyContext = createContext();
 // 2. Create a provider component
 export const MyProvider = ({ children }) => {
   const [endPoint, setEndPoint] = useState("http://localhost:8000");
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(
+    JSON.parse(localStorage.getItem("userData"))
+  );
   const [editor, setEditor] = useState(null); // Manage the editor state
   // const socket = io("http://localhost:8000");
   const [editorContent, setEditorContent] = useState("");

@@ -22,11 +22,13 @@ function App() {
       });
 
       if (response?.data) {
-        setUser(response.data);
+        // setUser(response.data);
+        localStorage.setItem("userData", JSON.stringify(response.data));
       }
     } catch (error) {
       console.error("Error fetching user details:", error);
       localStorage.removeItem("docsToken");
+      localStorage.removeItem("userData");
     } finally {
       setIsLoading(false);
     }

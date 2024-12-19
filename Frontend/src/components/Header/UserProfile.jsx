@@ -12,7 +12,6 @@ import {
 import { CrossIcon, EditIcon, LogOutIcon, PenIcon, X } from "lucide-react";
 import { PopoverClose } from "@radix-ui/react-popover";
 import MyContext from "@/Context/MyContext";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const UserProfile = () => {
@@ -68,6 +67,7 @@ const UserProfile = () => {
             <button
               onClick={() => {
                 localStorage.removeItem("docsToken");
+                localStorage.removeItem("userData");
                 setToken("");
                 setUser("");
                 navigate("/");
