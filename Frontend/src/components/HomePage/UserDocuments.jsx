@@ -1,10 +1,25 @@
 import MyContext from "@/Context/MyContext";
 import axios from "axios";
-import { EllipsisVertical, FileText } from "lucide-react";
+import {
+  DeleteIcon,
+  EllipsisVertical,
+  ExternalLinkIcon,
+  FileText,
+  TrashIcon,
+  Type,
+} from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { parseISO, format } from "date-fns";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const UserDocuments = () => {
   const naviagte = useNavigate();
@@ -86,7 +101,38 @@ const UserDocuments = () => {
                 {document.ownerName}
               </span>
               <span className="text-sm text-neutral-800">{finalDate}</span>
-              <EllipsisVertical className="size-9 hover:bg-neutral-300/80 rounded-full p-2 text-neutral-800 transition-all ease-in-out duration-300" />
+              <DropdownMenu>
+                <DropdownMenuTrigger className="cursor-pointer">
+                  <EllipsisVertical className="z-10 size-9 hover:bg-neutral-300/80 rounded-full p-2 text-neutral-800 transition-all ease-in-out duration-300" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <Type className="size-4 cursor-pointer" />
+                    Rename
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    {" "}
+                    <TrashIcon className="size-4 cursor-pointer" />
+                    Remove
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <ExternalLinkIcon className="size-4 cursor-pointer" />
+                    Open in new Tab
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           );
         })}
