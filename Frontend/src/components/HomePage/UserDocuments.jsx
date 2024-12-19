@@ -1,12 +1,12 @@
 import MyContext from "@/Context/MyContext";
 import axios from "axios";
 import {
-  DeleteIcon,
   EllipsisVertical,
   ExternalLinkIcon,
   FileText,
   TrashIcon,
   Type,
+  Loader,
 } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -16,28 +16,31 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 const UserDocuments = () => {
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
   const { endPoint, token, user } = useContext(MyContext);
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true); // Set initial loading to true
   const [allDocuments, setDocuments] = useState([]);
+  const [error, setError] = useState(null);
+  const [refreshKey, setRefreshKey] = useState(0); // Add this state for component refresh
 
   useEffect(() => {
-    if (user == null) return;
-
+    console.log(user, refreshKey);
     const getAllUserDocuments = async () => {
-      setLoading(true);
+      if (!user?._id) {
+        setError("User or token not available");
+        setLoading(false);
+        // setRefreshKey((prevKey) => prevKey + 1); // This will trigger component reload
+        return;
+      }
+
       try {
         const response = await axios.post(
           `${endPoint}/api/document/getUserDocument`,
-          {
-            userId: user?._id,
-          },
+          { userId: user._id },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -45,28 +48,43 @@ const UserDocuments = () => {
           }
         );
 
-        if (response && response.status === 200) {
+        if (response?.data) {
           setDocuments(response.data);
-          console.log(response.data);
         } else {
-          toast.error("Error fetching documents");
+          throw new Error("No data received");
         }
-        setLoading(false);
       } catch (error) {
-        console.log(error);
+        console.error("Error fetching documents:", error);
+        setError(error.response?.data?.message || "Error fetching documents");
         toast.error("Error fetching documents");
+      } finally {
         setLoading(false);
       }
     };
 
     getAllUserDocuments();
-  }, [user]);
+  }, [user?._id]);
 
   const parseDate = (timestamp) => {
     const date = parseISO(timestamp);
-    const formattedDate = format(date, "MMM dd, yyyy"); // Dec 18, 2024, for example
-    return formattedDate;
+    return format(date, "MMM dd, yyyy");
   };
+
+  if (isLoading) {
+    return (
+      <div className="max-w-screen-xl mx-auto px-16 py-6 h-[50vh] flex items-center justify-center">
+        <Loader className="size-8 text-neutral-700 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-screen-xl mx-auto px-16 py-6 flex items-center justify-center text-red-500">
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-screen-xl mx-auto px-16 py-6 flex flex-col gap-y-4">
@@ -74,20 +92,18 @@ const UserDocuments = () => {
         <span className="font-medium">Recent Documents</span>
         <span className="font-medium">Owned by</span>
         <span className="font-medium">Last Updated</span>
-        <span className="font-medium">
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </span>
+        <span className="font-medium w-16"></span>
       </div>
       <div className="w-full flex flex-col gap-y-2">
-        {allDocuments?.map((document) => {
-          const date = document.updatedAt;
-          const finalDate = parseDate(date);
-
-          return (
+        {allDocuments.length === 0 ? (
+          <div className="text-center py-4 text-gray-500">
+            No documents found
+          </div>
+        ) : (
+          allDocuments.map((document) => (
             <div
-              onClick={() => {
-                naviagte(`/document/${document.doc_id}`);
-              }}
+              key={document.doc_id}
+              onClick={() => navigate(`/document/${document.doc_id}`)}
               className="w-full flex justify-between items-center rounded-full py-2 px-6 hover:bg-[#f1f3f4] transition-all duration-300 ease-in-out cursor-pointer"
             >
               <div className="flex gap-2 justify-center items-center">
@@ -100,42 +116,34 @@ const UserDocuments = () => {
               <span className="text-sm text-neutral-800">
                 {document.ownerName}
               </span>
-              <span className="text-sm text-neutral-800">{finalDate}</span>
+              <span className="text-sm text-neutral-800">
+                {parseDate(document.updatedAt)}
+              </span>
               <DropdownMenu>
-                <DropdownMenuTrigger className="cursor-pointer">
+                <DropdownMenuTrigger
+                  onClick={(e) => e.stopPropagation()}
+                  className="cursor-pointer"
+                >
                   <EllipsisVertical className="z-10 size-9 hover:bg-neutral-300/80 rounded-full p-2 text-neutral-800 transition-all ease-in-out duration-300" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <Type className="size-4 cursor-pointer" />
+                  <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+                    <Type className="size-4 mr-2" />
                     Rename
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    {" "}
-                    <TrashIcon className="size-4 cursor-pointer" />
+                  <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+                    <TrashIcon className="size-4 mr-2" />
                     Remove
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <ExternalLinkIcon className="size-4 cursor-pointer" />
+                  <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+                    <ExternalLinkIcon className="size-4 mr-2" />
                     Open in new Tab
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-          );
-        })}
+          ))
+        )}
       </div>
     </div>
   );

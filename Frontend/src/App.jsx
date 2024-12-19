@@ -10,24 +10,25 @@ import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
 function App() {
-  const { user, setUser, endPoint } = useContext(MyContext);
+  const { user, setUser, endPoint, token } = useContext(MyContext);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchUserDetails = async (loginToken) => {
     try {
       const response = await axios.get(`${endPoint}/api/auth/getUser`, {
         headers: {
-          Authorization: `Bearer ${loginToken}`, // Add the token to the Authorization header
+          Authorization: `Bearer ${loginToken}`,
         },
       });
 
-      if (response && response.status === 200) {
+      if (response?.data) {
         setUser(response.data);
-      } else {
-        localStorage.removeItem("docsToken");
       }
     } catch (error) {
       console.error("Error fetching user details:", error);
       localStorage.removeItem("docsToken");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -36,10 +37,16 @@ function App() {
       const loginToken = localStorage.getItem("docsToken");
       if (loginToken) {
         await fetchUserDetails(loginToken);
+      } else {
+        setIsLoading(false);
       }
     };
     verifyToken();
   }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Or a proper loading component
+  }
 
   return (
     <Router>
@@ -47,12 +54,12 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={user ? <HomePage /> : <Navigate to="/login" />}
+            element={token ? <HomePage /> : <Navigate to="/login" />}
           />
           <Route path="/document/:id" element={<Page />} />
           <Route
             path="/login"
-            element={user ? <Navigate to="/" /> : <AuthForm />}
+            element={token ? <Navigate to="/" /> : <AuthForm />}
           />
         </Routes>
       </div>

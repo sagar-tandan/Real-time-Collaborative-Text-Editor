@@ -16,9 +16,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const UserProfile = () => {
-  const { user, setUser } = useContext(MyContext);
+  const { user, setUser, setToken } = useContext(MyContext);
   const navigate = useNavigate();
-  console.log(user);
 
   return (
     <div className="w-[100px] h-[42px] overflow-hidden flex justify-end font-inter">
@@ -69,6 +68,7 @@ const UserProfile = () => {
             <button
               onClick={() => {
                 localStorage.removeItem("docsToken");
+                setToken("");
                 setUser("");
                 navigate("/");
               }}
