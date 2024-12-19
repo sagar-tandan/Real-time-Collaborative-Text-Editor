@@ -22,3 +22,18 @@ export const createDocument = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getAllUserDocument = async (req, res, next) => {
+  const { userId } = req.body;
+  try {
+    if (!userId) {
+      return res.status(400).json({ message: "No user ID" });
+    }
+    const allDocuments = await Document.find({ createdBy: userId }).sort({
+      updatedAt: "descending",
+    });
+    res.status(200).json(allDocuments);
+  } catch (error) {
+    next(error);
+  }
+};

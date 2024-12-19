@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import MyContext from "@/Context/MyContext";
+import { toast } from "react-toastify";
 
 const templates = [
   {
@@ -53,6 +54,8 @@ const Templategallery = () => {
   const [isCreating, setIsCreating] = useState(false);
   const naviagte = useNavigate();
   const { endPoint, token, user } = useContext(MyContext);
+  const [isLoading, setLoading] = useState(false);
+  const [allDocuments, setDocuments] = useState([]);
 
   const createDocument = async () => {
     setIsCreating(true);
