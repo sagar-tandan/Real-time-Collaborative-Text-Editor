@@ -69,7 +69,12 @@ const UserDocuments = () => {
           const finalDate = parseDate(date);
 
           return (
-            <div className="w-full flex justify-between items-center rounded-full py-2 px-6 hover:bg-[#f1f3f4] transition-all duration-300 ease-in-out cursor-pointer">
+            <div
+              onClick={() => {
+                naviagte(`/document/${document.doc_id}`);
+              }}
+              className="w-full flex justify-between items-center rounded-full py-2 px-6 hover:bg-[#f1f3f4] transition-all duration-300 ease-in-out cursor-pointer"
+            >
               <div className="flex gap-2 justify-center items-center">
                 <FileText className="size-4 text-blue-600" />
                 <span className="font-medium text-sm text-neutral-800">
