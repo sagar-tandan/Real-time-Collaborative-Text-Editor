@@ -73,14 +73,21 @@ export const userLogin = async (req, res, next) => {
     }
 
     const token = generateJWT(user._id.toString());
-    res.json({ token: token });
+    res.json({
+      token: token,
+      userData: {
+        userName: user.name,
+        userEmail: user.email,
+        userId: user._id,
+      },
+    });
   } catch (error) {
     next(error);
   }
 };
 
 //UPDATE USERNAME AND EMAIL
-export const updateData= async (req, res, next) => {
+export const updateData = async (req, res, next) => {
   const { newUsername, newEmail } = req.body;
   try {
     const userId = req.userId;
@@ -165,7 +172,7 @@ export const changePassword = async (req, res, next) => {
 
 //FORGET PASSWORD: GENERATE TOKEN
 
-export const forgetPasswordToken= async (req, res, next) => {
+export const forgetPasswordToken = async (req, res, next) => {
   const { email } = req.body;
   if (!email) {
     res.status(400).json({ message: "Enter email address" });
@@ -198,9 +205,8 @@ export const verifyTokenForReset = async (req, res, next) => {
   }
 };
 
-
-//ACTUAL RESET PASSWORD 
-export const resetPassword= async (req, res, next) => {
+//ACTUAL RESET PASSWORD
+export const resetPassword = async (req, res, next) => {
   const password = req.body.password;
   const email = req.email;
   console.log(email);

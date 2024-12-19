@@ -58,7 +58,11 @@ export default function AuthForm() {
         });
         if (response.status == 200) {
           const token = response.data.token;
+          const data = response.data.userData;
           localStorage.setItem("docsToken", token);
+          // console.log(data);
+          localStorage.setItem("userInfo", JSON.stringify(data));
+          setUser(data);
           setToken(token);
           navigate("/");
           toast.success("Login Successfull!");

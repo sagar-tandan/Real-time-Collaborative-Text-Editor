@@ -25,12 +25,11 @@ const UserDocuments = () => {
   const [isLoading, setLoading] = useState(true); // Set initial loading to true
   const [allDocuments, setDocuments] = useState([]);
   const [error, setError] = useState(null);
-  const [refreshKey, setRefreshKey] = useState(0); // Add this state for component refresh
 
   useEffect(() => {
-    console.log(user, refreshKey);
+    // const timeoutId = setTimeout(() => {
     const getAllUserDocuments = async () => {
-      if (!user?._id) {
+      if (!user?.userId) {
         setError("User or token not available");
         setLoading(false);
         // setRefreshKey((prevKey) => prevKey + 1); // This will trigger component reload
@@ -40,7 +39,7 @@ const UserDocuments = () => {
       try {
         const response = await axios.post(
           `${endPoint}/api/document/getUserDocument`,
-          { userId: user._id },
+          { userId: user.userId },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -63,7 +62,10 @@ const UserDocuments = () => {
     };
 
     getAllUserDocuments();
-  }, [user?._id]);
+    // }, 1000);
+
+    // return () => clearTimeout(timeoutId);
+  }, [user?.userId]);
 
   const parseDate = (timestamp) => {
     const date = parseISO(timestamp);

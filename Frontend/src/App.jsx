@@ -23,12 +23,13 @@ function App() {
 
       if (response?.data) {
         // setUser(response.data);
-        localStorage.setItem("userData", JSON.stringify(response.data));
+        // localStorage.setItem("userData", JSON.stringify(response.data));
+        console.log("Token Verified");
       }
     } catch (error) {
       console.error("Error fetching user details:", error);
       localStorage.removeItem("docsToken");
-      localStorage.removeItem("userData");
+      localStorage.removeItem("userInfo");
     } finally {
       setIsLoading(false);
     }
