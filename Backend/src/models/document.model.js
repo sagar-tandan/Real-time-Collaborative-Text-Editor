@@ -13,7 +13,6 @@ const documentSchema = new Schema(
     content: {
       type: String,
       required: true,
-      default: "Start documenting....",
     },
 
     // The user who created the document

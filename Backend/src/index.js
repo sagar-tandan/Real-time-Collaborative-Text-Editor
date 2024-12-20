@@ -31,7 +31,9 @@ io.on("connection", (socket) => {
   socket.on("get-document", async ({ id: document_id }) => {
     try {
       // Verify document exists in database before joining
-      const document = await Document.findOne({ doc_id: document_id });
+      const document = await Document.findOne({
+        doc_id: document_id,
+      });
 
       if (document) {
         socket.join(document_id);

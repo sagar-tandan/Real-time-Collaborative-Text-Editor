@@ -1,6 +1,7 @@
 import Document from "../models/document.model.js";
 
 export const createDocument = async (req, res, next) => {
+  console.log(req.body);
   const { doc_id, ownerId, ownerName, ownerEmail, doc_title } = req.body;
   try {
     if (!doc_id) {

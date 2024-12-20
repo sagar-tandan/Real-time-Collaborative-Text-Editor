@@ -54,8 +54,7 @@ const Templategallery = () => {
   const [isCreating, setIsCreating] = useState(false);
   const naviagte = useNavigate();
   const { endPoint, token, user } = useContext(MyContext);
-  const [isLoading, setLoading] = useState(false);
-  const [allDocuments, setDocuments] = useState([]);
+  console.log(user);
 
   const createDocument = async () => {
     setIsCreating(true);
@@ -66,9 +65,9 @@ const Templategallery = () => {
         {
           doc_id: newDocId,
           content: "",
-          ownerId: user?._id,
-          ownerName: user?.name,
-          ownerEmail: user?.email,
+          ownerId: user?.userId,
+          ownerName: user?.userName,
+          ownerEmail: user?.userEmail,
           doc_title: "Untitled Document",
         },
         {
@@ -80,7 +79,7 @@ const Templategallery = () => {
 
       if (response.status === 200) {
         console.log(response);
-        naviagte(`/document/${response.data.doc_id}`);
+        naviagte(`/document/${newDocId}`);
       } else {
         console.log("error");
       }
