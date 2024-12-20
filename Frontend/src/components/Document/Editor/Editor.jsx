@@ -28,7 +28,9 @@ import socket, {
   sendDocumentId,
   onLoadDocument,
 } from "@/Socket/Socket";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { Axis3D } from "lucide-react";
+import axios from "axios";
 
 // define your extension array
 const extensions = [
@@ -63,9 +65,11 @@ const extensions = [
 ];
 
 const Editor = () => {
-  const { setEditor } = useContext(MyContext);
+  const { setEditor, user, endPoint, token } = useContext(MyContext);
   const documentId = useParams();
   const [lastSavedContent, setLastSavedContent] = useState(null);
+  const navigate = useNavigate();
+  // console.log(documentId);
 
   const editor = useEditor({
     onCreate({ editor }) {
@@ -103,6 +107,42 @@ const Editor = () => {
     },
     extensions,
   });
+
+  useEffect(() => {
+    if (!user?.userId || !documentId?.id) {
+      // Log or handle case when user ID or document ID is missing
+      navigate("/login");
+
+      return;
+    }
+
+    const fetchDetail = async () => {
+      try {
+        const response = await axios.get(
+          `${endPoint}/api/document/${documentId?.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            // Send userId as query parameter if needed for access control
+            params: {
+              userId: user?.userId, // Optional: Only include if backend expects it
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          console.log(response.data); // Log the document data if successful
+        } else {
+          console.log("Failed to fetch document, status:", response.status);
+        }
+      } catch (error) {
+        console.error("Error fetching document:", error);
+      }
+    };
+
+    fetchDetail();
+  }, [user?.userId, documentId?.id]); // Ensure effect re-runs if userId or documentId changes
 
   // Document ID and initial loading
   useEffect(() => {
