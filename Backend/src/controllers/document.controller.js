@@ -40,16 +40,17 @@ export const getAllUserDocument = async (req, res, next) => {
 };
 
 export const getDocumentById = async (req, res, next) => {
-  console.log("Here");
-  const { userId, docId } = req.params;
+  const { id } = req.params; // Extracting the document ID from the URL
+  const { userId } = req.query;
+
   try {
-    if (!userId || !docId) {
+    if (!userId || !id) {
       return res
         .status(400)
         .json({ message: "User ID and Document ID are required" });
     }
 
-    const document = await Document.findOne({ doc_id: docId });
+    const document = await Document.findOne({ doc_id: id });
 
     if (!document) {
       return res.status(404).json({ message: "Document not found" });
