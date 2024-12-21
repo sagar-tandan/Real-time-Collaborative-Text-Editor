@@ -45,6 +45,11 @@ io.on("connection", (socket) => {
           socket.broadcast.to(document_id).emit("receive-update", delta);
         });
 
+        socket.on("cursor-position", (position) => {
+          console.log(position);
+          socket.broadcast.to(document_id).emit("show-cursor", position);
+        });
+
         socket.on("save-content", async (data) => {
           // console.log("this is id", data.documentId.id);
           // console.log("this is content", JSON.stringify(data.content));

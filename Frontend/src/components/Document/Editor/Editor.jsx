@@ -261,9 +261,13 @@ import socket, {
   cleanupSocket,
   sendDocumentId,
   onLoadDocument,
+  onCursorMove,
+  onLoadCursor,
 } from "@/Socket/Socket";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
+import Collaboration from "@tiptap/extension-collaboration";
 
 const extensions = [
   StarterKit,
@@ -298,6 +302,7 @@ const Editor = () => {
   const documentId = useParams();
   const [lastSavedContent, setLastSavedContent] = useState(null);
   const navigate = useNavigate();
+  const [lastCursorPosition, setLastCursorPosition] = useState(null); // Track last cursor position
 
   const editor = useEditor({
     onCreate({ editor }) {
@@ -310,6 +315,28 @@ const Editor = () => {
       const currentContent = editor.getJSON();
       sendUpdate(currentContent);
     },
+
+    onSelectionUpdate({ editor }) {
+      setEditor(editor);
+      const { from } = editor.state.selection;
+      if (from !== lastCursorPosition) {
+        // Avoid emitting if the position hasn't changed
+        onCursorMove(from);
+        setLastCursorPosition(from); // Update the last known position
+      }
+    },
+    onBlur({ editor }) {
+      setEditor(editor);
+    },
+    onTransaction({ editor }) {
+      setEditor(editor);
+    },
+    onFocus({ editor }) {
+      setEditor(editor);
+    },
+    onContentError({ editor }) {
+      setEditor(editor);
+    },
     editorProps: {
       attributes: {
         style: "padding-left: 56px; padding-right: 56px;",
@@ -321,10 +348,9 @@ const Editor = () => {
     editable: canEditDocs, // Editable flag based on canEditDocs state
   });
 
-  // Explicitly set `editable` state whenever `canEditDocs` changes
   useEffect(() => {
     if (editor) {
-      editor.setEditable(canEditDocs); // Dynamically set the editable state of the editor
+      editor.setEditable(canEditDocs);
     }
   }, [canEditDocs, editor]); // Re-run this effect when `canEditDocs` changes
 
@@ -416,7 +442,15 @@ const Editor = () => {
       }
     };
 
+    const cursorHandler = (position) => {
+      console.log(position);
+      // if (editor) {
+      //   editor.commands.setTextSelection({ from: position });
+      // }
+    };
+
     onReceiveUpdate(updateHandler);
+    onLoadCursor(cursorHandler);
 
     return () => {
       cleanupSocket();
