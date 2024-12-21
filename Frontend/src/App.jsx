@@ -8,6 +8,7 @@ import MyContext from "./Context/MyContext.jsx";
 import AuthForm from "./components/AuthForm.jsx";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import socket from "./Socket/Socket.jsx";
 
 function App() {
   const { user, setUser, endPoint, token } = useContext(MyContext);

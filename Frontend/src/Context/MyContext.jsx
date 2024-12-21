@@ -15,6 +15,7 @@ export const MyProvider = ({ children }) => {
   const [editorContent, setEditorContent] = useState("");
   const [token, setToken] = useState(localStorage.getItem("docsToken"));
   const [canEditDocs, setCanEditDocs] = useState(true);
+  const [socketId, setSocketID] = useState();
 
   return (
     <MyContext.Provider

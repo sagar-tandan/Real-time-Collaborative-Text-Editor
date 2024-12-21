@@ -28,12 +28,16 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
+
+  // Emit user-connected event to the client
+  socket.emit("user-connected", {
+    socketId: socket.id,
+    message: "Welcome to the document editor!",
+  });
+
   socket.on("get-document", async ({ id: document_id }) => {
     try {
-      // Verify document exists in database before joining
-      const document = await Document.findOne({
-        doc_id: document_id,
-      });
+      const document = await Document.findOne({ doc_id: document_id });
 
       if (document) {
         socket.join(document_id);
@@ -47,12 +51,11 @@ io.on("connection", (socket) => {
 
         socket.on("cursor-position", (position) => {
           console.log(position);
+          // Broadcast the cursor position to all other clients in the same document room
           socket.broadcast.to(document_id).emit("show-cursor", position);
         });
 
         socket.on("save-content", async (data) => {
-          // console.log("this is id", data.documentId.id);
-          // console.log("this is content", JSON.stringify(data.content));
           try {
             await Document.findOneAndUpdate(
               { doc_id: data.documentId.id },
@@ -65,9 +68,7 @@ io.on("connection", (socket) => {
           }
         });
       } else {
-        // Handle case where document doesn't exist
-        // socket.emit("document-not-found");
-        console.log("Doc not found!!");
+        console.log("Document not found!");
       }
     } catch (error) {
       console.error("Document retrieval error:", error);

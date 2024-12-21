@@ -266,8 +266,7 @@ import socket, {
 } from "@/Socket/Socket";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
-import Collaboration from "@tiptap/extension-collaboration";
+import HorizontalRule from "@tiptap/extension-horizontal-rule";
 
 const extensions = [
   StarterKit,
@@ -294,6 +293,7 @@ const extensions = [
   BulletList,
   OrderedList,
   ListItem,
+  HorizontalRule,
 ];
 
 const Editor = () => {
@@ -303,7 +303,6 @@ const Editor = () => {
   const [lastSavedContent, setLastSavedContent] = useState(null);
   const navigate = useNavigate();
   const [lastCursorPosition, setLastCursorPosition] = useState(null); // Track last cursor position
-
   const editor = useEditor({
     onCreate({ editor }) {
       setEditor(editor);
@@ -444,9 +443,12 @@ const Editor = () => {
 
     const cursorHandler = (position) => {
       console.log(position);
-      // if (editor) {
-      //   editor.commands.setTextSelection({ from: position });
-      // }
+      if (editor) {
+        // if(senderId )
+        // Set the cursor at the received position
+        // editor.commands.setTextSelection({ from: position, to: position });
+        // editor.commands.insertContent("<div class='vertical-line'></div>");
+      }
     };
 
     onReceiveUpdate(updateHandler);
@@ -455,6 +457,7 @@ const Editor = () => {
     return () => {
       cleanupSocket();
       socket.off("receive-update", updateHandler);
+      // socket.off("show-cursor", cursorHandler);
     };
   }, [editor]);
 
