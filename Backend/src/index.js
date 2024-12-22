@@ -47,6 +47,7 @@ io.on("connection", (socket) => {
 
         socket.on("send-update", (delta) => {
           socket.broadcast.to(document_id).emit("receive-update", delta);
+          console.log(delta);
         });
 
         socket.on("cursor-position", (position) => {

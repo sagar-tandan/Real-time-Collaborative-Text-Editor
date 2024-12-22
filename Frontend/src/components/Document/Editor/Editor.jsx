@@ -266,10 +266,21 @@ import socket, {
 } from "@/Socket/Socket";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import HorizontalRule from "@tiptap/extension-horizontal-rule";
+import Collaboration from "@tiptap/extension-collaboration";
+import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
+import { HocuspocusProvider } from "@hocuspocus/provider";
+
+// import { WebrtcProvider } from "y-webrtc";
+// import * as Y from "yjs";
+
+// Set up the Hocuspocus WebSocket provider
+const provider = new HocuspocusProvider({
+  url: "'ws:://localhost:8000",
+  name: "example-document",
+});
 
 const extensions = [
-  StarterKit,
+  StarterKit
   TaskList,
   TaskItem.configure({ nested: true }),
   Table,
@@ -293,7 +304,19 @@ const extensions = [
   BulletList,
   OrderedList,
   ListItem,
-  HorizontalRule,
+
+  // // Register the document with Tiptap
+  // Collaboration.configure({
+  //   document: provider.document,
+  // }),
+  // // Register the collaboration cursor extension
+  // CollaborationCursor.configure({
+  //   provider: provider,
+  //   user: {
+  //     name: "Cyndi Lauper",
+  //     color: "#f783ac",
+  //   },
+  // }),
 ];
 
 const Editor = () => {
@@ -303,6 +326,7 @@ const Editor = () => {
   const [lastSavedContent, setLastSavedContent] = useState(null);
   const navigate = useNavigate();
   const [lastCursorPosition, setLastCursorPosition] = useState(null); // Track last cursor position
+
   const editor = useEditor({
     onCreate({ editor }) {
       setEditor(editor);
@@ -312,18 +336,19 @@ const Editor = () => {
     },
     onUpdate({ editor }) {
       const currentContent = editor.getJSON();
-      sendUpdate(currentContent);
+      const { from } = editor.state.selection;
+      sendUpdate({ currentContent, from });
     },
 
     onSelectionUpdate({ editor }) {
       setEditor(editor);
-      const { from } = editor.state.selection;
-      if (from !== lastCursorPosition) {
-        // Avoid emitting if the position hasn't changed
-        onCursorMove(from);
-        setLastCursorPosition(from); // Update the last known position
-      }
+      // if (from !== lastCursorPosition) {
+      //   // Avoid emitting if the position hasn't changed
+      //   onCursorMove(from);
+      //   setLastCursorPosition(from); // Update the last known position
+      // }
     },
+
     onBlur({ editor }) {
       setEditor(editor);
     },
@@ -429,30 +454,31 @@ const Editor = () => {
 
   useEffect(() => {
     const updateHandler = (delta) => {
+      console.log(delta);
       if (editor) {
         const currentContent = editor.getJSON();
-        const deltaString = JSON.stringify(delta);
+        const deltaString = JSON.stringify(delta.currentContent.content);
         const currentContentString = JSON.stringify(currentContent);
 
         if (deltaString !== currentContentString) {
-          editor.commands.setContent(delta);
-          setLastSavedContent(delta);
+          editor.commands.setContent(delta.currentContent.content);
+          setLastSavedContent(delta.currentContent.content);
         }
       }
     };
 
-    const cursorHandler = (position) => {
-      console.log(position);
-      if (editor) {
-        // if(senderId )
-        // Set the cursor at the received position
-        // editor.commands.setTextSelection({ from: position, to: position });
-        // editor.commands.insertContent("<div class='vertical-line'></div>");
-      }
-    };
+    // const cursorHandler = (position) => {
+    //   console.log(position);
+    //   if (editor) {
+    //     // if(senderId )
+    //     // Set the cursor at the received position
+    //     // editor.commands.setTextSelection({ from: position, to: position });
+    //     // editor.commands.insertContent("<div class='vertical-line'></div>");
+    //   }
+    // };
 
     onReceiveUpdate(updateHandler);
-    onLoadCursor(cursorHandler);
+    // onLoadCursor(cursorHandler);
 
     return () => {
       cleanupSocket();

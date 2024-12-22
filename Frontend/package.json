@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hocuspocus/provider": "^2.15.0",
     "@radix-ui/react-dialog": "^1.1.4",
     "@radix-ui/react-dropdown-menu": "^2.1.2",
     "@radix-ui/react-hover-card": "^1.1.4",
@@ -59,7 +60,10 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "tiptap-extension-resize-image": "^1.2.1",
-    "uuid": "^11.0.3"
+    "uuid": "^11.0.3",
+    "y-prosemirror": "^1.2.15",
+    "y-webrtc": "^10.3.0",
+    "yjs": "^13.6.21"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

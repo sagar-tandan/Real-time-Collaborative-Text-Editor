@@ -1,8 +1,6 @@
-
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:8000");
-
 
 export const sendUpdate = (delta) => {
   socket.emit("send-update", delta);
