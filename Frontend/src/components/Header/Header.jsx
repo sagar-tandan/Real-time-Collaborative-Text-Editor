@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import SearchItem from "./SearchItem";
 import UserProfile from "./UserProfile";
+import OrganizationFeature from "./OrganizationFeature";
 
 export default function Header() {
   return (
@@ -13,7 +14,10 @@ export default function Header() {
       </div>
       <SearchItem />
 
-      <UserProfile />
+      <div className="flex gap-2 relative">
+        <OrganizationFeature />
+        <UserProfile />
+      </div>
     </header>
   );
 }
