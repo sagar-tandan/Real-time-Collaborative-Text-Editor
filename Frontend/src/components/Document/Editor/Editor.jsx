@@ -274,13 +274,13 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 // import * as Y from "yjs";
 
 // Set up the Hocuspocus WebSocket provider
-const provider = new HocuspocusProvider({
-  url: "'ws:://localhost:8000",
-  name: "example-document",
-});
+// const provider = new HocuspocusProvider({
+//   url: "'ws:://localhost:8000",
+//   name: "example-document",
+// });
 
 const extensions = [
-  StarterKit
+  StarterKit,
   TaskList,
   TaskItem.configure({ nested: true }),
   Table,
