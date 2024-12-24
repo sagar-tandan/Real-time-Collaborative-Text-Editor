@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import {
   Popover,
@@ -6,8 +6,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
+  Building2Icon,
+  BuildingIcon,
   ChevronDownIcon,
   ChevronRightIcon,
+  LayoutGrid,
   MailIcon,
   PlusIcon,
 } from "lucide-react";
@@ -28,8 +31,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import MyContext from "@/Context/MyContext";
+import axios from "axios";
 
 const OrganizationFeature = () => {
+  const { user, token, endPoint } = useContext(MyContext);
+  const [userOrganization, setAllOrganization] = useState([]);
   const [newOrg, setOrganization] = useState({
     imageUrl: "",
     orgName: "",
@@ -40,6 +47,7 @@ const OrganizationFeature = () => {
   const [isNextDialogOpen, setIsNextDialogOpen] = useState(false); // Manage the second dialog
 
   const [isInviteSent, setInvite] = useState(false);
+
   // Function to generate slug from orgName
   const generateSlug = (name) => {
     return name
@@ -73,6 +81,29 @@ const OrganizationFeature = () => {
     setIsNextDialogOpen(true); // Open the next dialog
   };
 
+  useEffect(() => {
+    const fetchOrganization = async () => {
+      try {
+        const response = await axios.get(
+          `${endPoint}/api/organization/getOrganization`,
+          {
+            params: { userId: user?.userId },
+            headers: {
+              Authorization: `Bearer ${token}`, // Authorization header
+            },
+          }
+        );
+
+        if (response.status === 201) {
+          setAllOrganization(response.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchOrganization();
+  }, [user, token]);
+
   return (
     <div className="flex rounded-sm w-[190px] absolute right-[50px] top-0">
       <Popover>
@@ -104,6 +135,32 @@ const OrganizationFeature = () => {
                 <ChevronRightIcon className="size-4 text-neutral-700" />
               </div>
             </div>
+
+            {userOrganization &&
+              userOrganization.map((org) => (
+                <div className="w-full flex rounded-sm items-center gap-x-1 my-2">
+                  {/* <div className="bg-black rounded-sm flex items-center justify-center"> */}
+                  {org.imageUrl ? (
+                    <img
+                      className="w-[36px] h-[36px] rounded-full "
+                      src="https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/11_avatar-512.png"
+                      alt=""
+                    />
+                  ) : (
+                    <div className="w-[38px] flex items-center justify-center p-1">
+                      <Building2Icon className="size-8 text-blue-500" />
+                    </div>
+                  )}
+
+                  {/* </div> */}
+                  <div className="flex justify-between items-center w-[80%] cursor-pointer pl-2">
+                    <span className="text-sm text-neutral-600 font-medium">
+                      {org.organizationName}
+                    </span>
+                    <ChevronRightIcon className="size-4 text-neutral-700" />
+                  </div>
+                </div>
+              ))}
 
             {/* CREATE ORGANIZATION */}
             <Dialog

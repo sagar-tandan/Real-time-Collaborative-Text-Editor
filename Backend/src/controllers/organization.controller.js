@@ -31,16 +31,16 @@ export const createOrganization = async (req, res, next) => {
 export const fetchOrganizationBasedOnUserID = async (req, res, next) => {
   try {
     // Get orgName and createdBy from the request body
-    const { userId } = req.body;
+    const { userId } = req.query;
 
-    // Convert the createdBy string to ObjectId
-    // const createdByObjectId = new mongoose.Types.ObjectId(createdBy);
+    //  Convert the createdBy string to ObjectId
+    // const createdByObjectId = new mongoose.Types.ObjectId(userId);
 
     const getOrganization = await Organization.find({
       createdBy: userId,
     });
 
-    // Respond with the saved organization
+    // // Respond with the saved organization
     return res.status(201).json(getOrganization);
   } catch (error) {
     console.error("Error creating organization:", error);
