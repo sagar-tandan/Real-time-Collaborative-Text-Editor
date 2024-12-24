@@ -5,7 +5,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ChevronDownIcon, ChevronRightIcon, PlusIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  ChevronRightIcon,
+  MailIcon,
+  PlusIcon,
+} from "lucide-react";
 
 import {
   Dialog,
@@ -15,7 +20,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "../ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const OrganizationFeature = () => {
   const [newOrg, setOrganization] = useState({
@@ -24,6 +36,10 @@ const OrganizationFeature = () => {
     orgSlug: "",
   });
 
+  const [isCreateOrgDialogOpen, setIsCreateOrgDialogOpen] = useState(false); // Manage "Create Organization" dialog
+  const [isNextDialogOpen, setIsNextDialogOpen] = useState(false); // Manage the second dialog
+
+  const [isInviteSent, setInvite] = useState(false);
   // Function to generate slug from orgName
   const generateSlug = (name) => {
     return name
@@ -53,6 +69,8 @@ const OrganizationFeature = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(newOrg);
+    setIsCreateOrgDialogOpen(false); // Close the current dialog
+    setIsNextDialogOpen(true); // Open the next dialog
   };
 
   return (
@@ -88,7 +106,10 @@ const OrganizationFeature = () => {
             </div>
 
             {/* CREATE ORGANIZATION */}
-            <Dialog>
+            <Dialog
+              open={isCreateOrgDialogOpen}
+              onOpenChange={setIsCreateOrgDialogOpen}
+            >
               <DialogTrigger>
                 <div className="w-full flex rounded-sm items-center gap-x-1 mt-5 pl-1 cursor-pointer">
                   <div className="flex items-center justify-center w-[32px] h-[32px] border-neutral-500 border-[1px] rounded-full border-dashed bg-blue-50">
@@ -131,20 +152,85 @@ const OrganizationFeature = () => {
                           name="orgSlug"
                           className="w-full p-2 border-[1px] border-neutral-500 rounded-sm outline-neutral-700 text-black"
                           value={newOrg.orgSlug}
-                          readOnly // Optional: Prevent manual editing of the slug field
+                          readOnly
                         />
                       </div>
 
                       <div className="w-full flex justify-end items-center">
-                        <Button
+                        {/* Button to open the next dialog */}
+                        <button
                           type="submit"
-                          className="px-2 py-[6px] bg-blue-600 hover:bg-blue-800 text-white rounded-sm transition-bg ease-in-out duration-150 active:scale-[97%]"
+                          className="mt-4 p-2 bg-blue-500 text-white rounded-sm hover:bg-blue-700"
                         >
                           Create Organization
-                        </Button>
+                        </button>
                       </div>
                     </form>
                   </DialogDescription>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+
+            {/* Next Dialog */}
+            <Dialog open={isNextDialogOpen} onOpenChange={setIsNextDialogOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Invite New Members</DialogTitle>
+                  {isInviteSent ? (
+                    <DialogDescription className="w-full flex flex-col gap-4">
+                      <div className="w-full flex flex-col gap-y-2 justify-center items-center mt-8">
+                        <MailIcon className="size-8" />
+                        <span>Invitation successfully sent</span>
+                      </div>
+                      <div className="w-full flex items-center justify-end pb-5">
+                        <button
+                          onClick={() => setIsNextDialogOpen(false)}
+                          className="px-3 active:scale-[98%] bg-blue-500 text-white py-2 rounded-sm"
+                        >
+                          Finish
+                        </button>
+                      </div>
+                    </DialogDescription>
+                  ) : (
+                    <DialogDescription className="w-full flex flex-col gap-4">
+                      <Textarea
+                        placeholder="example1@gmail.com, example2@gmail.com"
+                        className="w-full mt-3 p-2 text-black"
+                        required
+                      />
+                      {/* Additional content goes here */}
+
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium pl-1">Role : </span>
+                        <Select>
+                          <SelectTrigger className="w-[180px]">
+                            <SelectValue placeholder="Member" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="member">Member</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="w-full flex items-center justify-end pb-5">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setIsNextDialogOpen(false)}
+                            className="px-5 py-2 rounded-sm font-medium "
+                          >
+                            Skip
+                          </button>
+                          <button
+                            onClick={() => setInvite(true)}
+                            className="px-3 active:scale-[98%] bg-blue-500 text-white py-2 rounded-sm"
+                          >
+                            Send Invitation
+                          </button>
+                        </div>
+                      </div>
+                    </DialogDescription>
+                  )}
                 </DialogHeader>
               </DialogContent>
             </Dialog>
