@@ -4,26 +4,25 @@ import { Schema, model } from "mongoose";
 const OrganizationSchema = new Schema(
   {
     organizationName: { type: String, required: true },
-    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true }, // Reference to the user who created the organization
+    createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     members: [
       {
-        userId: { type: Schema.Types.ObjectId, ref: "User", required: true }, // Reference to User
-        role: { type: String, enum: ["admin", "member"], required: true } // Role of the member
-      }
+        userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+      },
     ],
+    // Admins are also users, so they are referenced here
     admin: [
       {
-        type: Schema.Types.ObjectId, 
-        ref: "User", 
-        required: true // Admins are also users, so they are referenced here
-      }
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
     ],
-    documentsId: [
-      { type: Schema.Types.ObjectId, ref: "Document" } // References to documents
-    ]
+    // References to documents
+    documentsId: [{ type: Schema.Types.ObjectId, ref: "Document" }],
   },
   {
-    timestamps: true // Automatically adds `createdAt` and `updatedAt` fields
+    timestamps: true,
   }
 );
 

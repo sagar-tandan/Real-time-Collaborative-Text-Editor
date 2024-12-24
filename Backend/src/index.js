@@ -9,6 +9,7 @@ import { Server } from "socket.io";
 import { AuthRouter } from "./routes/v1/auth.js";
 import { DocumentRouter } from "./routes/v1/document.js";
 import Document from "./models/document.model.js";
+import { OrganizationRouter } from "./routes/v1/organization.js";
 
 dotenv.config();
 const app = express();
@@ -83,6 +84,7 @@ io.on("connection", (socket) => {
 
 app.use("/api/auth", AuthRouter);
 app.use("/api/document", DocumentRouter);
+app.use("/api/organization", OrganizationRouter);
 
 app.use(errorHandler);
 
