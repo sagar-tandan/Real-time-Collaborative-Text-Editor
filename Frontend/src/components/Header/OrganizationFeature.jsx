@@ -11,6 +11,8 @@ import {
   ChevronDownIcon,
   ChevronRightIcon,
   LayoutGrid,
+  Loader,
+  Loader2Icon,
   MailIcon,
   PlusIcon,
 } from "lucide-react";
@@ -33,6 +35,7 @@ import {
 } from "@/components/ui/select";
 import MyContext from "@/Context/MyContext";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const OrganizationFeature = () => {
   const { user, token, endPoint } = useContext(MyContext);
@@ -47,6 +50,34 @@ const OrganizationFeature = () => {
   const [isNextDialogOpen, setIsNextDialogOpen] = useState(false); // Manage the second dialog
 
   const [isInviteSent, setInvite] = useState(false);
+
+  // to upload images to Cloudinary
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // Cloudinary configuration
+  const cloudName = "djpnst0u5";
+  const uploadPreset = "realtimeTextEditor";
+
+  const fetchOrganization = async () => {
+    try {
+      const response = await axios.get(
+        `${endPoint}/api/organization/getOrganization`,
+        {
+          params: { userId: user?.userId },
+          headers: {
+            Authorization: `Bearer ${token}`, // Authorization header
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        setAllOrganization(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // Function to generate slug from orgName
   const generateSlug = (name) => {
@@ -74,33 +105,74 @@ const OrganizationFeature = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    console.log(file);
+    if (file) {
+      setImage(file); // Set the selected image file
+    }
+  };
+
+  const uploadImageToCloudinary = async () => {
+    if (!image) {
+      console.log("Please select an image!");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append("upload_preset", uploadPreset);
+
+    try {
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        formData
+      );
+
+      return response.data.secure_url;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setLoading(false);
+    }
+  };
+
+  const createOrganization = async () => {
+    setLoading(true);
+    try {
+      const imageUrl = await uploadImageToCloudinary();
+      console.log(imageUrl);
+      const response = await axios.post(
+        `${endPoint}/api/organization/createOrganization`,
+        {
+          orgName: newOrg.orgName,
+          createdBy: user?.userId,
+          imageUrl: imageUrl,
+          orgSlug: newOrg.orgSlug,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // Authorization header
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setLoading(false);
+        fetchOrganization();
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(newOrg);
-    setIsCreateOrgDialogOpen(false); // Close the current dialog
-    setIsNextDialogOpen(true); // Open the next dialog
+    await createOrganization();
+    setIsCreateOrgDialogOpen(false); 
+    setIsNextDialogOpen(true);
   };
 
   useEffect(() => {
-    const fetchOrganization = async () => {
-      try {
-        const response = await axios.get(
-          `${endPoint}/api/organization/getOrganization`,
-          {
-            params: { userId: user?.userId },
-            headers: {
-              Authorization: `Bearer ${token}`, // Authorization header
-            },
-          }
-        );
-
-        if (response.status === 201) {
-          setAllOrganization(response.data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchOrganization();
   }, [user, token]);
 
@@ -173,7 +245,10 @@ const OrganizationFeature = () => {
                     <PlusIcon className="size-4" />
                   </div>
                   <div className="flex justify-between items-center w-[80%] cursor-pointer pl-2">
-                    <span className="text-sm text-neutral-600 font-medium">
+                    <span
+                      onClick={createOrganization}
+                      className="text-sm text-neutral-600 font-medium"
+                    >
                       Create Organization
                     </span>
                   </div>
@@ -190,6 +265,11 @@ const OrganizationFeature = () => {
                       <div className="w-full flex flex-col">
                         <span>Logo</span>
                         {/* Upload logo */}
+                        <input
+                          className="mt-2"
+                          type="file"
+                          onChange={handleImageChange}
+                        />
                       </div>
                       <div className="flex flex-col w-full gap-2">
                         <span>Name</span>
@@ -216,10 +296,15 @@ const OrganizationFeature = () => {
                       <div className="w-full flex justify-end items-center">
                         {/* Button to open the next dialog */}
                         <button
+                          disabled={loading}
                           type="submit"
-                          className="mt-4 p-2 bg-blue-500 text-white rounded-sm hover:bg-blue-700"
+                          className="mt-4 p-2 bg-blue-500 text-white rounded-sm hover:bg-blue-700 w-[150px] flex items-center justify-center"
                         >
-                          Create Organization
+                          {loading ? (
+                            <Loader className="animate-spin" />
+                          ) : (
+                            "Create Organization"
+                          )}
                         </button>
                       </div>
                     </form>
