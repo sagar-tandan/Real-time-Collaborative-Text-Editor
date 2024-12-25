@@ -4,7 +4,8 @@ import Organization from "../models/organization.model.js";
 export const createOrganization = async (req, res, next) => {
   try {
     // Get orgName and createdBy from the request body
-    const { orgName, createdBy } = req.body;
+    const { orgName, createdBy, imageUrl, orgSlug } = req.body;
+    console.log(req.body);
 
     // Validate the ObjectId
     if (!mongoose.Types.ObjectId.isValid(createdBy)) {
@@ -15,6 +16,8 @@ export const createOrganization = async (req, res, next) => {
     const createdByObjectId = new mongoose.Types.ObjectId(createdBy);
 
     const newOrganization = await Organization.create({
+      logo: imageUrl,
+      orgSlug: orgSlug,
       organizationName: orgName,
       createdBy: createdByObjectId,
       admin: [createdByObjectId],

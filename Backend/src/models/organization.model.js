@@ -4,6 +4,8 @@ import { Schema, model } from "mongoose";
 const OrganizationSchema = new Schema(
   {
     organizationName: { type: String, required: true },
+    logo: { type: String, required: true },
+    orgSlug: { type: String, required: true },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
     members: [
       {

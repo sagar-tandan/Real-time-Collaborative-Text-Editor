@@ -168,7 +168,7 @@ const OrganizationFeature = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await createOrganization();
-    setIsCreateOrgDialogOpen(false); 
+    setIsCreateOrgDialogOpen(false);
     setIsNextDialogOpen(true);
   };
 
@@ -212,10 +212,10 @@ const OrganizationFeature = () => {
               userOrganization.map((org) => (
                 <div className="w-full flex rounded-sm items-center gap-x-1 my-2">
                   {/* <div className="bg-black rounded-sm flex items-center justify-center"> */}
-                  {org.imageUrl ? (
+                  {org.logo ? (
                     <img
                       className="w-[36px] h-[36px] rounded-full "
-                      src="https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/11_avatar-512.png"
+                      src={org.logo}
                       alt=""
                     />
                   ) : (
