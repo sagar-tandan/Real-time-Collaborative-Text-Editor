@@ -9,6 +9,7 @@ import AuthForm from "./components/AuthForm.jsx";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 import socket from "./Socket/Socket.jsx";
+import { Loader } from "lucide-react";
 
 function App() {
   const { user, setUser, endPoint, token } = useContext(MyContext);
@@ -49,7 +50,12 @@ function App() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading...</div>; // Or a proper loading component
+    return (
+      <div className="max-w-screen-xl mx-auto px-16 py-6 h-[100vh] flex items-center justify-center gap-3">
+        <Loader className="size-8 text-neutral-700 animate-spin" />
+        <span className="text-neutral-700 font-medium">Loading...</span>
+      </div>
+    );
   }
 
   return (
