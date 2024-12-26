@@ -173,11 +173,6 @@ const OrganizationFeature = () => {
     await createOrganization();
     setIsCreateOrgDialogOpen(false);
     setIsNextDialogOpen(true);
-    setOrganization({
-      imageUrl: "",
-      orgName: "",
-      orgSlug: "",
-    });
     setInvite(false);
   };
 
@@ -198,6 +193,48 @@ const OrganizationFeature = () => {
     }));
   };
 
+  // Handle form submission
+  const onSubmitInvitation = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    // Split the input by commas and trim spaces to create an array of emails
+    const emailArray = inviteEmails.email
+      .split(",")
+      .map((email) => email.trim())
+      .filter((email) => email); // Remove any empty values from the array
+
+    // Create the request body
+    const requestBody = {
+      email: emailArray,
+      role: inviteEmails.role,
+      orgName: newOrg.orgName,
+    };
+
+    try {
+      // Send the data to the backend
+      const response = await axios.post(
+        `${endPoint}/api/organization/sendInvitation`,
+        requestBody
+      );
+      if (response.status === 200) {
+        console.log("Invitation sent successfully:", response.data);
+      } else {
+        console.log(response.data);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Error sending invitation:", error);
+      setLoading(false);
+    }
+
+    setOrganization({
+      imageUrl: "",
+      orgName: "",
+      orgSlug: "",
+    });
+    setInvite(true);
+    setLoading(false);
+  };
 
   useEffect(() => {
     fetchOrganization();
@@ -398,7 +435,14 @@ const OrganizationFeature = () => {
                       <div className="w-full flex items-center justify-end pb-5">
                         <div className="flex gap-2">
                           <button
-                            onClick={() => setIsNextDialogOpen(false)}
+                            onClick={() => {
+                              setIsNextDialogOpen(false);
+                              setOrganization({
+                                imageUrl: "",
+                                orgName: "",
+                                orgSlug: "",
+                              });
+                            }}
                             className="px-5 py-2 rounded-sm font-medium "
                           >
                             Skip
