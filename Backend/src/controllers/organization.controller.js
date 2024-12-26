@@ -141,3 +141,69 @@ export const sendInvitation = async (req, res, next) => {
       .json({ message: "An error occurred while processing the invitation." });
   }
 };
+
+
+export const joinOrganization = async (req, res, next) => {
+  try {
+    const { userId, orgId } = req.body; 
+
+    if (!userId || !orgId) {
+      return res
+        .status(400)
+        .json({ message: "User ID and Organization ID are required." });
+    }
+
+    // Find the organization by ID
+    const organization = await Organization.findById(orgId);
+
+    if (!organization) {
+      return res.status(404).json({ message: "Organization not found." });
+    }
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    // Check if the user is a member of the organization
+    const memberIndex = organization.members.findIndex(
+      (member) => member.userId.toString() === user._id.toString() && member.memberStatus === "pending"
+    );
+
+    if (memberIndex !== -1) {
+      // Update the member status to "accepted"
+      organization.members[memberIndex].memberStatus = "accepted";
+    } else {
+      // Check if the user is an admin of the organization
+      const adminIndex = organization.admin.findIndex(
+        (admin) => admin.adminId.toString() === user._id.toString() && admin.adminStatus === "pending"
+      );
+
+      if (adminIndex !== -1) {
+        // Update the admin status to "accepted"
+        organization.admin[adminIndex].adminStatus = "accepted";
+      } else {
+        // User is not part of the organization as a pending member or admin
+        return res.status(400).json({
+          message: "User is not a pending member or admin of this organization.",
+        });
+      }
+    }
+
+    // Save the updated organization
+    await organization.save();
+
+    // Return success response
+    return res.status(200).json({
+      message: "User successfully joined the organization and status updated to accepted.",
+      organization,
+    });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "An error occurred while processing the join request." });
+  }
+};

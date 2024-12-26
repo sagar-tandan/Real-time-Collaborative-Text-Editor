@@ -236,6 +236,15 @@ const OrganizationFeature = () => {
     setLoading(false);
   };
 
+  const joinOrganization = (org) => {
+    // e.preventDefault;
+    const requestBody = {
+      orgId: org._id,
+      userId: user?.userId,
+    };
+    console.log(requestBody);
+  };
+
   useEffect(() => {
     fetchOrganization();
   }, [user, token]);
@@ -301,7 +310,10 @@ const OrganizationFeature = () => {
                     ) ? (
                       <ChevronRightIcon className="size-4 text-neutral-700" />
                     ) : (
-                      <button className="px-3 py-1 border-[1px] border-black rounded-sm">
+                      <button
+                        onClick={() => joinOrganization(org)}
+                        className="px-3 py-1 border-[1px] border-black rounded-sm"
+                      >
                         Join
                       </button>
                     )}
