@@ -184,15 +184,10 @@ const OrganizationFeature = () => {
   // For now update for 1 email only
   const onChangeEmailTextArea = (e) => {
     const { value } = e.target;
-    if (value.includes(".com")) {
-      console.log(value);
-      setInviteEmails((prev) => ({
-        ...prev,
-        email: value,
-      }));
-    } else {
-      console.log("email not valid");
-    }
+    setInviteEmails((prev) => ({
+      ...prev,
+      email: value,
+    }));
   };
 
   const onChangeRoles = (value) => {
@@ -202,6 +197,7 @@ const OrganizationFeature = () => {
       role: value,
     }));
   };
+
 
   useEffect(() => {
     fetchOrganization();
@@ -408,10 +404,7 @@ const OrganizationFeature = () => {
                             Skip
                           </button>
                           <button
-                            onClick={() => {
-                              setInvite(true);
-                              console.log(inviteEmails);
-                            }}
+                            onClick={onSubmitInvitation}
                             className="px-3 active:scale-[98%] bg-blue-500 text-white py-2 rounded-sm"
                           >
                             Send Invitation

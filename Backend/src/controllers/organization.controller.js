@@ -83,45 +83,58 @@ export const sendInvitation = async (req, res, next) => {
       return res.status(404).json({ message: "Organization not found." });
     }
 
-    // const userIdsToAdd = [];
-
+    // Loop through each email
     for (let email of emailArray) {
       const user = await User.findOne({ email });
 
       if (!user) {
-        // Skip if user is not found for this email
+        // If user is not found, skip and return an error for that specific email
         return res
           .status(404)
           .json({ message: `User with email ${email} not found.` });
       }
 
-      // userIdsToAdd.push(user._id);
+      // Check if user is already in the organization
+      const userExistsInOrg =
+        organization.members.some(
+          (member) => member.userId.toString() === user._id.toString()
+        ) ||
+        organization.admin.some(
+          (admin) => admin.adminId.toString() === user._id.toString()
+        );
 
+      if (userExistsInOrg) {
+        return res.status(400).json({
+          message: `User with email ${email} is already part of the organization.`,
+        });
+      }
+
+      // Add the user to the appropriate role in the organization
       if (role === "member") {
         organization.members.push({
           userId: user._id,
-          memberStatus: "pending",
+          memberStatus: "pending", // Set status to pending for now
         });
       } else if (role === "admin") {
         organization.admin.push({
-          userId: user._id,
-          adminStatus: "pending",
+          adminId: user._id,
+          adminStatus: "pending", // Set status to pending for now
         });
       } else {
         return res.status(400).json({ message: "Invalid role specified." });
       }
     }
 
-    // Step 6: Save the updated organization
+    // Save the updated organization
     await organization.save();
 
-    // Step 7: Send response with all users added to the organization
+    // Return success response
     return res.status(200).json({
       message: "Users successfully added to the organization.",
       organization,
     });
   } catch (error) {
-    // Step 8: Error handling
+    // Error handling
     console.error(error);
     return res
       .status(500)
