@@ -48,7 +48,10 @@ const OrganizationFeature = () => {
 
   const [isCreateOrgDialogOpen, setIsCreateOrgDialogOpen] = useState(false); // Manage "Create Organization" dialog
   const [isNextDialogOpen, setIsNextDialogOpen] = useState(false); // Manage the second dialog
-
+  const [inviteEmails, setInviteEmails] = useState({
+    email: [],
+    role: "member",
+  });
   const [isInviteSent, setInvite] = useState(false);
 
   // to upload images to Cloudinary
@@ -72,6 +75,7 @@ const OrganizationFeature = () => {
       );
 
       if (response.status === 201) {
+        console.log(response.data);
         setAllOrganization(response.data);
       }
     } catch (error) {
@@ -115,7 +119,6 @@ const OrganizationFeature = () => {
 
   const uploadImageToCloudinary = async () => {
     if (!image) {
-      console.log("Please select an image!");
       return;
     }
     const formData = new FormData();
@@ -170,6 +173,34 @@ const OrganizationFeature = () => {
     await createOrganization();
     setIsCreateOrgDialogOpen(false);
     setIsNextDialogOpen(true);
+    setOrganization({
+      imageUrl: "",
+      orgName: "",
+      orgSlug: "",
+    });
+    setInvite(false);
+  };
+
+  // For now update for 1 email only
+  const onChangeEmailTextArea = (e) => {
+    const { value } = e.target;
+    if (value.includes(".com")) {
+      console.log(value);
+      setInviteEmails((prev) => ({
+        ...prev,
+        email: value,
+      }));
+    } else {
+      console.log("email not valid");
+    }
+  };
+
+  const onChangeRoles = (value) => {
+    // console.log(value);
+    setInviteEmails((prev) => ({
+      ...prev,
+      role: value,
+    }));
   };
 
   useEffect(() => {
@@ -229,7 +260,19 @@ const OrganizationFeature = () => {
                     <span className="text-sm text-neutral-600 font-medium">
                       {org.organizationName}
                     </span>
-                    <ChevronRightIcon className="size-4 text-neutral-700" />
+
+                    {org.members.some(
+                      (member) =>
+                        member.userId === user.userId &&
+                        member.memberStatus === "accepted"
+                    ) ? (
+                      <ChevronRightIcon className="size-4 text-neutral-700" />
+                    ) : (
+                      <button className="px-3 py-1 border-[1px] border-black rounded-sm">
+                        {" "}
+                        Join{" "}
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -336,6 +379,8 @@ const OrganizationFeature = () => {
                   ) : (
                     <DialogDescription className="w-full flex flex-col gap-4">
                       <Textarea
+                        name="InviteEmail"
+                        onChange={onChangeEmailTextArea}
                         placeholder="example1@gmail.com, example2@gmail.com"
                         className="w-full mt-3 p-2 text-black"
                         required
@@ -344,7 +389,7 @@ const OrganizationFeature = () => {
 
                       <div className="flex items-center gap-2">
                         <span className="font-medium pl-1">Role : </span>
-                        <Select>
+                        <Select onValueChange={onChangeRoles}>
                           <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Member" />
                           </SelectTrigger>
@@ -364,7 +409,10 @@ const OrganizationFeature = () => {
                             Skip
                           </button>
                           <button
-                            onClick={() => setInvite(true)}
+                            onClick={() => {
+                              setInvite(true);
+                              console.log(inviteEmails);
+                            }}
                             className="px-3 active:scale-[98%] bg-blue-500 text-white py-2 rounded-sm"
                           >
                             Send Invitation

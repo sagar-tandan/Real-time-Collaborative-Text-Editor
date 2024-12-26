@@ -20,7 +20,18 @@ export const createOrganization = async (req, res, next) => {
       orgSlug: orgSlug,
       organizationName: orgName,
       createdBy: createdByObjectId,
-      admin: [createdByObjectId],
+      admin: [
+        {
+          adminId: createdByObjectId,
+          adminStatus: "accepted",
+        },
+      ],
+      members: [
+        {
+          userId: createdByObjectId,
+          memberStatus: "accepted",
+        },
+      ],
     });
 
     // Respond with the saved organization
@@ -40,7 +51,7 @@ export const fetchOrganizationBasedOnUserID = async (req, res, next) => {
     // const createdByObjectId = new mongoose.Types.ObjectId(userId);
 
     const getOrganization = await Organization.find({
-      createdBy: userId,
+      "members.userId": userId,
     });
 
     // // Respond with the saved organization
