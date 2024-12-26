@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createOrganization,
   fetchOrganizationBasedOnUserID,
+  sendInvitation,
 } from "../../controllers/organization.controller.js";
 import { authMiddleware } from "../../middleware/authMiddleware.js";
 
@@ -18,3 +19,5 @@ OrganizationRouter.get(
   authMiddleware,
   fetchOrganizationBasedOnUserID
 );
+
+OrganizationRouter.post("/sendInvitation", sendInvitation);

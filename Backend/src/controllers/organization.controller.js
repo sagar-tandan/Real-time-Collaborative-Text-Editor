@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Organization from "../models/organization.model.js";
+import User from "../models/user.model.js";
 
 export const createOrganization = async (req, res, next) => {
   try {
@@ -51,7 +52,7 @@ export const fetchOrganizationBasedOnUserID = async (req, res, next) => {
     // const createdByObjectId = new mongoose.Types.ObjectId(userId);
 
     const getOrganization = await Organization.find({
-      "members.userId": userId,
+      $or: [{ "members.userId": userId }, { "admin.adminId": userId }],
     });
 
     // // Respond with the saved organization
@@ -59,5 +60,71 @@ export const fetchOrganizationBasedOnUserID = async (req, res, next) => {
   } catch (error) {
     console.error("Error creating organization:", error);
     next(error);
+  }
+};
+
+export const sendInvitation = async (req, res, next) => {
+  try {
+    const { email, role, orgName } = req.body;
+
+    if (!email || !role || !orgName) {
+      return res
+        .status(400)
+        .json({ message: "Email, role, and organization name are required." });
+    }
+
+    const emailArray = Array.isArray(email) ? email : [email];
+
+    const organization = await Organization.findOne({
+      organizationName: orgName,
+    });
+
+    if (!organization) {
+      return res.status(404).json({ message: "Organization not found." });
+    }
+
+    // const userIdsToAdd = [];
+
+    for (let email of emailArray) {
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        // Skip if user is not found for this email
+        return res
+          .status(404)
+          .json({ message: `User with email ${email} not found.` });
+      }
+
+      // userIdsToAdd.push(user._id);
+
+      if (role === "member") {
+        organization.members.push({
+          userId: user._id,
+          memberStatus: "pending",
+        });
+      } else if (role === "admin") {
+        organization.admin.push({
+          userId: user._id,
+          adminStatus: "pending",
+        });
+      } else {
+        return res.status(400).json({ message: "Invalid role specified." });
+      }
+    }
+
+    // Step 6: Save the updated organization
+    await organization.save();
+
+    // Step 7: Send response with all users added to the organization
+    return res.status(200).json({
+      message: "Users successfully added to the organization.",
+      organization,
+    });
+  } catch (error) {
+    // Step 8: Error handling
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "An error occurred while processing the invitation." });
   }
 };

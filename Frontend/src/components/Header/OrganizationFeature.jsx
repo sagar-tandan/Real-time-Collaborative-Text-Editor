@@ -269,8 +269,7 @@ const OrganizationFeature = () => {
                       <ChevronRightIcon className="size-4 text-neutral-700" />
                     ) : (
                       <button className="px-3 py-1 border-[1px] border-black rounded-sm">
-                        {" "}
-                        Join{" "}
+                        Join
                       </button>
                     )}
                   </div>
