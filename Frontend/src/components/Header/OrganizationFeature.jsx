@@ -236,13 +236,27 @@ const OrganizationFeature = () => {
     setLoading(false);
   };
 
-  const joinOrganization = (org) => {
-    // e.preventDefault;
+  const joinOrganization = async (org) => {
+    setLoading(true);
     const requestBody = {
       orgId: org._id,
       userId: user?.userId,
     };
-    console.log(requestBody);
+
+    try {
+      const response = await axios.post(
+        `${endPoint}/api/organization/joinOrganization`,
+        requestBody
+      );
+
+      if (response.status === 200) {
+        await fetchOrganization();
+      }
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -314,7 +328,7 @@ const OrganizationFeature = () => {
                         onClick={() => joinOrganization(org)}
                         className="px-3 py-1 border-[1px] border-black rounded-sm"
                       >
-                        Join
+                        {loading ? <Loader className="animate-spin" /> : "Join"}
                       </button>
                     )}
                   </div>
