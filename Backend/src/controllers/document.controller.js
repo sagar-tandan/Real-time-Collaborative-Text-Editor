@@ -24,6 +24,27 @@ export const createDocument = async (req, res, next) => {
   }
 };
 
+export const deleteDocument = async (req, res, next) => {
+  try {
+    const { docId } = req.body;
+    if (!docId) {
+      return res.status(400).json({ message: "Document ID is required" });
+    }
+    
+    const deletedDoc = await Document.findOneAndDelete({ doc_id: docId });
+    if (!deletedDoc) {
+      return res.status(404).json({ message: "Document not found" });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Document successfully deleted", deletedDoc });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+};
+
 export const getAllUserDocument = async (req, res, next) => {
   const { userId } = req.body;
   try {
