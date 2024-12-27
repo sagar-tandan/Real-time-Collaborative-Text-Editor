@@ -22,7 +22,6 @@ import AlertForDelete from "./AlertForDelete";
 
 const DocumentItem = ({ document }) => {
   const { user } = useContext(MyContext);
-  const [openAlert, setAlert] = useState(false);
   const navigate = useNavigate();
 
   return (
