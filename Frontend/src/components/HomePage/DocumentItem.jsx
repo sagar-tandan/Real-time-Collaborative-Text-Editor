@@ -1,7 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { TableCell, TableRow } from "../ui/table";
 import {
-  BookIcon,
   Building2Icon,
   CircleUserIcon,
   ExternalLinkIcon,
@@ -11,7 +10,6 @@ import {
 } from "lucide-react";
 import { SiGoogledocs } from "react-icons/si";
 import { format } from "date-fns";
-import { Button } from "../ui/button";
 import MyContext from "@/Context/MyContext";
 import {
   DropdownMenu,
@@ -21,9 +19,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
 const DocumentItem = ({ document }) => {
   const { user } = useContext(MyContext);
+  const [openAlert, setAlert] = useState(false);
   const navigate = useNavigate();
+
   return (
     <TableRow
       onClick={() => navigate(`/document/${document.doc_id}`)}
@@ -59,15 +70,30 @@ const DocumentItem = ({ document }) => {
             <MoreVertical className="z-10 size-9 hover:bg-neutral-300/80 rounded-full p-2 text-neutral-800 transition-all ease-in-out duration-300" />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
               <Type className="size-4 mr-2" />
               Rename
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
               <TrashIcon className="size-4 mr-2" />
               Remove
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={(e) => e.stopPropagation()}>
+
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(`/document/${document.doc_id}`, "_blank");
+              }}
+            >
               <ExternalLinkIcon className="size-4 mr-2" />
               Open in new Tab
             </DropdownMenuItem>
