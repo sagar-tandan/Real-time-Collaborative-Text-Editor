@@ -18,17 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import AlertForDelete from "./AlertForDelete";
 
 const DocumentItem = ({ document }) => {
   const { user } = useContext(MyContext);
@@ -78,15 +68,15 @@ const DocumentItem = ({ document }) => {
               <Type className="size-4 mr-2" />
               Rename
             </DropdownMenuItem>
-
-            <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <TrashIcon className="size-4 mr-2" />
-              Remove
-            </DropdownMenuItem>
+            <AlertForDelete docId={document.doc_id}>
+              <DropdownMenuItem
+                onClick={(e) => e.stopPropagation()}
+                onSelect={(e) => e.preventDefault()}
+              >
+                <TrashIcon className="size-4 mr-2" />
+                Remove
+              </DropdownMenuItem>
+            </AlertForDelete>
 
             <DropdownMenuItem
               onClick={(e) => {
