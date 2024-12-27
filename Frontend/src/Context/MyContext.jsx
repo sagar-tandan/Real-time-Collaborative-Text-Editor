@@ -17,6 +17,7 @@ export const MyProvider = ({ children }) => {
   const [canEditDocs, setCanEditDocs] = useState(true);
   // const [socketId, setSocketID] = useState();
   const [removeTrigger, setRemoveTrigger] = useState(false);
+  const [updateTrigger, setUpdateTrigger] = useState(false);
 
   return (
     <MyContext.Provider
@@ -35,6 +36,8 @@ export const MyProvider = ({ children }) => {
         setCanEditDocs,
         removeTrigger,
         setRemoveTrigger,
+        updateTrigger,
+        setUpdateTrigger,
       }}
     >
       {children}

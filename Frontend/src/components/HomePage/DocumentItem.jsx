@@ -4,6 +4,7 @@ import {
   Building2Icon,
   CircleUserIcon,
   ExternalLinkIcon,
+  FilePen,
   MoreVertical,
   TrashIcon,
   Type,
@@ -19,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import AlertForDelete from "./AlertForDelete";
+import RenameDialog from "./RenameDialog";
 
 const DocumentItem = ({ document }) => {
   const { user } = useContext(MyContext);
@@ -59,14 +61,19 @@ const DocumentItem = ({ document }) => {
             <MoreVertical className="z-10 size-9 hover:bg-neutral-300/80 rounded-full p-2 text-neutral-800 transition-all ease-in-out duration-300" />
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            <DropdownMenuItem
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
+            <RenameDialog
+              docId={document.doc_id}
+              initialTitle={document.doc_title}
             >
-              <Type className="size-4 mr-2" />
-              Rename
-            </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => e.stopPropagation()}
+                onSelect={(e) => e.preventDefault()}
+              >
+                <FilePen className="size-4 mr-2" />
+                Rename
+              </DropdownMenuItem>
+            </RenameDialog>
+
             <AlertForDelete docId={document.doc_id}>
               <DropdownMenuItem
                 onClick={(e) => e.stopPropagation()}
