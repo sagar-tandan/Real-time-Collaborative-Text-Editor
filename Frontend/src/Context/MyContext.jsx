@@ -15,7 +15,8 @@ export const MyProvider = ({ children }) => {
   const [editorContent, setEditorContent] = useState("");
   const [token, setToken] = useState(localStorage.getItem("docsToken"));
   const [canEditDocs, setCanEditDocs] = useState(true);
-  const [socketId, setSocketID] = useState();
+  // const [socketId, setSocketID] = useState();
+  const [removeTrigger, setRemoveTrigger] = useState(false);
 
   return (
     <MyContext.Provider
@@ -32,6 +33,8 @@ export const MyProvider = ({ children }) => {
         setToken,
         canEditDocs,
         setCanEditDocs,
+        removeTrigger,
+        setRemoveTrigger,
       }}
     >
       {children}

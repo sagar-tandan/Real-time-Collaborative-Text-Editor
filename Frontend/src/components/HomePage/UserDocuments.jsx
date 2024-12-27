@@ -24,7 +24,7 @@ import {
 import DocumentItem from "./DocumentItem";
 
 const UserDocuments = () => {
-  const { endPoint, token, user } = useContext(MyContext);
+  const { endPoint, token, user, removeTrigger } = useContext(MyContext);
   const [isLoading, setLoading] = useState(true); // Set initial loading to true
   const [allDocuments, setDocuments] = useState([]);
   const [error, setError] = useState(null);
@@ -63,7 +63,7 @@ const UserDocuments = () => {
     };
 
     getAllUserDocuments();
-  }, [user?.userId]);
+  }, [user?.userId, removeTrigger]);
 
   if (isLoading) {
     return (

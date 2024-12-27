@@ -9,15 +9,40 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import React, { useState } from "react";
+import MyContext from "@/Context/MyContext";
+import axios from "axios";
+import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AlertForDelete = ({ docId, children }) => {
   const [isRemoving, setIsRemoving] = useState(false);
+  const { endPoint, token, setRemoveTrigger } = useContext(MyContext);
+  const navigate = useNavigate();
+
+  const deleteDocument = async () => {
+    try {
+      const resposne = await axios.post(
+        `${endPoint}/api/document/deleteDocument`,
+        { docId: docId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (resposne.status === 200) {
+        console.log("Document deleted Successfully");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleDelete = async (e) => {
     e.stopPropagation();
     setIsRemoving(true);
-    console.log("deleted", docId);
+    await deleteDocument();
+    setRemoveTrigger(true);
     setIsRemoving(false);
   };
 
