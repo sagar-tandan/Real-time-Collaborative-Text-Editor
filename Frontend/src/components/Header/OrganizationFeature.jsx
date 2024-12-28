@@ -267,6 +267,7 @@ const OrganizationFeature = () => {
       type: "Organization",
       orgName: org.organizationName,
       logo: org.logo,
+      orgId: org._id,
     });
 
     localStorage.setItem(
@@ -275,6 +276,7 @@ const OrganizationFeature = () => {
         type: "Organization",
         orgName: org.organizationName,
         logo: org.logo,
+        orgId: org._id,
       })
     );
 

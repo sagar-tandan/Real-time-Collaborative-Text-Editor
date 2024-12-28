@@ -19,61 +19,109 @@ import { useToast } from "@/hooks/use-toast";
 import { ToastAction } from "../ui/toast";
 
 const UserDocuments = () => {
-  const { endPoint, token, user, removeTrigger, updateTrigger } =
-    useContext(MyContext);
+  const {
+    endPoint,
+    token,
+    user,
+    removeTrigger,
+    updateTrigger,
+    currentProfile,
+  } = useContext(MyContext);
   const [isLoading, setLoading] = useState(true); // Set initial loading to true
   const [allDocuments, setDocuments] = useState([]);
   const [error, setError] = useState(null);
 
   const { toast } = useToast();
 
-  useEffect(() => {
-    const getAllUserDocuments = async () => {
-      if (!user?.userId) {
-        setError("User or token not available");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await axios.post(
-          `${endPoint}/api/document/getUserDocument`,
-          { userId: user.userId },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response?.data) {
-          setDocuments(response.data);
-        } else {
-          throw new Error("No data received");
+  const getAllUserDocuments = async () => {
+    if (!user?.userId) {
+      setError("User or token not available");
+      setLoading(false);
+      return;
+    }
+    try {
+      const response = await axios.post(
+        `${endPoint}/api/document/getUserDocument`,
+        { userId: user.userId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      } catch (error) {
-        console.error("Error fetching documents:", error);
-        setError(error.response?.data?.message || "Error fetching documents");
-        // toast.error("Error fetching documents");
-        toast({
-          variant: "destructive",
-          title: "Error fetching documents",
-          description: "There was a problem while fetching the documents.",
-          action: (
-            <ToastAction
-              onClick={() => window.location.reload()}
-              altText="Try again"
-            >
-              Try again
-            </ToastAction>
-          ),
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
+      );
 
-    getAllUserDocuments();
+      if (response?.data) {
+        setDocuments(response.data);
+      } else {
+        throw new Error("No data received");
+      }
+    } catch (error) {
+      console.error("Error fetching documents:", error);
+      setError(error.response?.data?.message || "Error fetching documents");
+      // toast.error("Error fetching documents");
+      toast({
+        variant: "destructive",
+        title: "Error fetching documents",
+        description: "There was a problem while fetching the documents.",
+        action: (
+          <ToastAction
+            onClick={() => window.location.reload()}
+            altText="Try again"
+          >
+            Try again
+          </ToastAction>
+        ),
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getOrganizationDocuments = async (id) => {
+    try {
+      const response = await axios.get(
+        `${endPoint}/api/organization/getdocuments`,
+        {
+          params: { id: id },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response?.data) {
+        setDocuments(response.data);
+      } else {
+        throw new Error("No data received");
+      }
+    } catch (error) {
+      console.error("Error fetching documents:", error);
+      setError(error.response?.data?.message || "Error fetching documents");
+      // toast.error("Error fetching documents");
+      toast({
+        variant: "destructive",
+        title: "Error fetching documents",
+        description: "There was a problem while fetching the documents.",
+        action: (
+          <ToastAction
+            onClick={() => window.location.reload()}
+            altText="Try again"
+          >
+            Try again
+          </ToastAction>
+        ),
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (currentProfile?.type === "Organization") {
+      getOrganizationDocuments(currentProfile.orgId);
+    } else {
+      getAllUserDocuments();
+    }
   }, [user?.userId, removeTrigger, updateTrigger]);
 
   if (isLoading) {
