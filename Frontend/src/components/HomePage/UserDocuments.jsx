@@ -90,14 +90,13 @@ const UserDocuments = () => {
       );
 
       if (response?.data) {
-        setDocuments(response.data);
+        setDocuments(response.data.documents);
       } else {
         throw new Error("No data received");
       }
     } catch (error) {
       console.error("Error fetching documents:", error);
       setError(error.response?.data?.message || "Error fetching documents");
-      // toast.error("Error fetching documents");
       toast({
         variant: "destructive",
         title: "Error fetching documents",
@@ -122,7 +121,7 @@ const UserDocuments = () => {
     } else {
       getAllUserDocuments();
     }
-  }, [user?.userId, removeTrigger, updateTrigger]);
+  }, [user?.userId, removeTrigger, updateTrigger, currentProfile]);
 
   if (isLoading) {
     return (
@@ -162,7 +161,7 @@ const UserDocuments = () => {
           </TableBody>
         ) : (
           <TableBody>
-            {allDocuments.map((document) => (
+            {allDocuments?.map((document) => (
               <DocumentItem key={document.doc_id} document={document} />
             ))}
           </TableBody>

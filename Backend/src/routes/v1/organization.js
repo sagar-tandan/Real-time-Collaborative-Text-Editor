@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createOrganization,
   fetchOrganizationBasedOnUserID,
+  getOrganizationDocuments,
   joinOrganization,
   sendInvitation,
 } from "../../controllers/organization.controller.js";
@@ -23,3 +24,9 @@ OrganizationRouter.get(
 
 OrganizationRouter.post("/sendInvitation", sendInvitation);
 OrganizationRouter.post("/joinOrganization", joinOrganization);
+
+OrganizationRouter.get(
+  "/getdocuments",
+  authMiddleware,
+  getOrganizationDocuments
+);

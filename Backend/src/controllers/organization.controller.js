@@ -142,10 +142,9 @@ export const sendInvitation = async (req, res, next) => {
   }
 };
 
-
 export const joinOrganization = async (req, res, next) => {
   try {
-    const { userId, orgId } = req.body; 
+    const { userId, orgId } = req.body;
 
     if (!userId || !orgId) {
       return res
@@ -169,7 +168,9 @@ export const joinOrganization = async (req, res, next) => {
 
     // Check if the user is a member of the organization
     const memberIndex = organization.members.findIndex(
-      (member) => member.userId.toString() === user._id.toString() && member.memberStatus === "pending"
+      (member) =>
+        member.userId.toString() === user._id.toString() &&
+        member.memberStatus === "pending"
     );
 
     if (memberIndex !== -1) {
@@ -178,7 +179,9 @@ export const joinOrganization = async (req, res, next) => {
     } else {
       // Check if the user is an admin of the organization
       const adminIndex = organization.admin.findIndex(
-        (admin) => admin.adminId.toString() === user._id.toString() && admin.adminStatus === "pending"
+        (admin) =>
+          admin.adminId.toString() === user._id.toString() &&
+          admin.adminStatus === "pending"
       );
 
       if (adminIndex !== -1) {
@@ -187,7 +190,8 @@ export const joinOrganization = async (req, res, next) => {
       } else {
         // User is not part of the organization as a pending member or admin
         return res.status(400).json({
-          message: "User is not a pending member or admin of this organization.",
+          message:
+            "User is not a pending member or admin of this organization.",
         });
       }
     }
@@ -197,13 +201,37 @@ export const joinOrganization = async (req, res, next) => {
 
     // Return success response
     return res.status(200).json({
-      message: "User successfully joined the organization and status updated to accepted.",
+      message:
+        "User successfully joined the organization and status updated to accepted.",
       organization,
     });
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ message: "An error occurred while processing the join request." });
+    return res.status(500).json({
+      message: "An error occurred while processing the join request.",
+    });
+  }
+};
+
+export const getOrganizationDocuments = async (req, res, next) => {
+  try {
+    const { id } = req.query;
+
+    if (!id) {
+      return res.status(400).json({ message: "Organization ID is required" });
+    }
+
+    const organization = await Organization.findById(id)
+      .populate("documentsId", "-__v")
+      .exec();
+
+    if (!organization) {
+      return res.status(404).json({ message: "Organization not found" });
+    }
+
+    // Return the populated documents directly
+    return res.status(200).json({ documents: organization.documentsId });
+  } catch (error) {
+    next(error);
   }
 };
