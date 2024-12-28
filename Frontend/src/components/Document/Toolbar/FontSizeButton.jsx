@@ -4,47 +4,82 @@ import React, { useContext, useState } from "react";
 
 const FontSizeButton = () => {
   const { editor } = useContext(MyContext);
-  const size = editor?.getAttributes("textStyle").fontSize;
 
-  const [fontSize, setFontSize] = useState(16); // Initialize with a default value
+  const currentFontSize = editor?.getAttributes("textStyle")?.fontSize
+    ? editor.getAttributes("textStyle").fontSize.replace("px", "")
+    : "16";
 
-  // Function to apply font size to the editor
-  const applyFontSize = (size) => {
-    if (editor) {
+  const [fontSize, setFontSize] = useState(currentFontSize);
+  const [inputValue, setInputValue] = useState(fontSize);
+  const [isEditing, setIsEditing] = useState(false);
+
+  const updateFontSize = (newSize) => {
+    const size = parseInt(newSize, 10);
+    if (!isNaN(size) && size > 0) {
       editor
-        .chain()
+        ?.chain()
         .focus()
-        .setTextStyle({ fontSize: `${size}px` })
+        .setMark("textStyle", { fontSize: `${size}px` })
         .run();
+
+      setFontSize(size.toString());
+      setInputValue(size.toString());
+      setIsEditing(false);
     }
   };
 
-  // Handle increase font size
-  const increaseFontSize = () => {
-    const newFontSize = fontSize + 2; // Increase font size by 2px
-    setFontSize(newFontSize);
-    applyFontSize(newFontSize);
-    console.log(fontSize)
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
   };
 
-  // Handle decrease font size
+  const handleInputBlur = () => {
+    updateFontSize(inputValue);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      updateFontSize(inputValue);
+      editor?.commands.focus();
+    }
+  };
+
+  const increaseFontSize = () => {
+    const newFontSize = parseInt(currentFontSize) + 1;
+    updateFontSize(newFontSize.toString());
+  };
+
   const decreaseFontSize = () => {
-    const newFontSize = fontSize > 4 ? fontSize - 2 : 4; // Prevent font size from going below 4px
-    setFontSize(newFontSize);
-    applyFontSize(newFontSize);
+    const newFontSize = parseInt(currentFontSize) - 1;
+    if (newFontSize > 0) updateFontSize(newFontSize.toString());
   };
 
   return (
-    <div className="flex gap-[6px] items-center justify-center">
+    <div className="flex gap-[8px] items-center justify-center">
       <button onClick={decreaseFontSize}>
         <MinusIcon className="size-4" />
       </button>
 
-      <input
-        value={fontSize}
-        readOnly
-        className="bg-transparent p-[2px] border-[#636363] border-[1px] rounded-sm w-[35px] text-center text-sm outline-blue-500"
-      />
+      {isEditing ? (
+        <input
+          type="text"
+          value={inputValue}
+          onChange={handleInputChange}
+          onBlur={handleInputBlur}
+          onKeyDown={handleKeyDown}
+          className="bg-transparent p-[2px] border-[#636363] border-[1px] rounded-sm w-[35px] text-center text-sm outline-blue-500"
+        />
+      ) : (
+        <button
+          onClick={() => {
+            setIsEditing(true);
+            setInputValue(fontSize);
+          }}
+          className="bg-transparent p-[2px] border-[#636363] border-[1px] rounded-sm w-[35px] text-center text-sm outline-blue-500"
+        >
+          {currentFontSize}
+        </button>
+      )}
 
       <button onClick={increaseFontSize}>
         <PlusIcon className="size-4" />
