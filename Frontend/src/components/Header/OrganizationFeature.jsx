@@ -7,12 +7,9 @@ import {
 } from "@/components/ui/popover";
 import {
   Building2Icon,
-  BuildingIcon,
   ChevronDownIcon,
   ChevronRightIcon,
-  LayoutGrid,
   Loader,
-  Loader2Icon,
   MailIcon,
   PlusIcon,
 } from "lucide-react";
@@ -35,16 +32,18 @@ import {
 } from "@/components/ui/select";
 import MyContext from "@/Context/MyContext";
 import axios from "axios";
-import { toast } from "react-toastify";
 
 const OrganizationFeature = () => {
-  const { user, token, endPoint } = useContext(MyContext);
+  const { user, token, endPoint, currentProfile, setCurrentProfile } =
+    useContext(MyContext);
   const [userOrganization, setAllOrganization] = useState([]);
   const [newOrg, setOrganization] = useState({
     imageUrl: "",
     orgName: "",
     orgSlug: "",
   });
+
+  const [openPopover, setOpenPopover] = useState(false);
 
   const [isCreateOrgDialogOpen, setIsCreateOrgDialogOpen] = useState(false); // Manage "Create Organization" dialog
   const [isNextDialogOpen, setIsNextDialogOpen] = useState(false); // Manage the second dialog
@@ -263,23 +262,65 @@ const OrganizationFeature = () => {
     fetchOrganization();
   }, [user, token]);
 
+  const switchAccounts = (org) => {
+    setCurrentProfile({
+      type: "Organization",
+      orgName: org.organizationName,
+      logo: org.logo,
+    });
+
+    localStorage.setItem(
+      "currentProfile",
+      JSON.stringify({
+        type: "Organization",
+        orgName: org.organizationName,
+        logo: org.logo,
+      })
+    );
+
+    setOpenPopover(false);
+  };
+
   return (
     <div className="flex rounded-sm w-[190px] absolute right-[50px] top-0">
-      <Popover>
+      <Popover open={openPopover} onOpenChange={setOpenPopover}>
         <PopoverTrigger className="w-full flex rounded-sm items-center hover:bg-blue-50 p-1 gap-x-1 transition-all ease-in-out duration-300">
-          <img
-            className="w-[36px] h-[36px] rounded-full"
-            src="https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/11_avatar-512.png"
-            alt=""
-          />
-          <span className="text-sm text-neutral-600 font-medium">
-            Personal Account
-          </span>
+          {currentProfile?.type === "Organization" ? (
+            <>
+              <img
+                className="w-[36px] h-[36px] rounded-full"
+                src={currentProfile.logo}
+                alt=""
+              />
+              <span className="text-sm text-neutral-600 font-medium">
+                {currentProfile.orgName}
+              </span>
+            </>
+          ) : (
+            <>
+              <img
+                className="w-[36px] h-[36px] rounded-full"
+                src="https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/11_avatar-512.png"
+                alt=""
+              />
+              <span className="text-sm text-neutral-600 font-medium">
+                Personal Account
+              </span>
+            </>
+          )}
+
           <ChevronDownIcon className="size-4 text-neutral-700" />
         </PopoverTrigger>
         <PopoverContent>
           <div className="w-full bg-white rounded-sm p-2 flex flex-col gap-1">
-            <div className="w-full flex rounded-sm items-center gap-x-1 ">
+            <div
+              onClick={() => {
+                localStorage.removeItem("currentProfile");
+                setCurrentProfile(null);
+                setOpenPopover(false);
+              }}
+              className="w-full flex rounded-sm items-center gap-x-1 "
+            >
               <div className="bg-black rounded-sm flex items-center justify-center">
                 <img
                   className="w-[36px] h-[36px] rounded-full "
@@ -296,44 +337,56 @@ const OrganizationFeature = () => {
             </div>
 
             {userOrganization &&
-              userOrganization.map((org) => (
-                <div className="w-full flex rounded-sm items-center gap-x-1 my-2">
-                  {/* <div className="bg-black rounded-sm flex items-center justify-center"> */}
-                  {org.logo ? (
-                    <img
-                      className="w-[36px] h-[36px] rounded-full "
-                      src={org.logo}
-                      alt=""
-                    />
-                  ) : (
-                    <div className="w-[38px] flex items-center justify-center p-1">
-                      <Building2Icon className="size-8 text-blue-500" />
-                    </div>
-                  )}
-
-                  {/* </div> */}
-                  <div className="flex justify-between items-center w-[80%] cursor-pointer pl-2">
-                    <span className="text-sm text-neutral-600 font-medium">
-                      {org.organizationName}
-                    </span>
-
-                    {org.members.some(
-                      (member) =>
-                        member.userId === user.userId &&
-                        member.memberStatus === "accepted"
-                    ) ? (
-                      <ChevronRightIcon className="size-4 text-neutral-700" />
+              userOrganization.map((org) => {
+                const isAcceptedMember = org.members.some(
+                  (member) =>
+                    member.userId === user.userId &&
+                    member.memberStatus === "accepted"
+                );
+                return (
+                  <div
+                    onClick={() =>
+                      isAcceptedMember ? switchAccounts(org) : null
+                    }
+                    className="w-full flex rounded-sm items-center gap-x-1 my-2"
+                  >
+                    {/* <div className="bg-black rounded-sm flex items-center justify-center"> */}
+                    {org.logo ? (
+                      <img
+                        className="w-[36px] h-[36px] rounded-full "
+                        src={org.logo}
+                        alt=""
+                      />
                     ) : (
-                      <button
-                        onClick={() => joinOrganization(org)}
-                        className="px-3 py-1 border-[1px] border-black rounded-sm"
-                      >
-                        {loading ? <Loader className="animate-spin" /> : "Join"}
-                      </button>
+                      <div className="w-[38px] flex items-center justify-center p-1">
+                        <Building2Icon className="size-8 text-blue-500" />
+                      </div>
                     )}
+
+                    {/* </div> */}
+                    <div className="flex justify-between items-center w-[80%] cursor-pointer pl-2">
+                      <span className="text-sm text-neutral-600 font-medium">
+                        {org.organizationName}
+                      </span>
+
+                      {isAcceptedMember ? (
+                        <ChevronRightIcon className="size-4 text-neutral-700" />
+                      ) : (
+                        <button
+                          onClick={() => joinOrganization(org)}
+                          className="px-3 py-1 border-[1px] border-black rounded-sm"
+                        >
+                          {loading ? (
+                            <Loader className="animate-spin" />
+                          ) : (
+                            "Join"
+                          )}
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
             {/* CREATE ORGANIZATION */}
             <Dialog

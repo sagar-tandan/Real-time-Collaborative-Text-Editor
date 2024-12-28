@@ -20,6 +20,10 @@ export const MyProvider = ({ children }) => {
   const [updateTrigger, setUpdateTrigger] = useState(false);
   const [openRenameDialog, setOpenRenameDialog] = useState(false);
 
+  const [currentProfile, setCurrentProfile] = useState(
+    JSON.parse(localStorage.getItem("currentProfile")) || null
+  );
+
   return (
     <MyContext.Provider
       value={{
@@ -41,6 +45,8 @@ export const MyProvider = ({ children }) => {
         setUpdateTrigger,
         openRenameDialog,
         setOpenRenameDialog,
+        currentProfile,
+        setCurrentProfile,
       }}
     >
       {children}
