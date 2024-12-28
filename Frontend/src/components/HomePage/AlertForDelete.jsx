@@ -49,7 +49,7 @@ const AlertForDelete = ({ docId, children }) => {
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent onClick={(e) => e.stopPropagation()}>
         <AlertDialogHeader>
           <AlertDialogTitle> Are you sure? </AlertDialogTitle>
           <AlertDialogDescription>

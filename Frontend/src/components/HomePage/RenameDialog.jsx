@@ -7,33 +7,23 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-
 import React, { useContext, useEffect, useState } from "react";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import axios from "axios";
 import MyContext from "@/Context/MyContext";
 
 const RenameDialog = ({ docId, initialTitle, children }) => {
   const [isUpdating, setIsUpdating] = useState(false);
-  const [title, setTitle] = useState();
+  const [title, setTitle] = useState(initialTitle); // Initialize with initialTitle
   const [open, setOpen] = useState(false);
   const { token, endPoint, setUpdateTrigger } = useContext(MyContext);
 
+  // Update title when initialTitle prop changes
   useEffect(() => {
-    setTitle(initialTitle);
+    if (initialTitle) {
+      setTitle(initialTitle);
+    }
   }, [initialTitle]);
 
   const updateDocumentName = async () => {
@@ -52,21 +42,30 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
       );
 
       if (response.status === 200) {
-        setUpdateTrigger(true);
-        console.log(response);
+        setUpdateTrigger((prev) => !prev); // Toggle to trigger update
+        console.log("Document renamed successfully:", response.data);
       }
     } catch (error) {
       console.error("Error renaming document:", error);
     }
   };
 
+  const handleChange = (e) => {
+    e.stopPropagation();
+    setTitle(e.target.value);
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!title?.trim()) {
+      return; // Don't submit if title is empty
+    }
+
     setIsUpdating(true);
     await updateDocumentName();
     setIsUpdating(false);
-    setUpdateTrigger(true);
     setOpen(false);
   };
 
@@ -83,8 +82,8 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
           </DialogHeader>
           <div className="my-4">
             <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              value={title || ""} // Handle undefined/null case
+              onChange={handleChange}
               onClick={(e) => e.stopPropagation()}
               placeholder="Document name"
               required
@@ -99,7 +98,6 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
               onClick={(e) => {
                 e.stopPropagation();
                 setOpen(false);
-                console.log("hello i am save");
               }}
             >
               Cancel

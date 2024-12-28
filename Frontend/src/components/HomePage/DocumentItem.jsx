@@ -7,7 +7,6 @@ import {
   FilePen,
   MoreVertical,
   TrashIcon,
-  Type,
 } from "lucide-react";
 import { SiGoogledocs } from "react-icons/si";
 import { format } from "date-fns";
@@ -23,7 +22,7 @@ import AlertForDelete from "./AlertForDelete";
 import RenameDialog from "./RenameDialog";
 
 const DocumentItem = ({ document }) => {
-  const { user } = useContext(MyContext);
+  const { user} = useContext(MyContext);
   const navigate = useNavigate();
 
   return (
@@ -60,13 +59,17 @@ const DocumentItem = ({ document }) => {
           >
             <MoreVertical className="z-10 size-9 hover:bg-neutral-300/80 rounded-full p-2 text-neutral-800 transition-all ease-in-out duration-300" />
           </DropdownMenuTrigger>
+
           <DropdownMenuContent>
             <RenameDialog
               docId={document.doc_id}
               initialTitle={document.doc_title}
             >
               <DropdownMenuItem
-                onClick={(e) => e.stopPropagation()}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // setOpenRenameDialog(true);
+                }}
                 onSelect={(e) => e.preventDefault()}
               >
                 <FilePen className="size-4 mr-2" />

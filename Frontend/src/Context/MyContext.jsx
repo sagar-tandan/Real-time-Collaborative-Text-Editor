@@ -18,6 +18,7 @@ export const MyProvider = ({ children }) => {
   // const [socketId, setSocketID] = useState();
   const [removeTrigger, setRemoveTrigger] = useState(false);
   const [updateTrigger, setUpdateTrigger] = useState(false);
+  // const [openRenameDialog, setOpenRenameDialog] = useState(false);
 
   return (
     <MyContext.Provider

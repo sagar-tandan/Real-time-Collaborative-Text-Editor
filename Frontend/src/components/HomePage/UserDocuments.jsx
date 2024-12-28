@@ -1,13 +1,6 @@
 import MyContext from "@/Context/MyContext";
 import axios from "axios";
-import {
-  EllipsisVertical,
-  ExternalLinkIcon,
-  FileText,
-  TrashIcon,
-  Type,
-  Loader,
-} from "lucide-react";
+import { Loader } from "lucide-react";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -23,9 +16,29 @@ import {
 } from "../ui/table";
 import DocumentItem from "./DocumentItem";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import RenameDialog from "./RenameDialog";
+
 const UserDocuments = () => {
-  const { endPoint, token, user, removeTrigger, updateTrigger } =
-    useContext(MyContext);
+  const {
+    endPoint,
+    token,
+    user,
+    removeTrigger,
+    updateTrigger,
+    openRenameDialog,
+    setOpenRenameDialog,
+  } = useContext(MyContext);
   const [isLoading, setLoading] = useState(true); // Set initial loading to true
   const [allDocuments, setDocuments] = useState([]);
   const [error, setError] = useState(null);
@@ -83,7 +96,7 @@ const UserDocuments = () => {
   }
 
   return (
-    <div className="max-w-screen-xl mx-auto px-16 py-6 flex flex-col gap-5">
+    <div className="max-w-screen-xl mx-auto px-16 py-6 flex flex-col gap-5 relative">
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent border-none">
