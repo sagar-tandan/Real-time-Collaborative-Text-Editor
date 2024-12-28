@@ -153,6 +153,7 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
               onClick={handleCancel}
               onMouseDown={(e) => e.stopPropagation()}
               onMouseUp={(e) => e.stopPropagation()}
+              className="border-[1px]"
             >
               Cancel
             </Button>
