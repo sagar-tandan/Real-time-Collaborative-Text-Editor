@@ -1,25 +1,22 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import React, { useContext, useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import axios from "axios";
 import MyContext from "@/Context/MyContext";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { X } from "lucide-react";
 
 const RenameDialog = ({ docId, initialTitle, children }) => {
   const [isUpdating, setIsUpdating] = useState(false);
-  const [title, setTitle] = useState(initialTitle); // Initialize with initialTitle
+  const [title, setTitle] = useState(initialTitle);
   const [open, setOpen] = useState(false);
-  const { token, endPoint, setUpdateTrigger } = useContext(MyContext);
+  const {
+    token,
+    endPoint,
+    setUpdateTrigger,
+    openRenameDialog,
+    setOpenRenameDialog,
+  } = useContext(MyContext);
 
-  // Update title when initialTitle prop changes
   useEffect(() => {
     if (initialTitle) {
       setTitle(initialTitle);
@@ -42,7 +39,7 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
       );
 
       if (response.status === 200) {
-        setUpdateTrigger((prev) => !prev); // Toggle to trigger update
+        setUpdateTrigger((prev) => !prev);
         console.log("Document renamed successfully:", response.data);
       }
     } catch (error) {
@@ -50,65 +47,128 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
     }
   };
 
-  const handleChange = (e) => {
-    e.stopPropagation();
-    setTitle(e.target.value);
-  };
-
   const onSubmit = async (e) => {
     e.preventDefault();
     e.stopPropagation();
 
     if (!title?.trim()) {
-      return; // Don't submit if title is empty
+      return;
     }
 
     setIsUpdating(true);
     await updateDocumentName();
     setIsUpdating(false);
-    setOpen(false);
+    setOpenRenameDialog(false);
+  };
+
+  const handleCancel = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpenRenameDialog(false);
+  };
+
+  // Handler for the outer container
+  const handleContainerClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  // Handler for the dialog box
+  const handleDialogClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  // Handler for the form
+  const handleFormClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent onClick={(e) => e.stopPropagation()}>
-        <form onSubmit={onSubmit}>
-          <DialogHeader>
-            <DialogTitle>Rename Document</DialogTitle>
-            <DialogDescription>
-              Enter a new name for this document
-            </DialogDescription>
-          </DialogHeader>
-          <div className="my-4">
-            <Input
-              value={title || ""} // Handle undefined/null case
-              onChange={handleChange}
-              onClick={(e) => e.stopPropagation()}
-              placeholder="Document name"
-              required
+    <div
+      className="fixed inset-0 flex items-center justify-center z-40 cursor-default"
+      onClick={handleContainerClick}
+      onMouseDown={handleContainerClick}
+      onMouseUp={handleContainerClick}
+    >
+      <div
+        className="fixed inset-0 bg-black bg-opacity-80"
+        onClick={handleContainerClick}
+        onMouseDown={handleContainerClick}
+        onMouseUp={handleContainerClick}
+      />
+      <div
+        className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 overflow-hidden relative cursor-default"
+        onClick={handleDialogClick}
+        onMouseDown={handleDialogClick}
+        onMouseUp={handleDialogClick}
+      >
+        <form
+          onSubmit={onSubmit}
+          onClick={handleFormClick}
+          onMouseDown={handleFormClick}
+          onMouseUp={handleFormClick}
+        >
+          <div className="w-full flex justify-between">
+            <div className="px-6 pt-4 flex flex-col">
+              <h3 className="font-semibold text-lg text-gray-900">
+                Rename Document
+              </h3>
+              <span className=" text-neutral-600">
+                Enter a new name for this document
+              </span>
+            </div>
+
+            <X
+              onClick={() => setOpenRenameDialog(false)}
+              className="size-5 mt-4 mr-6 cursor-pointer"
             />
           </div>
 
-          <DialogFooter>
+          <div className="p-6">
+            <Input
+              type="text"
+              value={title}
+              onChange={(e) => {
+                e.stopPropagation();
+                setTitle(e.target.value);
+              }}
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
+              placeholder="Enter document title"
+              autoFocus
+            />
+          </div>
+
+          <div
+            className="px-6 pb-4 flex justify-end space-x-3"
+            onClick={(e) => e.stopPropagation()}
+          >
             <Button
               type="button"
               variant="ghost"
               disabled={isUpdating}
-              onClick={(e) => {
-                e.stopPropagation();
-                setOpen(false);
-              }}
+              onClick={handleCancel}
+              onMouseDown={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isUpdating}>
-              Save
+            <Button
+              type="submit"
+              disabled={isUpdating}
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
+            >
+              {isUpdating ? "Saving..." : "Save"}
             </Button>
-          </DialogFooter>
+          </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };
 

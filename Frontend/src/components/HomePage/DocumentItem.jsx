@@ -20,10 +20,12 @@ import {
 import { useNavigate } from "react-router-dom";
 import AlertForDelete from "./AlertForDelete";
 import RenameDialog from "./RenameDialog";
+import { useActionState } from "react";
 
 const DocumentItem = ({ document }) => {
-  const { user} = useContext(MyContext);
+  const { user, openRenameDialog, setOpenRenameDialog } = useContext(MyContext);
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   return (
     <TableRow
@@ -52,7 +54,7 @@ const DocumentItem = ({ document }) => {
       </TableCell>
 
       <TableCell className="py-1 flex ml-auto justify-end">
-        <DropdownMenu>
+        <DropdownMenu open={open} onOpenChange={setOpen}>
           <DropdownMenuTrigger
             onClick={(e) => e.stopPropagation()}
             className="cursor-pointer"
@@ -61,21 +63,17 @@ const DocumentItem = ({ document }) => {
           </DropdownMenuTrigger>
 
           <DropdownMenuContent>
-            <RenameDialog
-              docId={document.doc_id}
-              initialTitle={document.doc_title}
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenRenameDialog(true);
+                setOpen(false);
+              }}
+              onSelect={(e) => e.preventDefault()}
             >
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // setOpenRenameDialog(true);
-                }}
-                onSelect={(e) => e.preventDefault()}
-              >
-                <FilePen className="size-4 mr-2" />
-                Rename
-              </DropdownMenuItem>
-            </RenameDialog>
+              <FilePen className="size-4 mr-2" />
+              Rename
+            </DropdownMenuItem>
 
             <AlertForDelete docId={document.doc_id}>
               <DropdownMenuItem
@@ -99,6 +97,13 @@ const DocumentItem = ({ document }) => {
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>
+
+      {openRenameDialog && (
+        <RenameDialog
+          docId={document.doc_id}
+          initialTitle={document.doc_title}
+        ></RenameDialog>
+      )}
     </TableRow>
   );
 };
