@@ -15,33 +15,17 @@ import {
   TableRow,
 } from "../ui/table";
 import DocumentItem from "./DocumentItem";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import RenameDialog from "./RenameDialog";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "../ui/toast";
 
 const UserDocuments = () => {
-  const {
-    endPoint,
-    token,
-    user,
-    removeTrigger,
-    updateTrigger,
-    openRenameDialog,
-    setOpenRenameDialog,
-  } = useContext(MyContext);
+  const { endPoint, token, user, removeTrigger, updateTrigger } =
+    useContext(MyContext);
   const [isLoading, setLoading] = useState(true); // Set initial loading to true
   const [allDocuments, setDocuments] = useState([]);
   const [error, setError] = useState(null);
+
+  const { toast } = useToast();
 
   useEffect(() => {
     const getAllUserDocuments = async () => {
@@ -70,7 +54,20 @@ const UserDocuments = () => {
       } catch (error) {
         console.error("Error fetching documents:", error);
         setError(error.response?.data?.message || "Error fetching documents");
-        toast.error("Error fetching documents");
+        // toast.error("Error fetching documents");
+        toast({
+          variant: "destructive",
+          title: "Error fetching documents",
+          description: "There was a problem while fetching the documents.",
+          action: (
+            <ToastAction
+              onClick={() => window.location.reload()}
+              altText="Try again"
+            >
+              Try again
+            </ToastAction>
+          ),
+        });
       } finally {
         setLoading(false);
       }

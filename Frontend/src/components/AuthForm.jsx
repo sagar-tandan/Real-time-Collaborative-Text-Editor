@@ -1,23 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
-import { InfoIcon, Lock, LockIcon, LockKeyhole, User } from "lucide-react";
-import lgo from "../assets/lgo.png";
-import logo1 from "../assets/logo1.png";
-import logo2 from "../assets/logo2.png";
+import React, { useContext, useState } from "react";
+import { InfoIcon, Lock, LockKeyhole, User } from "lucide-react";
 import { Mail } from "lucide-react";
 import axios from "axios";
 import MyContext from "../Context/MyContext";
 import { SpinnerCircular } from "spinners-react";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AuthForm() {
-  const { endPoint } = useContext(MyContext);
+  const { toast } = useToast();
   const [isSignIn, setIsSignIn] = useState(true);
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setLoading] = useState(false);
 
-  const { user, setUser, setToken } = useContext(MyContext);
+  const { endPoint, user, setUser, setToken } = useContext(MyContext);
 
   const navigate = useNavigate();
 
@@ -65,7 +62,11 @@ export default function AuthForm() {
           setUser(data);
           setToken(token);
           navigate("/");
-          toast.success("Login Successfull!");
+          toast({
+            title: "Authentication Success",
+            description: "You have successfully logged in.",
+            variant: "success",
+          });
           resetFrom();
         }
         setLoading(false);
@@ -76,7 +77,11 @@ export default function AuthForm() {
           setErrorMessage(error.response.data.message);
         } else {
           console.log("An unexpected error occurred", error);
-          toast.error("Something went wrong!");
+          toast({
+            title: "Authentication Failed!",
+            description: "There was some problem while logging.",
+            variant: "destructive",
+          });
         }
         setLoading(false);
       }
@@ -99,6 +104,11 @@ export default function AuthForm() {
           );
           if (response.status == 200) {
             toast.success("Registration Successfull!");
+            toast({
+              title: "Registration Successfull!",
+              description: "You are successfully registered into our system.",
+              variant: "success",
+            });
             setIsSignIn(true);
             resetFrom();
           }
@@ -109,7 +119,10 @@ export default function AuthForm() {
             setErrorMessage(error.response.data.message);
           } else {
             console.log("An unexpected error occurred", error);
-            toast.error("Something went wrong!");
+            toast({
+              description: "Something went wrong!",
+              variant: "destructive",
+            });
           }
           setLoading(false);
         }
