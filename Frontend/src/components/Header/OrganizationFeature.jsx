@@ -289,11 +289,18 @@ const OrganizationFeature = () => {
         <PopoverTrigger className="w-full flex rounded-sm items-center hover:bg-blue-50 p-1 gap-x-1 transition-all ease-in-out duration-300">
           {currentProfile?.type === "Organization" ? (
             <>
-              <img
-                className="w-[36px] h-[36px] rounded-full"
-                src={currentProfile.logo}
-                alt=""
-              />
+              {currentProfile.logo ? (
+                <img
+                  className="w-[36px] h-[36px] rounded-full"
+                  src={currentProfile.logo}
+                  alt=""
+                />
+              ) : (
+                <div className="w-[38px] flex items-center justify-center p-1">
+                  <Building2Icon className="size-5 text-blue-500" />
+                </div>
+              )}
+
               <span className="text-sm text-neutral-600 font-medium">
                 {currentProfile.orgName}
               </span>
