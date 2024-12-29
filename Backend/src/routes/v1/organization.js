@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   createOrganization,
+  createOrganizationalDocuments,
   fetchOrganizationBasedOnUserID,
   getOrganizationDocuments,
   joinOrganization,
@@ -29,4 +30,10 @@ OrganizationRouter.get(
   "/getdocuments",
   authMiddleware,
   getOrganizationDocuments
+);
+
+OrganizationRouter.post(
+  "/createDocument",
+  authMiddleware,
+  createOrganizationalDocuments
 );

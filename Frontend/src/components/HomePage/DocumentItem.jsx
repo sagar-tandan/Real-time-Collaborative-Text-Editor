@@ -20,9 +20,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import AlertForDelete from "./AlertForDelete";
 import RenameDialog from "./RenameDialog";
-import { useActionState } from "react";
 
 const DocumentItem = ({ document }) => {
+  console.log(document);
   const { user, openRenameDialog, setOpenRenameDialog } = useContext(MyContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -41,12 +41,12 @@ const DocumentItem = ({ document }) => {
       </TableCell>
 
       <TableCell className="hidden md:flex items-center gap-2">
-        {document.ownerEmail === user.userEmail ? (
+        {document.doc_type === "Personal" ? (
           <CircleUserIcon className="size-5" />
         ) : (
           <Building2Icon className="size-5" />
         )}
-        {document.ownerEmail === user.userEmail ? "Personal" : "Organization"}
+        {document.doc_type === "Personal" ? "Personal" : "Organization"}
       </TableCell>
 
       <TableCell className="hidden md:table-cell py-1">

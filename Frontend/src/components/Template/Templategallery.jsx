@@ -53,12 +53,11 @@ const templates = [
 const Templategallery = () => {
   const [isCreating, setIsCreating] = useState(false);
   const naviagte = useNavigate();
-  const { endPoint, token, user } = useContext(MyContext);
+  const { endPoint, token, user, currentProfile } = useContext(MyContext);
   console.log(user);
 
-  const createDocument = async () => {
+  const createPersonalDocument = async (newDocId) => {
     setIsCreating(true);
-    const newDocId = uuidv4();
     try {
       const response = await axios.post(
         `${endPoint}/api/document/createDocument`,
@@ -69,6 +68,7 @@ const Templategallery = () => {
           ownerName: user?.userName,
           ownerEmail: user?.userEmail,
           doc_title: "Untitled Document",
+          doc_type: "Personal",
         },
         {
           headers: {
@@ -90,6 +90,52 @@ const Templategallery = () => {
     }
   };
 
+  const createOrganizationDocument = async (newDocId) => {
+    setIsCreating(true);
+    try {
+      const response = await axios.post(
+        `${endPoint}/api/organization/createDocument`,
+        {
+          doc_id: newDocId,
+          content: "",
+          ownerId: user?.userId,
+          ownerName: user?.userName,
+          ownerEmail: user?.userEmail,
+          doc_title: "Untitled Document",
+          doc_type: "Organization",
+          orgId: currentProfile.orgId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log(response);
+        naviagte(`/document/${newDocId}`);
+      } else {
+        console.log("error");
+      }
+      setIsCreating(false);
+    } catch (error) {
+      console.log(error);
+      setIsCreating(false);
+    }
+  };
+
+  const createDocuments = async () => {
+    const newDocId = uuidv4();
+
+    console.log(currentProfile);
+    if (currentProfile?.type === "Organization") {
+      await createOrganizationDocument(newDocId);
+    } else {
+      await createPersonalDocument(newDocId);
+    }
+  };
+
   return (
     <div className="bg-[#f1f3f4]">
       <div className="max-w-screen-xl mx-auto px-16 py-6 flex flex-col gap-y-4">
@@ -102,7 +148,7 @@ const Templategallery = () => {
                 className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 xl:basis-1/6 2xl:basis-[14.285%] pl-4"
               >
                 <div
-                  onClick={createDocument}
+                  onClick={createDocuments}
                   className={`aspect-[3/4] flex flex-col gap-y-3 ${
                     isCreating && "pointer-events-none opacity-50"
                   }`}

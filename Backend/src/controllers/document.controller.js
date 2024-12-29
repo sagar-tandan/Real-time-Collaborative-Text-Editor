@@ -1,8 +1,9 @@
 import Document from "../models/document.model.js";
 
 export const createDocument = async (req, res, next) => {
-  console.log(req.body);
-  const { doc_id, ownerId, ownerName, ownerEmail, doc_title } = req.body;
+  // console.log(req.body);
+  const { doc_id, ownerId, ownerName, ownerEmail, doc_title, doc_type } =
+    req.body;
   try {
     if (!doc_id) {
       res.status(400).json({ message: "Docuemnt ID not found" });
@@ -15,6 +16,7 @@ export const createDocument = async (req, res, next) => {
       ownerName: ownerName,
       ownerEmail: ownerEmail,
       doc_title: doc_title,
+      doc_type: doc_type,
       collaborators: [ownerId],
     });
 

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Organization from "../models/organization.model.js";
 import User from "../models/user.model.js";
+import Document from "../models/document.model.js";
 
 export const createOrganization = async (req, res, next) => {
   try {
@@ -231,6 +232,49 @@ export const getOrganizationDocuments = async (req, res, next) => {
 
     // Return the populated documents directly
     return res.status(200).json({ documents: organization.documentsId });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createOrganizationalDocuments = async (req, res, next) => {
+  const { doc_id, ownerId, ownerName, ownerEmail, doc_title, doc_type, orgId } =
+    req.body;
+
+  try {
+    // Validate inputs
+    if (!doc_id) {
+      return res.status(400).json({ message: "Document ID is required." });
+    }
+
+    if (!orgId) {
+      return res.status(400).json({ message: "Organization ID is required." });
+    }
+
+    // Create a new document
+    const newDocument = await Document.create({
+      doc_id: doc_id,
+      content: `[{"type":"paragraph","attrs":{"textAlign":"left"},"content":[{"type":"text","text":"Start documenting...."}]}]`,
+      createdBy: ownerId,
+      ownerName: ownerName,
+      ownerEmail: ownerEmail,
+      doc_title: doc_title,
+      doc_type: doc_type,
+      collaborators: [ownerId],
+    });
+
+    // Find the organization and update its document list
+    const organizationDoc = await Organization.findById(orgId);
+    if (!organizationDoc) {
+      return res.status(404).json({ message: "Organization not found." });
+    }
+
+    // Push the doc_id into documentsId
+    organizationDoc.documentsId.push(newDocument._id);
+    await organizationDoc.save();
+    console.log("Updated Organization:", organizationDoc);
+
+    res.status(200).json(newDocument);
   } catch (error) {
     next(error);
   }

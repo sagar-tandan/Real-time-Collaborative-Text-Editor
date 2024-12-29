@@ -51,7 +51,15 @@ const UserDocuments = () => {
       );
 
       if (response?.data) {
-        setDocuments(response.data);
+        let docs = [];
+        {
+          response.data.map((doc) => {
+            if (doc.doc_type === "Personal") {
+              docs.push(doc);
+            }
+          });
+        }
+        setDocuments(docs);
       } else {
         throw new Error("No data received");
       }

@@ -14,6 +14,10 @@ const documentSchema = new Schema(
       type: String,
       required: true,
     },
+    doc_type: {
+      type: String,
+      required: true,
+    },
 
     // The user who created the document
     createdBy: {
