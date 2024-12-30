@@ -2,17 +2,14 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
 import HomePage from "./components/HomePage/HomePage.jsx";
 import Page from "./components/Document/Page.jsx";
-import { io } from "socket.io-client";
 import { useContext, useEffect, useState } from "react";
 import MyContext from "./Context/MyContext.jsx";
 import AuthForm from "./components/AuthForm.jsx";
-import { jwtDecode } from "jwt-decode";
 import axios from "axios";
-import socket from "./Socket/Socket.jsx";
 import { Loader } from "lucide-react";
 
 function App() {
-  const { user, setUser, endPoint, token } = useContext(MyContext);
+  const { endPoint, token } = useContext(MyContext);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchUserDetails = async (loginToken) => {
@@ -24,8 +21,6 @@ function App() {
       });
 
       if (response?.data) {
-        // setUser(response.data);
-        // localStorage.setItem("userData", JSON.stringify(response.data));
         console.log("Token Verified");
       }
     } catch (error) {
