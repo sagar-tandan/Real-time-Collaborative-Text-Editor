@@ -11,9 +11,12 @@ import { GoOrganization } from "react-icons/go";
 import { LuUsers } from "react-icons/lu";
 import { Table, TableRow, TableCell } from "@/components/ui/table";
 import MyContext from "@/Context/MyContext";
+import { useActionState } from "react";
+import { Button } from "@/components/ui/button";
 
 const OrgDialog = ({ children }) => {
   const [active, setActive] = useState("general");
+  const [tabActive, setTabActive] = useState("tabMem");
   const { currentProfile } = useContext(MyContext);
   return (
     <Dialog>
@@ -67,6 +70,86 @@ const OrgDialog = ({ children }) => {
                 <h1 className="font-medium">General</h1>
 
                 <Table className="mt-8 border-none ">
+                  <TableRow>
+                    <TableCell className="font-medium">
+                      Organization Profile
+                    </TableCell>
+                    <TableCell className="flex gap-x-2 items-center">
+                      {currentProfile?.logo ? (
+                        <img
+                          className="w-[30px] h-[30px] rounded-full "
+                          src={currentProfile.logo}
+                          alt=""
+                        />
+                      ) : (
+                        <div className="w-[30px] flex items-center justify-center p-1 bg-blue-700 rounded-sm">
+                          <GoOrganization className="size-5 text-white" />
+                        </div>
+                      )}
+
+                      {currentProfile?.orgName}
+                    </TableCell>
+                    <TableCell className=" cursor-pointer">
+                      Update Profile
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell className="font-medium">
+                      Leave Organization
+                    </TableCell>
+                    <TableCell className="font-medium text-red-600 cursor-pointer">
+                      Leave Organization
+                    </TableCell>
+                  </TableRow>
+
+                  <TableRow>
+                    <TableCell className="font-medium">
+                      Delete Organization
+                    </TableCell>
+                    <TableCell className="font-medium text-red-600 cursor-pointer">
+                      Delete Organization
+                    </TableCell>
+                  </TableRow>
+                </Table>
+                <form action=""></form>
+              </div>
+            )}
+
+            {active === "members" && (
+              <div className="w-full flex flex-col p-2 ">
+                <h1 className="font-medium mb-6">Members</h1>
+                <div className="w-full flex gap-x-4">
+                  <div
+                    onClick={() => setTabActive("tabMem")}
+                    className="flex flex-col gap-y-1 cursor-pointer text-sm"
+                  >
+                    <span className="flex gap-x-4 items-center justify-center px-2">
+                      <h1 className="font-medium">Members</h1>
+                      <span className=" text-neutral-600 font-medium">2</span>
+                    </span>
+                    {tabActive === "tabMem" && <hr className="border-black" />}
+                  </div>
+
+                  <div
+                    onClick={() => setTabActive("tabInvite")}
+                    className="flex flex-col gap-y-1 cursor-pointer text-sm"
+                  >
+                    <span className="flex gap-x-4 items-center justify-center px-2">
+                      <h1 className="font-medium">Invitations</h1>
+                      <span className=" text-neutral-600 font-medium">0</span>
+                    </span>
+                    {tabActive === "tabInvite" && (
+                      <hr className="border-black" />
+                    )}
+                  </div>
+                </div>
+
+                <div className="w-full flex justify-end mt-1">
+                  <Button>Invite</Button>
+                </div>
+
+                <Table className="mt-0 border-none ">
                   <TableRow>
                     <TableCell className="font-medium">
                       Organization Profile
