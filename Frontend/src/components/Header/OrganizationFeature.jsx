@@ -11,6 +11,7 @@ import {
   Loader,
   MailIcon,
   PlusIcon,
+  SettingsIcon,
 } from "lucide-react";
 import { GoOrganization } from "react-icons/go";
 
@@ -323,7 +324,37 @@ const OrganizationFeature = () => {
           <ChevronDownIcon className="size-4 text-neutral-700" />
         </PopoverTrigger>
         <PopoverContent>
-          <div className="w-full bg-white rounded-sm p-2 flex flex-col gap-1">
+          <div className="w-full bg-white rounded-sm p-2 flex flex-col gap-1 ">
+            {currentProfile && currentProfile.type === "Organization" && (
+              <div className="flex flex-col gap-y-1 mb-4">
+                <div className="flex justify-between items-center cursor-pointer ">
+                  <div className="flex gap-x-2 items-center justify-center ">
+                    {currentProfile.logo ? (
+                      <img
+                        className="w-[36px] h-[36px] rounded-full "
+                        src={currentProfile.logo}
+                        alt=""
+                      />
+                    ) : (
+                      <div className="w-[36px] flex items-center justify-center p-1 bg-blue-700 rounded-sm">
+                        <GoOrganization className="size-7 text-white" />
+                      </div>
+                    )}
+                    <div className="text-sm flex flex-col">
+                      <span className="text-sm text-neutral-600 font-medium">
+                        {currentProfile.orgName}
+                      </span>
+                      <span className="text-sm text-neutral-600 ">Role</span>
+                    </div>
+                  </div>
+
+                  <span className="flex text-neutral-700">
+                    <SettingsIcon className="size-4" />
+                  </span>
+                </div>
+              </div>
+            )}
+
             <div
               onClick={() => {
                 localStorage.removeItem("currentProfile");
@@ -348,56 +379,58 @@ const OrganizationFeature = () => {
             </div>
 
             {userOrganization &&
-              userOrganization.map((org) => {
-                const isAcceptedMember = org.members.some(
-                  (member) =>
-                    member.userId === user.userId &&
-                    member.memberStatus === "accepted"
-                );
-                return (
-                  <div
-                    onClick={() =>
-                      isAcceptedMember ? switchAccounts(org) : null
-                    }
-                    className="w-full flex rounded-sm items-center gap-x-1 my-2"
-                  >
-                    {/* <div className="bg-black rounded-sm flex items-center justify-center"> */}
-                    {org.logo ? (
-                      <img
-                        className="w-[36px] h-[36px] rounded-full "
-                        src={org.logo}
-                        alt=""
-                      />
-                    ) : (
-                      <div className="w-[36px] flex items-center justify-center p-1 bg-blue-700 rounded-sm">
-                        <GoOrganization className="size-7 text-white" />
-                      </div>
-                    )}
-
-                    {/* </div> */}
-                    <div className="flex justify-between items-center w-[80%] cursor-pointer pl-2">
-                      <span className="text-sm text-neutral-600 font-medium">
-                        {org.organizationName}
-                      </span>
-
-                      {isAcceptedMember ? (
-                        <ChevronRightIcon className="size-4 text-neutral-700" />
+              userOrganization
+                .filter((org) => org._id !== currentProfile?.orgId)
+                .map((org) => {
+                  const isAcceptedMember = org.members.some(
+                    (member) =>
+                      member.userId === user.userId &&
+                      member.memberStatus === "accepted"
+                  );
+                  return (
+                    <div
+                      onClick={() =>
+                        isAcceptedMember ? switchAccounts(org) : null
+                      }
+                      className="w-full flex rounded-sm items-center gap-x-1 my-2"
+                    >
+                      {/* <div className="bg-black rounded-sm flex items-center justify-center"> */}
+                      {org.logo ? (
+                        <img
+                          className="w-[36px] h-[36px] rounded-full "
+                          src={org.logo}
+                          alt=""
+                        />
                       ) : (
-                        <button
-                          onClick={() => joinOrganization(org)}
-                          className="px-3 py-1 border-[1px] border-black rounded-sm"
-                        >
-                          {loading ? (
-                            <Loader className="animate-spin" />
-                          ) : (
-                            "Join"
-                          )}
-                        </button>
+                        <div className="w-[36px] flex items-center justify-center p-1 bg-blue-700 rounded-sm">
+                          <GoOrganization className="size-7 text-white" />
+                        </div>
                       )}
+
+                      {/* </div> */}
+                      <div className="flex justify-between items-center w-[80%] cursor-pointer pl-2">
+                        <span className="text-sm text-neutral-600 font-medium">
+                          {org.organizationName}
+                        </span>
+
+                        {isAcceptedMember ? (
+                          <ChevronRightIcon className="size-4 text-neutral-700" />
+                        ) : (
+                          <button
+                            onClick={() => joinOrganization(org)}
+                            className="px-3 py-1 border-[1px] border-black rounded-sm"
+                          >
+                            {loading ? (
+                              <Loader className="animate-spin" />
+                            ) : (
+                              "Join"
+                            )}
+                          </button>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
 
             {/* CREATE ORGANIZATION */}
             <Dialog
