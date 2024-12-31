@@ -27,6 +27,7 @@ function App() {
       console.error("Error fetching user details:", error);
       localStorage.removeItem("docsToken");
       localStorage.removeItem("userInfo");
+      localStorage.removeItem("currentProfile");
     } finally {
       setIsLoading(false);
     }

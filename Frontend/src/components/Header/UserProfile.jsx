@@ -15,7 +15,7 @@ import MyContext from "@/Context/MyContext";
 import { useNavigate } from "react-router-dom";
 
 const UserProfile = () => {
-  const { user, setUser, setToken } = useContext(MyContext);
+  const { user, setUser, setToken, setCurrentProfile } = useContext(MyContext);
   const navigate = useNavigate();
 
   return (
@@ -70,8 +70,10 @@ const UserProfile = () => {
               onClick={() => {
                 localStorage.removeItem("docsToken");
                 localStorage.removeItem("userInfo");
+                localStorage.removeItem("currentProfile");
                 setToken("");
                 setUser("");
+                setCurrentProfile("");
                 navigate("/");
               }}
               className=" py-3 px-4 rounded-r-full bg-white flex items-center gap-2 w-full hover:bg-neutral-300 transition-all ease-in-out duration-300"

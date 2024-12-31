@@ -6,13 +6,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import {
-  Building2Icon,
   ChevronDownIcon,
   ChevronRightIcon,
   Loader,
   MailIcon,
   PlusIcon,
 } from "lucide-react";
+import { GoOrganization } from "react-icons/go";
 
 import {
   Dialog,
@@ -286,37 +286,39 @@ const OrganizationFeature = () => {
   return (
     <div className="flex rounded-sm w-[190px] absolute right-[50px] top-0">
       <Popover open={openPopover} onOpenChange={setOpenPopover}>
-        <PopoverTrigger className="w-full flex rounded-sm items-center hover:bg-blue-50 p-1 gap-x-1 transition-all ease-in-out duration-300">
-          {currentProfile?.type === "Organization" ? (
-            <>
-              {currentProfile.logo ? (
+        <PopoverTrigger className="w-full flex justify-between rounded-sm items-center hover:bg-blue-50 p-1 gap-x-1 transition-all ease-in-out duration-300">
+          <div className="flex gap-x-2 items-center justify-center">
+            {currentProfile?.type === "Organization" ? (
+              <>
+                {currentProfile.logo ? (
+                  <img
+                    className="w-[36px] h-[36px] rounded-full"
+                    src={currentProfile.logo}
+                    alt=""
+                  />
+                ) : (
+                  <div className="w-[32px] flex items-center justify-center p-1 bg-blue-700 rounded-sm">
+                    <GoOrganization className="size-6 text-white" />
+                  </div>
+                )}
+
+                <span className="text-sm text-neutral-600 font-medium">
+                  {currentProfile.orgName}
+                </span>
+              </>
+            ) : (
+              <>
                 <img
                   className="w-[36px] h-[36px] rounded-full"
-                  src={currentProfile.logo}
+                  src="https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/11_avatar-512.png"
                   alt=""
                 />
-              ) : (
-                <div className="w-[38px] flex items-center justify-center p-1">
-                  <Building2Icon className="size-5 text-blue-500" />
-                </div>
-              )}
-
-              <span className="text-sm text-neutral-600 font-medium">
-                {currentProfile.orgName}
-              </span>
-            </>
-          ) : (
-            <>
-              <img
-                className="w-[36px] h-[36px] rounded-full"
-                src="https://cdn3.iconfinder.com/data/icons/business-avatar-1/512/11_avatar-512.png"
-                alt=""
-              />
-              <span className="text-sm text-neutral-600 font-medium">
-                Personal Account
-              </span>
-            </>
-          )}
+                <span className="text-sm text-neutral-600 font-medium truncate">
+                  Personal Account
+                </span>
+              </>
+            )}
+          </div>
 
           <ChevronDownIcon className="size-4 text-neutral-700" />
         </PopoverTrigger>
@@ -367,8 +369,8 @@ const OrganizationFeature = () => {
                         alt=""
                       />
                     ) : (
-                      <div className="w-[38px] flex items-center justify-center p-1">
-                        <Building2Icon className="size-8 text-blue-500" />
+                      <div className="w-[36px] flex items-center justify-center p-1 bg-blue-700 rounded-sm">
+                        <GoOrganization className="size-7 text-white" />
                       </div>
                     )}
 
