@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/select";
 import MyContext from "@/Context/MyContext";
 import axios from "axios";
+import OrgDialog from "./OrganizationElements/OrgDialog";
 
 const OrganizationFeature = () => {
   const { user, token, endPoint, currentProfile, setCurrentProfile } =
@@ -348,9 +349,11 @@ const OrganizationFeature = () => {
                     </div>
                   </div>
 
-                  <span className="flex text-neutral-700">
-                    <SettingsIcon className="size-4" />
-                  </span>
+                  <OrgDialog>
+                    <span className="flex text-neutral-700">
+                      <SettingsIcon className="size-4" />
+                    </span>
+                  </OrgDialog>
                 </div>
               </div>
             )}
