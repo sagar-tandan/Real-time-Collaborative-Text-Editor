@@ -265,11 +265,14 @@ const OrganizationFeature = () => {
   }, [user, token]);
 
   const switchAccounts = (org) => {
+    const isAdmin = org.admin.some((admin) => admin.adminId === user?.userId);
+
     setCurrentProfile({
       type: "Organization",
       orgName: org.organizationName,
       logo: org.logo,
       orgId: org._id,
+      role: isAdmin ? "Admin" : "Member",
     });
 
     localStorage.setItem(
@@ -279,6 +282,7 @@ const OrganizationFeature = () => {
         orgName: org.organizationName,
         logo: org.logo,
         orgId: org._id,
+        role: isAdmin ? "Admin" : "Member",
       })
     );
 
@@ -345,7 +349,9 @@ const OrganizationFeature = () => {
                       <span className="text-sm text-neutral-600 font-medium">
                         {currentProfile.orgName}
                       </span>
-                      <span className="text-sm text-neutral-600 ">Role</span>
+                      <span className="text-sm text-neutral-600 ">
+                        {currentProfile.role}
+                      </span>
                     </div>
                   </div>
 
