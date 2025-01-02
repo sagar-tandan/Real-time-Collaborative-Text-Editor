@@ -226,7 +226,7 @@ const OrganizationFeature = () => {
       if (response.status === 200) {
         console.log("Invitation sent successfully:", response.data);
       } else {
-        console.log(response.data);
+        // console.log(response.data);
       }
       setLoading(false);
     } catch (error) {

@@ -279,9 +279,55 @@ export const createOrganizationalDocuments = async (req, res, next) => {
   }
 };
 
+export const leaveOrganization = async (req, res, next) => {
+  const { orgId, userId } = req.body;
+  // console.log(userId);
+
+  try {
+    if (!orgId) {
+      return res
+        .status(400)
+        .json({ message: "Organization ID cannot be empty" });
+    }
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const findOrg = await Organization.findById(orgId);
+
+    if (!findOrg) {
+      return res.status(404).json({ message: "Organization not found" });
+    }
+
+    // Check if the userId matches the adminId
+    const isAdmin = findOrg.admin.some(
+      (admin) => admin.adminId.toString() === userId
+    );
+
+    if (isAdmin) {
+      return res.status(403).json({
+        message: "Admin are not allowed to leave organization",
+      });
+    }
+
+    findOrg.members = findOrg.members.filter(
+      (member) => member.userId.toString() != userId
+    );
+    await findOrg.save();
+
+    return res
+      .status(200)
+      .json({ message: "Successfully left the organization" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+
 export const deleteOrganization = async (req, res, next) => {
   const { orgId, userId } = req.body;
-  console.log(userId);
+  // console.log(userId);
 
   try {
     if (!orgId) {

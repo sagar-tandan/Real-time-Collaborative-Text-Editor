@@ -72,8 +72,19 @@ const OrgDialog = ({ children }) => {
   const [isMainDialogOpen, setIsMainDialogOpen] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isdeleting, setIsDeleting] = useState(false);
+  const [isLeaving, setIsLeaving] = useState(false);
+  const [isLeaveDialogOpen, setLeaveDialogOpen] = useState(false);
 
-  const leaveOrganization = () => {};
+  const handleLeaveOrganization = () => {
+    if (currentProfile?.role === "Admin") {
+      toast({
+        variant: "destructive",
+        description: "Admins are not allowed to leave organization",
+      });
+    } else {
+      setLeaveDialogOpen(true);
+    }
+  };
 
   const handleDeleteOrganization = () => {
     if (currentProfile?.role === "Admin") {
@@ -84,6 +95,43 @@ const OrgDialog = ({ children }) => {
         title: "Organization deletion",
         description: "You are not authorized to delete this organization",
       });
+    }
+  };
+
+  const confirmLeave = async () => {
+    setIsLeaving(true);
+    try {
+      const response = await axios.post(
+        `${endPoint}/api/organization/leave-organization`,
+        {
+          orgId: currentProfile?.orgId,
+          userId: user.userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast({
+          description: "Successfully left the organization",
+        });
+      }
+      setLeaveDialogOpen(false);
+      setIsMainDialogOpen(false);
+      setIsLeaving(false);
+      localStorage.removeItem("currentProfile");
+      setCurrentProfile("");
+      fetchOrganization();
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: "destructive",
+        description: "Something went Wrong!!!",
+      });
+      setIsLeaving(false);
     }
   };
 
@@ -220,7 +268,10 @@ const OrgDialog = ({ children }) => {
                       <TableCell className="font-medium">
                         Leave Organization
                       </TableCell>
-                      <TableCell className="font-medium text-red-600 cursor-pointer">
+                      <TableCell
+                        onClick={handleLeaveOrganization}
+                        className="font-medium text-red-600 cursor-pointer"
+                      >
                         Leave Organization
                       </TableCell>
                     </TableRow>
@@ -348,6 +399,27 @@ const OrgDialog = ({ children }) => {
             </Button>
             <Button variant="destructive" onClick={confirmDelete}>
               {isdeleting ? "Deleting..." : "Delete"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={isLeaveDialogOpen} onOpenChange={setLeaveDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Leave Organization</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to leave the organization? This action
+              cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-4 mt-4">
+            <Button variant="outline" onClick={() => setLeaveDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmLeave}>
+              {isdeleting ? "Leaving..." : "Leave"}
             </Button>
           </div>
         </DialogContent>
