@@ -34,8 +34,10 @@ import {
 import MyContext from "@/Context/MyContext";
 import axios from "axios";
 import OrgDialog from "./OrganizationElements/OrgDialog";
+import { useToast } from "@/hooks/use-toast";
 
 const OrganizationFeature = () => {
+  const { toast } = useToast();
   const {
     user,
     token,
@@ -149,7 +151,7 @@ const OrganizationFeature = () => {
     setLoading(true);
     try {
       const imageUrl = await uploadImageToCloudinary();
-      console.log(imageUrl);
+      // console.log(imageUrl);
       const response = await axios.post(
         `${endPoint}/api/organization/createOrganization`,
         {
@@ -165,9 +167,18 @@ const OrganizationFeature = () => {
         }
       );
 
-      if (response.status === 200) {
+      if (response.status === 201) {
         setLoading(false);
         fetchOrganization();
+        setIsCreateOrgDialogOpen(false);
+        setIsNextDialogOpen(true);
+        setInvite(false);
+      } else if (response.status === 400) {
+        setLoading(false);
+        toast({
+          variant: "destuctive",
+          description: "This organization already exists.",
+        });
       }
     } catch (error) {
       console.log(error);
@@ -178,9 +189,6 @@ const OrganizationFeature = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await createOrganization();
-    setIsCreateOrgDialogOpen(false);
-    setIsNextDialogOpen(true);
-    setInvite(false);
   };
 
   // For now update for 1 email only
@@ -457,10 +465,7 @@ const OrganizationFeature = () => {
                     <PlusIcon className="size-4" />
                   </div>
                   <div className="flex justify-between items-center w-[80%] cursor-pointer pl-2">
-                    <span
-                      onClick={createOrganization}
-                      className="text-sm text-neutral-600 font-medium"
-                    >
+                    <span className="text-sm text-neutral-600 font-medium">
                       Create Organization
                     </span>
                   </div>
@@ -510,7 +515,7 @@ const OrganizationFeature = () => {
                         <button
                           disabled={loading}
                           type="submit"
-                          className="mt-4 p-2 bg-blue-500 text-white rounded-sm hover:bg-blue-700 w-[150px] flex items-center justify-center"
+                          className="mt-4 p-2 bg-black text-white rounded-sm w-[150px] flex items-center justify-center"
                         >
                           {loading ? (
                             <Loader className="animate-spin" />

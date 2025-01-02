@@ -17,6 +17,16 @@ export const createOrganization = async (req, res, next) => {
     // Convert the createdBy string to ObjectId
     const createdByObjectId = new mongoose.Types.ObjectId(createdBy);
 
+    const organization = await Organization.findOne({
+      organizationName: orgName,
+    });
+
+    if (organization) {
+      return res
+        .status(400)
+        .json({ message: "This organization already exists" });
+    }
+
     const newOrganization = await Organization.create({
       logo: imageUrl,
       orgSlug: orgSlug,

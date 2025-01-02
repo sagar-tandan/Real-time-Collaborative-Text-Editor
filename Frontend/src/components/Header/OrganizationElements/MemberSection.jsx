@@ -32,7 +32,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import GeneralSection from "./GeneralSection";
+import InviteDialog from "./InviteDialog";
 
 const users = [
   {
@@ -54,6 +54,7 @@ const users = [
 ];
 const MemberSection = () => {
   const [tabActive, setTabActive] = useState("tabMem");
+  const [isNextDialogOpen, setIsNextDialogOpen] = useState(false);
 
   return (
     <div className="w-full flex flex-col p-2 ">
@@ -83,12 +84,12 @@ const MemberSection = () => {
       </div>
 
       <div className="w-full flex justify-end mt-1">
-        <Button>Invite</Button>
+        <Button onClick={() => setIsNextDialogOpen(true)}>Invite</Button>
       </div>
 
-      <Table className="border border-gray-200 rounded-md mt-4">
+      <Table className=" mt-4">
         <TableHeader>
-          <TableRow className="bg-gray-100">
+          <TableRow>
             <TableHead>User</TableHead>
             <TableHead>Joined</TableHead>
             <TableHead>Role</TableHead>
@@ -130,6 +131,11 @@ const MemberSection = () => {
           ))}
         </TableBody>
       </Table>
+
+      <InviteDialog
+        isNextDialogOpen={isNextDialogOpen}
+        setIsNextDialogOpen={setIsNextDialogOpen}
+      />
     </div>
   );
 };
