@@ -20,6 +20,8 @@ export const MyProvider = ({ children }) => {
   const [updateTrigger, setUpdateTrigger] = useState(false);
   const [openRenameDialog, setOpenRenameDialog] = useState(false);
 
+  const [userOrganization, setAllOrganization] = useState([]);
+
   const [currentProfile, setCurrentProfile] = useState(
     JSON.parse(localStorage.getItem("currentProfile")) || null
   );
@@ -47,6 +49,8 @@ export const MyProvider = ({ children }) => {
         setOpenRenameDialog,
         currentProfile,
         setCurrentProfile,
+        userOrganization,
+        setAllOrganization,
       }}
     >
       {children}

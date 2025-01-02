@@ -36,9 +36,15 @@ import axios from "axios";
 import OrgDialog from "./OrganizationElements/OrgDialog";
 
 const OrganizationFeature = () => {
-  const { user, token, endPoint, currentProfile, setCurrentProfile } =
-    useContext(MyContext);
-  const [userOrganization, setAllOrganization] = useState([]);
+  const {
+    user,
+    token,
+    endPoint,
+    currentProfile,
+    setCurrentProfile,
+    userOrganization,
+    setAllOrganization,
+  } = useContext(MyContext);
   const [newOrg, setOrganization] = useState({
     imageUrl: "",
     orgName: "",
@@ -76,7 +82,7 @@ const OrganizationFeature = () => {
       );
 
       if (response.status === 201) {
-        console.log(response.data);
+        // console.log(response.data);
         setAllOrganization(response.data);
       }
     } catch (error) {

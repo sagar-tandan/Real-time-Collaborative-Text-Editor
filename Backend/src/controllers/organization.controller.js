@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import Organization from "../models/organization.model.js";
 import User from "../models/user.model.js";
 import Document from "../models/document.model.js";
@@ -46,7 +46,6 @@ export const createOrganization = async (req, res, next) => {
 
 export const fetchOrganizationBasedOnUserID = async (req, res, next) => {
   try {
-    // Get orgName and createdBy from the request body
     const { userId } = req.query;
 
     //  Convert the createdBy string to ObjectId
@@ -275,6 +274,47 @@ export const createOrganizationalDocuments = async (req, res, next) => {
     console.log("Updated Organization:", organizationDoc);
 
     res.status(200).json(newDocument);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteOrganization = async (req, res, next) => {
+  const { orgId, userId } = req.body;
+  console.log(userId);
+
+  try {
+    if (!orgId) {
+      return res
+        .status(400)
+        .json({ message: "Organization ID cannot be empty" });
+    }
+    if (!userId) {
+      return res.status(400).json({ message: "User ID is required" });
+    }
+
+    const findOrg = await Organization.findById(orgId);
+
+    if (!findOrg) {
+      return res.status(404).json({ message: "Organization not found" });
+    }
+
+    // Check if the userId matches the adminId
+    const isAdmin = findOrg.admin.some(
+      (admin) => admin.adminId.toString() === userId
+    );
+
+    if (!isAdmin) {
+      return res.status(403).json({
+        message: "You are not authorized to delete this organization",
+      });
+    }
+
+    // Proceed with deletion if authorized
+    await Organization.findByIdAndDelete(orgId);
+    return res
+      .status(200)
+      .json({ message: "Organization deleted successfully" });
   } catch (error) {
     next(error);
   }

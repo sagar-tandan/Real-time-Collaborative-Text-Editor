@@ -6,6 +6,7 @@ import {
   getOrganizationDocuments,
   joinOrganization,
   sendInvitation,
+  deleteOrganization,
 } from "../../controllers/organization.controller.js";
 import { authMiddleware } from "../../middleware/authMiddleware.js";
 
@@ -36,4 +37,10 @@ OrganizationRouter.post(
   "/createDocument",
   authMiddleware,
   createOrganizationalDocuments
+);
+
+OrganizationRouter.post(
+  "/delete-organization",
+  authMiddleware,
+  deleteOrganization
 );
