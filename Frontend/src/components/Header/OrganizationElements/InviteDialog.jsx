@@ -1,19 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  ChevronDownIcon,
-  ChevronRightIcon,
-  Loader,
-  MailIcon,
-  PlusIcon,
-  SettingsIcon,
-} from "lucide-react";
-import { GoOrganization } from "react-icons/go";
+import { MailIcon } from "lucide-react";
 
 import {
   Dialog,
@@ -21,7 +8,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -36,16 +22,7 @@ import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 
 const InviteDialog = ({ isNextDialogOpen, setIsNextDialogOpen }) => {
-  const {
-    user,
-    token,
-    endPoint,
-    currentProfile,
-    setCurrentProfile,
-    userOrganization,
-    setAllOrganization,
-  } = useContext(MyContext);
-
+  const { endPoint, currentProfile } = useContext(MyContext);
   const { toast } = useToast();
 
   const [inviteEmails, setInviteEmails] = useState({

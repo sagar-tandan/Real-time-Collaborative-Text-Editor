@@ -409,3 +409,68 @@ export const deleteOrganization = async (req, res, next) => {
     next(error);
   }
 };
+
+export const fetchOrganizationMembers = async (req, res, next) => {
+  try {
+    const { orgId } = req.query;
+
+    const organization = await Organization.findById(orgId)
+      .populate("members.userId", "name email") // Populate members with user details like name and email
+      .populate("admin.adminId", "name email")
+      .exec();
+
+    if (!organization) {
+      return res.status(404).json({ message: "Organization not found" });
+    }
+
+    // // Send back the organization data along with populated members and admin
+    // res.json({
+    //   members: organization.members, // Populated members array
+    //   admin: organization.admin, // Populated admin array
+    // });
+
+    const users = [];
+
+    // Add members to the users array
+    organization.members.forEach((member) => {
+      const userId = member.userId._id.toString();
+      users.push({
+        userId,
+        name: member.userId.name,
+        email: member.userId.email,
+        status: member.memberStatus,
+        role: "member",
+      });
+    });
+
+    // Add admins to the users array, replacing member info if they exist
+    organization.admin.forEach((admin) => {
+      const userId = admin.adminId._id.toString();
+      const existingUserIndex = users.findIndex(
+        (user) => user.userId === userId
+      );
+
+      const adminUser = {
+        userId,
+        name: admin.adminId.name,
+        email: admin.adminId.email,
+        status: "accepted", // Default status for admins
+        role: "admin",
+      };
+
+      if (existingUserIndex > -1) {
+        // Replace member entry with admin entry
+        users[existingUserIndex] = adminUser;
+      } else {
+        users.push(adminUser);
+      }
+    });
+
+    res.json({ users });
+
+    // console.log(users);
+  } catch (error) {
+    next(error);
+    // res.status(500).json({ message: "Server error" });
+  }
+};

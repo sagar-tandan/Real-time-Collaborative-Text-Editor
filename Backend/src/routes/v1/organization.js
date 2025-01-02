@@ -9,6 +9,7 @@ import {
   deleteOrganization,
   leaveOrganization,
   updateOrganization,
+  fetchOrganizationMembers,
 } from "../../controllers/organization.controller.js";
 import { authMiddleware } from "../../middleware/authMiddleware.js";
 
@@ -57,4 +58,9 @@ OrganizationRouter.post(
   "/delete-organization",
   authMiddleware,
   deleteOrganization
+);
+OrganizationRouter.get(
+  "/fetch-organization-members",
+  authMiddleware,
+  fetchOrganizationMembers
 );

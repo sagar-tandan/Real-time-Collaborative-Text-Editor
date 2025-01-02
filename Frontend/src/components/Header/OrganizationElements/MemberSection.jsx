@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -18,7 +18,7 @@ import {
   TableBody,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { MoreVertical } from "lucide-react";
+import { Loader, MoreVertical } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -33,6 +33,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import InviteDialog from "./InviteDialog";
+import axios from "axios";
+import MyContext from "@/Context/MyContext";
 
 const users = [
   {
@@ -53,38 +55,57 @@ const users = [
   },
 ];
 const MemberSection = () => {
-  const [tabActive, setTabActive] = useState("tabMem");
+  const { endPoint, currentProfile, token, user } = useContext(MyContext);
   const [isNextDialogOpen, setIsNextDialogOpen] = useState(false);
+  const [isLoading, setisLoading] = useState(false);
+  const [allMembers, setAllMembers] = useState([]);
+  const [allAdmin, setAllAdmin] = useState([]);
+
+  const fetchMembers = async () => {
+    setisLoading(true);
+    try {
+      const response = await axios.get(
+        `${endPoint}/api/organization/fetch-organization-members`,
+        {
+          params: { orgId: currentProfile.orgId }, // Ensure orgId is passed correctly
+          headers: {
+            Authorization: `Bearer ${token}`, // Include authorization token
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        setAllMembers(response.data.users);
+        console.log(response.data);
+        // setAllAdmin(response.data.admin);
+        // console.log(allMembers, allAdmin);
+        setisLoading(false);
+      } else {
+        // Log if the response status is not 200
+        console.error("Failed to fetch members. Status:", response.status);
+        setisLoading(false);
+      }
+    } catch (error) {
+      // Enhanced error logging
+      console.error(
+        "Error fetching organization members:",
+        error.response?.data || error.message
+      );
+      setisLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMembers();
+  }, []);
 
   return (
     <div className="w-full flex flex-col p-2 ">
-      <h1 className="font-medium mb-6">Members</h1>
-      <div className="w-full flex gap-x-4">
-        <div
-          onClick={() => setTabActive("tabMem")}
-          className="flex flex-col gap-y-1 cursor-pointer text-sm"
-        >
-          <span className="flex gap-x-4 items-center justify-center px-2">
-            <h1 className="font-medium">Members</h1>
-            <span className=" text-neutral-600 font-medium">2</span>
-          </span>
-          {tabActive === "tabMem" && <hr className="border-black" />}
-        </div>
-
-        <div
-          onClick={() => setTabActive("tabInvite")}
-          className="flex flex-col gap-y-1 cursor-pointer text-sm"
-        >
-          <span className="flex gap-x-4 items-center justify-center px-2">
-            <h1 className="font-medium">Invitations</h1>
-            <span className=" text-neutral-600 font-medium">0</span>
-          </span>
-          {tabActive === "tabInvite" && <hr className="border-black" />}
-        </div>
-      </div>
-
-      <div className="w-full flex justify-end mt-1">
-        <Button onClick={() => setIsNextDialogOpen(true)}>Invite</Button>
+      <h1 className="font-medium mb-4">Members</h1>
+      <div className="w-full flex justify-end mt-1 ">
+        <Button className="px-4" onClick={() => setIsNextDialogOpen(true)}>
+          Invite
+        </Button>
       </div>
 
       <Table className=" mt-4">
@@ -95,41 +116,43 @@ const MemberSection = () => {
             <TableHead>Role</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {users.map((user) => (
-            <TableRow key={user.id} className="border-t">
-              <TableCell className="flex items-center gap-3 p-4">
-                <div>
-                  <p className="font-medium">{user.name}</p>
-                  <p className="text-sm text-gray-500">{user.email}</p>
-                </div>
-              </TableCell>
-              <TableCell className="p-4">{user.joined}</TableCell>
-              <TableCell className="p-4 flex items-center gap-2">
-                <Select>
-                  <SelectTrigger className="w-28">
-                    <SelectValue placeholder={user.role} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="Member">User</SelectItem>
-                  </SelectContent>
-                </Select>
-              </TableCell>
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <MoreVertical className="size-4" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Delete</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+        {isLoading ? (
+          <TableBody>
+            <TableRow>
+              <TableCell className="w-full flex items-center justify-center">
+                <Loader className="size-5 animate-spin" />
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
+          </TableBody>
+        ) : (
+          <TableBody>
+            {allMembers
+              ?.filter((member) => member.userId != user.userId)
+              .map((member) => (
+                <TableRow key={member.userId} className="border-t">
+                  <TableCell className="flex items-center gap-3 p-4">
+                    <div>
+                      <p className="font-medium">{member.name}</p>
+                      <p className="text-sm text-gray-500">{member.email}</p>
+                    </div>
+                  </TableCell>
+                  <TableCell className="p-4">{member.status}</TableCell>
+                  <TableCell className="p-4 ">{member.role}</TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <MoreVertical className="size-4" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent>
+                        <DropdownMenuItem>Edit</DropdownMenuItem>
+                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        )}
       </Table>
 
       <InviteDialog
