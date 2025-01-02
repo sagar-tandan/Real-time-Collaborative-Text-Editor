@@ -44,6 +44,42 @@ export const createOrganization = async (req, res, next) => {
   }
 };
 
+export const updateOrganization = async (req, res, next) => {
+  const { orgId, orgName, orgSlug, userId } = req.body;
+
+  try {
+    if (!orgName.trim() || !orgSlug.trim() || !orgId) {
+      return res.status(400).json({ message: "Empty" });
+    }
+
+    const findOrganization = await Organization.findById(orgId);
+    if (!findOrganization) {
+      return res.status(404).json({ message: "Organization not found" });
+    }
+
+    // Check if the userId matches the adminId
+    const isAdmin = findOrganization.admin.some(
+      (admin) => admin.adminId.toString() === userId
+    );
+
+    console.log(isAdmin, userId);
+
+    if (!isAdmin) {
+      return res.status(403).json({
+        message: "You are not authorized to update this organization",
+      });
+    }
+
+    findOrganization.organizationName = orgName;
+    findOrganization.orgSlug = orgSlug;
+
+    await findOrganization.save();
+    return res.status(200).json({ message: "Successfully Updated!!" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const fetchOrganizationBasedOnUserID = async (req, res, next) => {
   try {
     const { userId } = req.query;
@@ -322,8 +358,6 @@ export const leaveOrganization = async (req, res, next) => {
     next(error);
   }
 };
-
-
 
 export const deleteOrganization = async (req, res, next) => {
   const { orgId, userId } = req.body;

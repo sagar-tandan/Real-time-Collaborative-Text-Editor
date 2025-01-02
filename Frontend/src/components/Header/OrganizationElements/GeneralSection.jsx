@@ -5,35 +5,14 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { GoOrganization } from "react-icons/go";
-import {
-  Table,
-  TableRow,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableBody,
-} from "@/components/ui/table";
+import { Table, TableRow, TableCell } from "@/components/ui/table";
 import MyContext from "@/Context/MyContext";
 import { Button } from "@/components/ui/button";
-import { MoreVertical } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
+import { Loader } from "lucide-react";
 
 const GeneralSection = ({ setIsMainDialogOpen }) => {
   const { toast } = useToast();
@@ -49,6 +28,50 @@ const GeneralSection = ({ setIsMainDialogOpen }) => {
   const [isdeleting, setIsDeleting] = useState(false);
   const [isLeaving, setIsLeaving] = useState(false);
   const [isLeaveDialogOpen, setLeaveDialogOpen] = useState(false);
+  const [openUpdateDialog, setUpdateDialog] = useState(false);
+
+  const [newOrg, setOrganization] = useState({
+    orgName: currentProfile?.orgName,
+    orgSlug: "",
+  });
+
+  const [isUpdating, setIsUpdating] = useState(false);
+
+  const generateSlug = (name) => {
+    return name
+      .toLowerCase()
+      .replace(/\s+/g, "-") // Replace spaces with hyphens
+      .replace(/[^\w-]+/g, ""); // Remove non-word characters
+  };
+
+  const onOrgChange = (e) => {
+    const { name, value } = e.target;
+    setOrganization((prev) => {
+      if (name === "orgName") {
+        return {
+          ...prev,
+          orgName: value,
+          orgSlug: generateSlug(value),
+        };
+      }
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (currentProfile?.role === "Admin") {
+      await updateOrganization();
+    } else {
+      toast({
+        variant: "destructive",
+        description: "You are not authorized to update Organization",
+      });
+    }
+  };
 
   const handleLeaveOrganization = () => {
     if (currentProfile?.role === "Admin") {
@@ -70,6 +93,50 @@ const GeneralSection = ({ setIsMainDialogOpen }) => {
         title: "Organization deletion",
         description: "You are not authorized to delete this organization",
       });
+    }
+  };
+
+  const updateOrganization = async () => {
+    setIsUpdating(true);
+    try {
+      const response = await axios.post(
+        `${endPoint}/api/organization/update-organization`,
+        {
+          orgId: currentProfile.orgId,
+          orgName: newOrg.orgName,
+          orgSlug: newOrg.orgSlug,
+          userId: user.userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast({
+          description: "Organization successfully updated.",
+        });
+
+        const updatedData = {
+          type: currentProfile.type,
+          orgName: newOrg.orgName,
+          orgId: currentProfile.orgId,
+          role: currentProfile.role,
+        };
+
+        localStorage.setItem("currentProfile", JSON.stringify(updatedData));
+        setCurrentProfile(updatedData);
+        setUpdateDialog(false);
+        setIsUpdating(false);
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        description: "Something went wrong",
+      });
+      setIsUpdating(false);
     }
   };
 
@@ -161,7 +228,6 @@ const GeneralSection = ({ setIsMainDialogOpen }) => {
       );
 
       if (response.status === 201) {
-        // console.log(response.data);
         setAllOrganization(response.data);
       }
     } catch (error) {
@@ -192,7 +258,12 @@ const GeneralSection = ({ setIsMainDialogOpen }) => {
 
               {currentProfile?.orgName}
             </TableCell>
-            <TableCell className=" cursor-pointer">Update Profile</TableCell>
+            <TableCell
+              onClick={() => setUpdateDialog(true)}
+              className=" cursor-pointer"
+            >
+              Update Profile
+            </TableCell>
           </TableRow>
 
           <TableRow>
@@ -260,6 +331,58 @@ const GeneralSection = ({ setIsMainDialogOpen }) => {
               {isLeaving ? "Leaving..." : "Leave"}
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Update Organization Name */}
+      <Dialog open={openUpdateDialog} onOpenChange={setUpdateDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Update Organization</DialogTitle>
+            <DialogDescription>
+              <form
+                onSubmit={handleSubmit}
+                className="w-full flex flex-col gap-4 "
+              >
+                <div className="flex flex-col w-full gap-2">
+                  <span>Name</span>
+                  <input
+                    name="orgName"
+                    className="w-full p-2 border-[1px] border-neutral-500 rounded-sm outline-neutral-700 text-black"
+                    value={newOrg.orgName}
+                    placeholder="Enter the name of Organization"
+                    onChange={onOrgChange}
+                    type="text"
+                    required
+                  />
+                </div>
+                <div className="flex flex-col w-full gap-2">
+                  <span>Slug</span>
+                  <input
+                    name="orgSlug"
+                    className="w-full p-2 border-[1px] border-neutral-500 rounded-sm outline-neutral-700 text-black"
+                    value={newOrg.orgSlug}
+                    readOnly
+                  />
+                </div>
+
+                <div className="w-full flex justify-end items-center">
+                  {/* Button to open the next dialog */}
+                  <button
+                    disabled={isUpdating}
+                    type="submit"
+                    className="mt-4 p-2 bg-blue-500 text-white rounded-sm hover:bg-blue-700 w-[150px] flex items-center justify-center"
+                  >
+                    {isUpdating ? (
+                      <Loader className="animate-spin" />
+                    ) : (
+                      "Update Organization"
+                    )}
+                  </button>
+                </div>
+              </form>
+            </DialogDescription>
+          </DialogHeader>
         </DialogContent>
       </Dialog>
     </>

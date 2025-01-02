@@ -8,6 +8,7 @@ import {
   sendInvitation,
   deleteOrganization,
   leaveOrganization,
+  updateOrganization,
 } from "../../controllers/organization.controller.js";
 import { authMiddleware } from "../../middleware/authMiddleware.js";
 
@@ -17,6 +18,12 @@ OrganizationRouter.post(
   "/createOrganization",
   authMiddleware,
   createOrganization
+);
+
+OrganizationRouter.post(
+  "/update-organization",
+  authMiddleware,
+  updateOrganization
 );
 
 OrganizationRouter.get(

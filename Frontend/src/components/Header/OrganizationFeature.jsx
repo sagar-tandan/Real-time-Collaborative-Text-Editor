@@ -193,7 +193,6 @@ const OrganizationFeature = () => {
   };
 
   const onChangeRoles = (value) => {
-    // console.log(value);
     setInviteEmails((prev) => ({
       ...prev,
       role: value,
@@ -314,7 +313,7 @@ const OrganizationFeature = () => {
                   </div>
                 )}
 
-                <span className="text-sm text-neutral-600 font-medium">
+                <span className="text-sm text-neutral-600 font-medium truncate">
                   {currentProfile.orgName}
                 </span>
               </>
