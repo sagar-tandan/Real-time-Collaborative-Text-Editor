@@ -61,8 +61,11 @@ const MemberSection = () => {
   const [isLoading, setisLoading] = useState(false);
   const [allMembers, setAllMembers] = useState([]);
   const [deleteMember, setDeleteMember] = useState();
+  const [editMember, setEditMember] = useState();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const { toast } = useToast();
 
   const fetchMembers = async () => {
@@ -82,8 +85,7 @@ const MemberSection = () => {
       if (response.status === 200) {
         setAllMembers(response.data.users);
         console.log(response.data);
-        // setAllAdmin(response.data.admin);
-        // console.log(allMembers, allAdmin);
+
         setisLoading(false);
       } else {
         // Log if the response status is not 200
@@ -106,6 +108,11 @@ const MemberSection = () => {
 
   const handleMemberEdit = (memberData) => {
     console.log(memberData);
+  };
+
+  const confirmEdit = (e) => {
+    e.preventDefault();
+    console.log(editMember);
   };
 
   const confirmDelete = async () => {
@@ -136,6 +143,13 @@ const MemberSection = () => {
       });
       setIsDeleting(false);
     }
+  };
+
+  const onChangeRoles = (value) => {
+    setEditMember((prev) => ({
+      ...prev,
+      role: value,
+    }));
   };
 
   return (
@@ -187,7 +201,10 @@ const MemberSection = () => {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
                             <DropdownMenuItem
-                              onClick={() => handleMemberEdit(member)}
+                              onClick={() => {
+                                setIsEditOpen(true);
+                                setEditMember(member);
+                              }}
                             >
                               Edit
                             </DropdownMenuItem>
@@ -216,7 +233,7 @@ const MemberSection = () => {
         )}
       </Table>
 
-      {/* Confirmation Dialog */}
+      {/* Confirmation Dialog Delete */}
       <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
         <DialogContent>
           <DialogHeader>
@@ -235,6 +252,37 @@ const MemberSection = () => {
             </Button>
             <Button variant="destructive" onClick={confirmDelete}>
               {isDeleting ? "Deleting..." : "Delete"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmation Dialog Delete */}
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit members</DialogTitle>
+            <DialogDescription>
+              <div className="flex items-center gap-2 mt-3">
+                <span className="font-medium pl-1">Role : </span>
+                <Select onValueChange={onChangeRoles}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder={editMember?.role} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="member">Member</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-4 mt-4">
+            <Button variant="outline" onClick={() => setIsEditOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={confirmEdit}>
+              {isEditing ? "Editing..." : "Edit"}
             </Button>
           </div>
         </DialogContent>
