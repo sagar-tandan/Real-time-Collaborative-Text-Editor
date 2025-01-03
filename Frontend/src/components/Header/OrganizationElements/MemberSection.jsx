@@ -155,7 +155,7 @@ const MemberSection = () => {
         <TableHeader>
           <TableRow>
             <TableHead>User</TableHead>
-            <TableHead>Joined</TableHead>
+            <TableHead>Status</TableHead>
             <TableHead>Role</TableHead>
           </TableRow>
         </TableHeader>
