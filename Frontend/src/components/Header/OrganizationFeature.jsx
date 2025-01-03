@@ -411,6 +411,7 @@ const OrganizationFeature = () => {
                   );
                   return (
                     <div
+                      key={org._id}
                       onClick={() =>
                         isAcceptedMember ? switchAccounts(org) : null
                       }

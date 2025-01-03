@@ -423,12 +423,6 @@ export const fetchOrganizationMembers = async (req, res, next) => {
       return res.status(404).json({ message: "Organization not found" });
     }
 
-    // // Send back the organization data along with populated members and admin
-    // res.json({
-    //   members: organization.members, // Populated members array
-    //   admin: organization.admin, // Populated admin array
-    // });
-
     const users = [];
 
     // Add members to the users array
@@ -454,7 +448,7 @@ export const fetchOrganizationMembers = async (req, res, next) => {
         userId,
         name: admin.adminId.name,
         email: admin.adminId.email,
-        status: "accepted", // Default status for admins
+        status: admin.adminStatus,
         role: "admin",
       };
 
@@ -467,10 +461,39 @@ export const fetchOrganizationMembers = async (req, res, next) => {
     });
 
     res.json({ users });
-
-    // console.log(users);
   } catch (error) {
     next(error);
-    // res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const deleteOrganizationMember = async (req, res, next) => {
+  try {
+    const { userId, orgId } = req.body;
+
+    if (!orgId || !userId) {
+      return res.status(400).json({ message: "Need both userId and orgId" });
+    }
+
+    const organization = await Organization.findById(orgId);
+
+    if (!organization) {
+      return res.status(404).json({ message: "Organization not found" });
+    }
+
+    // Filter out the member with the matching userId from both arrays
+    organization.members = organization.members.filter(
+      (member) => member.userId.toString() !== userId
+    );
+
+    organization.admin = organization.admin.filter(
+      (admin) => admin.adminId.toString() !== userId
+    );
+
+    // Save the updated organization document
+    await organization.save();
+
+    return res.status(200).json({ message: "User removed from organization" });
+  } catch (error) {
+    next(error);
   }
 };

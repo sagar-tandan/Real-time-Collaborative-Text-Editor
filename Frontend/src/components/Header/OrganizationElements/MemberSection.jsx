@@ -35,6 +35,7 @@ import {
 import InviteDialog from "./InviteDialog";
 import axios from "axios";
 import MyContext from "@/Context/MyContext";
+import { useToast } from "@/hooks/use-toast";
 
 const users = [
   {
@@ -59,10 +60,14 @@ const MemberSection = () => {
   const [isNextDialogOpen, setIsNextDialogOpen] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [allMembers, setAllMembers] = useState([]);
-  const [allAdmin, setAllAdmin] = useState([]);
+  const [deleteMember, setDeleteMember] = useState();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
+  const { toast } = useToast();
 
   const fetchMembers = async () => {
     setisLoading(true);
+
     try {
       const response = await axios.get(
         `${endPoint}/api/organization/fetch-organization-members`,
@@ -99,6 +104,40 @@ const MemberSection = () => {
     fetchMembers();
   }, []);
 
+  const handleMemberEdit = (memberData) => {
+    console.log(memberData);
+  };
+
+  const confirmDelete = async () => {
+    setIsDeleting(true);
+    try {
+      const response = await axios.post(
+        `${endPoint}/api/organization/delete-organization-Member`,
+        { userId: deleteMember.userId, orgId: currentProfile?.orgId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast({
+          description: "User deleted successfully!!",
+        });
+        setIsDeleting(false);
+        setIsConfirmDialogOpen(false);
+        fetchMembers();
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        description: "Something went wrong!",
+      });
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className="w-full flex flex-col p-2 ">
       <h1 className="font-medium mb-4">Members</h1>
@@ -126,38 +165,85 @@ const MemberSection = () => {
           </TableBody>
         ) : (
           <TableBody>
-            {allMembers
-              ?.filter((member) => member.userId != user.userId)
-              .map((member) => (
-                <TableRow key={member.userId} className="border-t">
-                  <TableCell className="flex items-center gap-3 p-4">
-                    <div>
-                      <p className="font-medium">{member.name}</p>
-                      <p className="text-sm text-gray-500">{member.email}</p>
-                    </div>
-                  </TableCell>
-                  <TableCell className="p-4">{member.status}</TableCell>
-                  <TableCell className="p-4 ">{member.role}</TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <MoreVertical className="size-4" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem>Delete</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+            {allMembers?.filter((member) => member.userId != user.userId)
+              .length > 0 ? (
+              allMembers
+                ?.filter((member) => member.userId != user.userId)
+                .map((member) => (
+                  <TableRow key={member.userId} className="border-t">
+                    <TableCell className="flex items-center gap-3 p-4">
+                      <div>
+                        <p className="font-medium">{member.name}</p>
+                        <p className="text-sm text-gray-500">{member.email}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell className="p-4">{member.status}</TableCell>
+                    <TableCell className="p-4 ">{member.role}</TableCell>
+                    <TableCell>
+                      {currentProfile?.role === "Admin" && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger>
+                            <MoreVertical className="size-4" />
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem
+                              onClick={() => handleMemberEdit(member)}
+                            >
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => {
+                                setIsConfirmDialogOpen(true);
+                                setDeleteMember(member);
+                              }}
+                            >
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+            ) : (
+              <TableBody>
+                <TableRow>
+                  <TableCell>No user Data</TableCell>
                 </TableRow>
-              ))}
+              </TableBody>
+            )}
           </TableBody>
         )}
       </Table>
 
+      {/* Confirmation Dialog */}
+      <Dialog open={isConfirmDialogOpen} onOpenChange={setIsConfirmDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete members</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to remove the member? This action cannot be
+              undone.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex justify-end gap-4 mt-4">
+            <Button
+              variant="outline"
+              onClick={() => setIsConfirmDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmDelete}>
+              {isDeleting ? "Deleting..." : "Delete"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <InviteDialog
         isNextDialogOpen={isNextDialogOpen}
         setIsNextDialogOpen={setIsNextDialogOpen}
+        fetchMembers={fetchMembers}
       />
     </div>
   );

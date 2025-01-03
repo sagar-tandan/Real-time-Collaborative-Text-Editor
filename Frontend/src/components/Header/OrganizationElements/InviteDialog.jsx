@@ -21,7 +21,11 @@ import MyContext from "@/Context/MyContext";
 import axios from "axios";
 import { useToast } from "@/hooks/use-toast";
 
-const InviteDialog = ({ isNextDialogOpen, setIsNextDialogOpen }) => {
+const InviteDialog = ({
+  isNextDialogOpen,
+  setIsNextDialogOpen,
+  fetchMembers,
+}) => {
   const { endPoint, currentProfile } = useContext(MyContext);
   const { toast } = useToast();
 
@@ -75,6 +79,7 @@ const InviteDialog = ({ isNextDialogOpen, setIsNextDialogOpen }) => {
       }
       setLoading(false);
       setInvite(true);
+      fetchMembers();
     } catch (error) {
       console.error("Error sending invitation:", error);
       toast({
