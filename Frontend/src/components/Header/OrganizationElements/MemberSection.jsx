@@ -18,7 +18,13 @@ import {
   TableBody,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Loader, MoreVertical } from "lucide-react";
+import {
+  Delete,
+  DeleteIcon,
+  Loader,
+  MoreVertical,
+  TrashIcon,
+} from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -106,15 +112,6 @@ const MemberSection = () => {
     fetchMembers();
   }, []);
 
-  const handleMemberEdit = (memberData) => {
-    console.log(memberData);
-  };
-
-  const confirmEdit = (e) => {
-    e.preventDefault();
-    console.log(editMember);
-  };
-
   const confirmDelete = async () => {
     setIsDeleting(true);
     try {
@@ -143,13 +140,6 @@ const MemberSection = () => {
       });
       setIsDeleting(false);
     }
-  };
-
-  const onChangeRoles = (value) => {
-    setEditMember((prev) => ({
-      ...prev,
-      role: value,
-    }));
   };
 
   return (
@@ -195,29 +185,28 @@ const MemberSection = () => {
                     <TableCell className="p-4 ">{member.role}</TableCell>
                     <TableCell>
                       {currentProfile?.role === "Admin" && (
-                        <DropdownMenu>
-                          <DropdownMenuTrigger>
-                            <MoreVertical className="size-4" />
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuItem
-                              onClick={() => {
-                                setIsEditOpen(true);
-                                setEditMember(member);
-                              }}
-                            >
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => {
-                                setIsConfirmDialogOpen(true);
-                                setDeleteMember(member);
-                              }}
-                            >
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <TrashIcon
+                          onClick={() => {
+                            setIsConfirmDialogOpen(true);
+                            setDeleteMember(member);
+                          }}
+                          className="size-4 cursor-pointer text-red-600"
+                        />
+                        // <DropdownMenu>
+                        //   <DropdownMenuTrigger>
+                        //     <MoreVertical className="size-4" />
+                        //   </DropdownMenuTrigger>
+                        //   <DropdownMenuContent>
+                        //     <DropdownMenuItem
+                        //       onClick={() => {
+                        //         setIsConfirmDialogOpen(true);
+                        //         setDeleteMember(member);
+                        //       }}
+                        //     >
+                        //       Delete
+                        //     </DropdownMenuItem>
+                        //   </DropdownMenuContent>
+                        // </DropdownMenu>
                       )}
                     </TableCell>
                   </TableRow>
@@ -252,37 +241,6 @@ const MemberSection = () => {
             </Button>
             <Button variant="destructive" onClick={confirmDelete}>
               {isDeleting ? "Deleting..." : "Delete"}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Confirmation Dialog Delete */}
-      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit members</DialogTitle>
-            <DialogDescription>
-              <div className="flex items-center gap-2 mt-3">
-                <span className="font-medium pl-1">Role : </span>
-                <Select onValueChange={onChangeRoles}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder={editMember?.role} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="member">Member</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex justify-end gap-4 mt-4">
-            <Button variant="outline" onClick={() => setIsEditOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={confirmEdit}>
-              {isEditing ? "Editing..." : "Edit"}
             </Button>
           </div>
         </DialogContent>
