@@ -60,6 +60,7 @@ const UserDocuments = () => {
           });
         }
         setDocuments(docs);
+        // console.log(response);
       } else {
         throw new Error("No data received");
       }
@@ -99,6 +100,7 @@ const UserDocuments = () => {
 
       if (response?.data) {
         setDocuments(response.data.documents);
+        // console.log(response)
       } else {
         throw new Error("No data received");
       }

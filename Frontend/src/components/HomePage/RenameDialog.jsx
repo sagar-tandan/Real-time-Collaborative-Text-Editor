@@ -93,7 +93,7 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
       onMouseUp={handleContainerClick}
     >
       <div
-        className="fixed inset-0 bg-black bg-opacity-80"
+        className="fixed inset-0 bg-black bg-opacity-60"
         onClick={handleContainerClick}
         onMouseDown={handleContainerClick}
         onMouseUp={handleContainerClick}

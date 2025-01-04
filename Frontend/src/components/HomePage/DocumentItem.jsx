@@ -6,6 +6,7 @@ import {
   ExternalLinkIcon,
   FilePen,
   MoreVertical,
+  Share2Icon,
   TrashIcon,
 } from "lucide-react";
 import { SiGoogledocs } from "react-icons/si";
@@ -42,11 +43,21 @@ const DocumentItem = ({ document }) => {
 
       <TableCell className="hidden md:flex items-center gap-2">
         {document.doc_type === "Personal" ? (
-          <CircleUserIcon className="size-5" />
+          document.createdBy === user?.userId ? (
+            <CircleUserIcon className="size-5" />
+          ) : (
+            <Share2Icon className="size-5" />
+          )
         ) : (
           <Building2Icon className="size-5" />
         )}
-        {document.doc_type === "Personal" ? "Personal" : "Organization"}
+
+        
+        {document.doc_type === "Personal"
+          ? document.createdBy === user?.userId
+            ? "Personal"
+            : document.ownerName
+          : "Organization"}
       </TableCell>
 
       <TableCell className="hidden md:table-cell py-1">

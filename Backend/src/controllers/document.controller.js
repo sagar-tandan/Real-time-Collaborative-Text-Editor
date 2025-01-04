@@ -84,10 +84,22 @@ export const getAllUserDocument = async (req, res, next) => {
     if (!userId) {
       return res.status(400).json({ message: "No user ID" });
     }
-    const allDocuments = await Document.find({ createdBy: userId }).sort({
-      updatedAt: "descending",
+    const personalDocuments = await Document.find({ createdBy: userId }).sort({
+      updatedAt: -1,
     });
-    res.status(200).json(allDocuments);
+
+    const collaborativeDocuments = await Document.find({
+      collaborators: userId,
+      createdBy: { $ne: userId },
+    }).sort({ updatedAt: -1 });
+
+    // Merge both arrays and sort by `updatedAt` in descending order
+    const mergedDocuments = [
+      ...personalDocuments,
+      ...collaborativeDocuments,
+    ].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+    res.status(200).json(mergedDocuments);
   } catch (error) {
     next(error);
   }

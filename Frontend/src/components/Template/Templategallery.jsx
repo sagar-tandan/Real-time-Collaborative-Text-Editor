@@ -10,7 +10,6 @@ import { v4 as uuidv4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import MyContext from "@/Context/MyContext";
-import { toast } from "react-toastify";
 
 const templates = [
   {
