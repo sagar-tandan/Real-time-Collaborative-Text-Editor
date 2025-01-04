@@ -88,7 +88,7 @@ const extensions = [
 ];
 
 const Editor = () => {
-  const { setEditor, user, endPoint, token, canEditDocs, setCanEditDocs } =
+  const { setEditor, user, endPoint, token, canEditDocs, setCanEditDocs,setAllowToAddCollaborator } =
     useContext(MyContext);
   const documentId = useParams();
   const [lastSavedContent, setLastSavedContent] = useState(null);
@@ -166,7 +166,8 @@ const Editor = () => {
 
         if (response.status === 200) {
           console.log(response);
-          setCanEditDocs(response.data.canEdit); // Set canEditDocs based on the backend response
+          setCanEditDocs(response.data.canEdit);
+          setAllowToAddCollaborator(response.data.document.createdBy);
           editor?.commands.setContent(
             JSON.parse(response.data.document.content)
           );

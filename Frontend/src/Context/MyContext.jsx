@@ -19,6 +19,7 @@ export const MyProvider = ({ children }) => {
   const [removeTrigger, setRemoveTrigger] = useState(false);
   const [updateTrigger, setUpdateTrigger] = useState(false);
   const [openRenameDialog, setOpenRenameDialog] = useState(false);
+  const [allowToAddCollaborator, setAllowToAddCollaborator] = useState("");
 
   const [userOrganization, setAllOrganization] = useState([]);
 
@@ -51,6 +52,8 @@ export const MyProvider = ({ children }) => {
         setCurrentProfile,
         userOrganization,
         setAllOrganization,
+        allowToAddCollaborator,
+        setAllowToAddCollaborator,
       }}
     >
       {children}

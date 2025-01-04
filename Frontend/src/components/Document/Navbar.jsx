@@ -39,7 +39,7 @@ import UserProfile from "../Header/UserProfile";
 import ShareDocument from "./DocNavbarElements/ShareDocument";
 
 const Navbar = () => {
-  const { editor } = useContext(MyContext);
+  const { editor, user, allowToAddCollaborator } = useContext(MyContext);
 
   const insertTable = (row, col) => {
     editor
@@ -263,7 +263,7 @@ const Navbar = () => {
       </div>
 
       <div className="w-full flex items-center justify-end relative">
-        <ShareDocument />
+        {allowToAddCollaborator === user.userId && <ShareDocument />}
         <UserProfile />
       </div>
     </nav>
