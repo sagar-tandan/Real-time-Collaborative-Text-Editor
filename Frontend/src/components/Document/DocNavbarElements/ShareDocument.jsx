@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,12 +9,20 @@ import {
 } from "@/components/ui/dialog";
 import { PlusIcon, Share2Icon, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import MyContext from "@/Context/MyContext";
+import { useParams } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 const ShareDocument = () => {
+  const { token, endPoint, user } = useContext(MyContext);
   const [emails, setEmails] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const docId = useParams();
+  const { toast } = useToast();
 
   const validateEmail = useCallback((email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -69,21 +77,48 @@ const ShareDocument = () => {
     [addEmail, inputValue, emails.length]
   );
 
-  const handleSubmit = useCallback(
-    (e) => {
-      e.preventDefault();
-      if (emails.length === 0 && !inputValue) {
-        setError("You need to provide at least one email");
-        return;
-      }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (emails.length === 0 && !inputValue) {
+      setError("You need to provide at least one email");
+      return;
+    }
+    await addCollaborators();
+  };
 
-      // Handle submission logic here
-      console.log("Submitting emails:", emails);
-      setEmails([]);
-      setIsDialogOpen(false);
-    },
-    [emails, inputValue]
-  );
+  const addCollaborators = async () => {
+    try {
+      const response = await axios.post(
+        `${endPoint}/api/document/add-collaborator`,
+        { docId: docId, emails: emails, ownerId: user?.userId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        console.log(response);
+        toast({
+          description: response.data.message,
+        });
+        setEmails([]);
+        setIsDialogOpen(false);
+      } else {
+        toast({
+          variant: "destructive",
+          description: response.data.message,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        variant: "destructive",
+        description: error.response.data.message,
+      });
+    }
+  };
 
   const handleDialogClose = useCallback(() => {
     setIsDialogOpen(false);

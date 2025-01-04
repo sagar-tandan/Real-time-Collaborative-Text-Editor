@@ -1,4 +1,5 @@
 import Document from "../models/document.model.js";
+import User from "../models/user.model.js";
 
 export const createDocument = async (req, res, next) => {
   // console.log(req.body);
@@ -117,6 +118,54 @@ export const getDocumentById = async (req, res, next) => {
       );
 
     res.status(200).json({ document, canEdit });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const addCollaborators = async (req, res, next) => {
+  try {
+    const { docId, emails, ownerId } = req.body;
+    console.log(docId, emails, ownerId);
+    if (!docId || !emails || !ownerId) {
+      return res.status(400).json({ message: "These fields cannot be null" });
+    }
+
+    const document = await Document.findOne({ doc_id: docId.id });
+
+    if (!document) {
+      return res.status(400).json({ message: "Document not found" });
+    }
+    if (document.createdBy.toString() !== ownerId) {
+      return res.status(403).json({ message: "Unauthorized user" });
+    }
+
+    const validUserIds = [];
+    const missingEmails = [];
+
+    for (const email of emails) {
+      const user = await User.findOne({ email });
+      if (user) {
+        if (!document.collaborators.includes(user._id.toString())) {
+          validUserIds.push(user._id);
+        }
+      } else {
+        missingEmails.push(email);
+      }
+    }
+
+    if (missingEmails.length > 0) {
+      return res.status(404).json({
+        message: "Some emails do not exists",
+        missingEmails,
+      });
+    }
+
+    document.collaborators.push(...validUserIds);
+    await document.save();
+    return res
+      .status(200)
+      .json({ message: "Collaborators added successfully", document });
   } catch (error) {
     next(error);
   }
