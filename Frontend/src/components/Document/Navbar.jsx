@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import logo from "/logo.svg";
 import MyContext from "@/Context/MyContext";
+import UserProfile from "../Header/UserProfile";
 
 const Navbar = () => {
   const { editor } = useContext(MyContext);
@@ -89,7 +90,7 @@ const Navbar = () => {
           <img src={logo} alt="logo" width={36} height={36} />
         </Link>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col ml-2">
         <DocumentInput />
         <div className="flex ml-1">
           <Menubar className="border-none bg-transparent shadow-none h-auto p-0">
@@ -258,6 +259,12 @@ const Navbar = () => {
             </MenubarMenu>
           </Menubar>
         </div>
+      </div>
+
+      <div className="w-full flex justify-end">
+        <div className=""></div>
+
+        <UserProfile />
       </div>
     </nav>
   );

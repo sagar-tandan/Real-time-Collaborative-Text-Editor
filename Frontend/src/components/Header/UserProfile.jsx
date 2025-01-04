@@ -9,7 +9,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CrossIcon, EditIcon, LogOutIcon, PenIcon, X } from "lucide-react";
+import { EditIcon, LogOutIcon, PenIcon, X } from "lucide-react";
 import { PopoverClose } from "@radix-ui/react-popover";
 import MyContext from "@/Context/MyContext";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,7 @@ const UserProfile = () => {
             <PopoverTrigger>
               <img
                 className=" object-cover w-[40px] h-[40px] rounded-full cursor-pointer border-white hover:border-neutral-300/80 transition-all ease-in-out duration-300 border-[3px]"
-                src="https://lh3.googleusercontent.com/a/ACg8ocLupU8Bh_aBNowNAZY1pMPTel3g1iH1xKBcvKmFevugBDzqbw=s360-c-no"
+                src="https://github.com/shadcn.png"
                 alt="profile"
               />
             </PopoverTrigger>
@@ -52,7 +52,7 @@ const UserProfile = () => {
 
           <div className="relative cursor-pointer">
             <img
-              src="https://lh3.googleusercontent.com/a/ACg8ocLupU8Bh_aBNowNAZY1pMPTel3g1iH1xKBcvKmFevugBDzqbw=s360-c-no"
+              src="https://github.com/shadcn.png"
               alt="profile"
               className="w-[60px] h-[60px] rounded-full my-3 hover:opacity-90 transition-all duration-200 ease-in-out"
             />
