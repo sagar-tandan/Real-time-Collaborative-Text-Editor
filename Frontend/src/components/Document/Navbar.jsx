@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import DocumentInput from "./DocumentInput";
+import DocumentInput from "./DocNavbarElements/DocumentInput";
 import {
   Menubar,
   MenubarContent,
@@ -36,6 +36,7 @@ import {
 import logo from "/logo.svg";
 import MyContext from "@/Context/MyContext";
 import UserProfile from "../Header/UserProfile";
+import ShareDocument from "./DocNavbarElements/ShareDocument";
 
 const Navbar = () => {
   const { editor } = useContext(MyContext);
@@ -261,9 +262,8 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div className="w-full flex justify-end">
-        <div className=""></div>
-
+      <div className="w-full flex items-center justify-end relative">
+        <ShareDocument />
         <UserProfile />
       </div>
     </nav>
