@@ -59,15 +59,30 @@ export const updateDocumentName = async (req, res, next) => {
 
 export const deleteDocument = async (req, res, next) => {
   try {
-    const { docId } = req.body;
-    if (!docId) {
-      return res.status(400).json({ message: "Document ID is required" });
+    const { docId, userId } = req.body;
+    if (!docId || !userId) {
+      return res
+        .status(400)
+        .json({ message: "Document ID and user ID is required" });
     }
 
-    const deletedDoc = await Document.findOneAndDelete({ doc_id: docId });
-    if (!deletedDoc) {
+    const deleteDoc = await Document.findOne({ doc_id: docId });
+    if (!deleteDoc) {
       return res.status(404).json({ message: "Document not found" });
     }
+
+    if (deleteDoc.createdBy.toString() !== userId) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to delete this document" });
+    }
+
+    await Document.deleteOne({ doc_id: docId });
+
+    return res.status(200).json({
+      message: "Document successfully deleted",
+      deletedDoc: deleteDoc,
+    });
 
     return res
       .status(200)

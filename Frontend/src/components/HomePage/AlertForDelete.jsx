@@ -10,20 +10,22 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import MyContext from "@/Context/MyContext";
+import { useToast } from "@/hooks/use-toast";
 import axios from "axios";
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const AlertForDelete = ({ docId, children }) => {
   const [isRemoving, setIsRemoving] = useState(false);
-  const { endPoint, token, setRemoveTrigger } = useContext(MyContext);
+  const { endPoint, token, setRemoveTrigger, user } = useContext(MyContext);
+  const { toast } = useToast();
   const navigate = useNavigate();
 
   const deleteDocument = async () => {
     try {
       const resposne = await axios.post(
         `${endPoint}/api/document/deleteDocument`,
-        { docId: docId },
+        { docId: docId, userId: user.userId },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -31,10 +33,17 @@ const AlertForDelete = ({ docId, children }) => {
         }
       );
       if (resposne.status === 200) {
-        console.log("Document deleted Successfully");
+        toast({
+          description: "Document deleted Successfully",
+        });
+        navigate("/");
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      toast({
+        variant: "destructive",
+        description: "Only creator are allowed to delete document",
+      });
     }
   };
 
