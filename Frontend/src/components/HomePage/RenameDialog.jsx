@@ -6,11 +6,10 @@ import { Input } from "../ui/input";
 import { X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
-const RenameDialog = ({ docId, initialTitle, children }) => {
+const RenameDialog = ({ docId, initialTitle, onClose }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [title, setTitle] = useState(initialTitle);
-  const { token, endPoint, setUpdateTrigger, setOpenRenameDialog, user } =
-    useContext(MyContext);
+  const { token, endPoint, setUpdateTrigger, user } = useContext(MyContext);
 
   const { toast } = useToast();
 
@@ -38,13 +37,11 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
 
       if (response.status === 200) {
         setUpdateTrigger((prev) => !prev);
-        // console.log("Document renamed successfully:", response.data);
         toast({
           description: "Document renamed successfully",
         });
       }
     } catch (error) {
-      // console.error("Error renaming document:", error);
       toast({
         variant: "destructive",
         description: error.response.data.message,
@@ -63,29 +60,10 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
     setIsUpdating(true);
     await updateDocumentName();
     setIsUpdating(false);
-    setOpenRenameDialog(false);
+    onClose();
   };
 
-  const handleCancel = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setOpenRenameDialog(false);
-  };
-
-  // Handler for the outer container
   const handleContainerClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  // Handler for the dialog box
-  const handleDialogClick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  // Handler for the form
-  const handleFormClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
   };
@@ -94,41 +72,24 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
     <div
       className="fixed inset-0 flex items-center justify-center z-40 cursor-default"
       onClick={handleContainerClick}
-      onMouseDown={handleContainerClick}
-      onMouseUp={handleContainerClick}
     >
-      <div
-        className="fixed inset-0 bg-black bg-opacity-60"
-        onClick={handleContainerClick}
-        onMouseDown={handleContainerClick}
-        onMouseUp={handleContainerClick}
-      />
+      <div className="fixed inset-0 bg-black bg-opacity-60" onClick={onClose} />
       <div
         className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 overflow-hidden relative cursor-default"
-        onClick={handleDialogClick}
-        onMouseDown={handleDialogClick}
-        onMouseUp={handleDialogClick}
+        onClick={handleContainerClick}
       >
-        <form
-          onSubmit={onSubmit}
-          onClick={handleFormClick}
-          onMouseDown={handleFormClick}
-          onMouseUp={handleFormClick}
-        >
+        <form onSubmit={onSubmit} onClick={handleContainerClick}>
           <div className="w-full flex justify-between">
             <div className="px-6 pt-4 flex flex-col">
               <h3 className="font-semibold text-lg text-gray-900">
                 Rename Document
               </h3>
-              <span className=" text-neutral-600">
+              <span className="text-neutral-600">
                 Enter a new name for this document
               </span>
             </div>
 
-            <X
-              onClick={() => setOpenRenameDialog(false)}
-              className="size-5 mt-4 mr-6 cursor-pointer"
-            />
+            <X onClick={onClose} className="size-5 mt-4 mr-6 cursor-pointer" />
           </div>
 
           <div className="p-6">
@@ -140,8 +101,6 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
                 setTitle(e.target.value);
               }}
               onClick={(e) => e.stopPropagation()}
-              onMouseDown={(e) => e.stopPropagation()}
-              onMouseUp={(e) => e.stopPropagation()}
               placeholder="Enter document title"
               autoFocus
             />
@@ -155,20 +114,12 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
               type="button"
               variant="ghost"
               disabled={isUpdating}
-              onClick={handleCancel}
-              onMouseDown={(e) => e.stopPropagation()}
-              onMouseUp={(e) => e.stopPropagation()}
+              onClick={onClose}
               className="border-[1px]"
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={isUpdating}
-              onClick={(e) => e.stopPropagation()}
-              onMouseDown={(e) => e.stopPropagation()}
-              onMouseUp={(e) => e.stopPropagation()}
-            >
+            <Button type="submit" disabled={isUpdating}>
               {isUpdating ? "Saving..." : "Save"}
             </Button>
           </div>

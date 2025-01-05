@@ -23,10 +23,10 @@ import AlertForDelete from "./AlertForDelete";
 import RenameDialog from "./RenameDialog";
 
 const DocumentItem = ({ document }) => {
-  console.log(document);
-  const { user, openRenameDialog, setOpenRenameDialog } = useContext(MyContext);
+  const { user } = useContext(MyContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [showRenameDialog, setShowRenameDialog] = useState(false);
 
   return (
     <TableRow
@@ -52,7 +52,6 @@ const DocumentItem = ({ document }) => {
           <Building2Icon className="size-5" />
         )}
 
-        
         {document.doc_type === "Personal"
           ? document.createdBy === user?.userId
             ? "Personal"
@@ -77,7 +76,7 @@ const DocumentItem = ({ document }) => {
             <DropdownMenuItem
               onClick={(e) => {
                 e.stopPropagation();
-                setOpenRenameDialog(true);
+                setShowRenameDialog(true);
                 setOpen(false);
               }}
               onSelect={(e) => e.preventDefault()}
@@ -109,11 +108,12 @@ const DocumentItem = ({ document }) => {
         </DropdownMenu>
       </TableCell>
 
-      {openRenameDialog && (
+      {showRenameDialog && (
         <RenameDialog
           docId={document.doc_id}
           initialTitle={document.doc_title}
-        ></RenameDialog>
+          onClose={() => setShowRenameDialog(false)}
+        />
       )}
     </TableRow>
   );

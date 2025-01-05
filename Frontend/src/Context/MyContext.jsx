@@ -1,5 +1,4 @@
 import React, { createContext, useState } from "react";
-import { io } from "socket.io-client";
 
 // 1. Create the context
 const MyContext = createContext();
@@ -18,7 +17,6 @@ export const MyProvider = ({ children }) => {
   // const [socketId, setSocketID] = useState();
   const [removeTrigger, setRemoveTrigger] = useState(false);
   const [updateTrigger, setUpdateTrigger] = useState(false);
-  const [openRenameDialog, setOpenRenameDialog] = useState(false);
   const [allowToAddCollaborator, setAllowToAddCollaborator] = useState("");
 
   const [userOrganization, setAllOrganization] = useState([]);
@@ -46,8 +44,7 @@ export const MyProvider = ({ children }) => {
         setRemoveTrigger,
         updateTrigger,
         setUpdateTrigger,
-        openRenameDialog,
-        setOpenRenameDialog,
+
         currentProfile,
         setCurrentProfile,
         userOrganization,
