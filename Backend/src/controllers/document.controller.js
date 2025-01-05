@@ -47,7 +47,7 @@ export const updateDocumentName = async (req, res, next) => {
     if (UpdateDoc.createdBy.toString() !== userId) {
       return res
         .status(403)
-        .json({ message: "Unauthorized to delete this document" });
+        .json({ message: "Unauthorized to rename this document" });
     }
 
     UpdateDoc.doc_title = documentName;

@@ -4,12 +4,15 @@ import MyContext from "@/Context/MyContext";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { X } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const RenameDialog = ({ docId, initialTitle, children }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [title, setTitle] = useState(initialTitle);
   const { token, endPoint, setUpdateTrigger, setOpenRenameDialog, user } =
     useContext(MyContext);
+
+  const { toast } = useToast();
 
   useEffect(() => {
     if (initialTitle) {
@@ -35,10 +38,17 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
 
       if (response.status === 200) {
         setUpdateTrigger((prev) => !prev);
-        console.log("Document renamed successfully:", response.data);
+        // console.log("Document renamed successfully:", response.data);
+        toast({
+          description: "Document renamed successfully",
+        });
       }
     } catch (error) {
-      console.error("Error renaming document:", error);
+      // console.error("Error renaming document:", error);
+      toast({
+        variant: "destructive",
+        description: error.response.data.message,
+      });
     }
   };
 
