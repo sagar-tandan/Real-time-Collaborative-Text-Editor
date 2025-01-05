@@ -33,18 +33,6 @@ import socket, {
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { FontSizeExtension } from "@/Custom_Extensions/FontSize";
-// import Collaboration from "@tiptap/extension-collaboration";
-// import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
-// import { HocuspocusProvider } from "@hocuspocus/provider";
-
-// import { WebrtcProvider } from "y-webrtc";
-// import * as Y from "yjs";
-
-// Set up the Hocuspocus WebSocket provider
-// const provider = new HocuspocusProvider({
-//   url: "'ws:://localhost:8000",
-//   name: "example-document",
-// });
 
 const extensions = [
   StarterKit,
@@ -72,24 +60,18 @@ const extensions = [
   BulletList,
   OrderedList,
   ListItem,
-
-  // // Register the document with Tiptap
-  // Collaboration.configure({
-  //   document: provider.document,
-  // }),
-  // // Register the collaboration cursor extension
-  // CollaborationCursor.configure({
-  //   provider: provider,
-  //   user: {
-  //     name: "Cyndi Lauper",
-  //     color: "#f783ac",
-  //   },
-  // }),
 ];
 
 const Editor = () => {
-  const { setEditor, user, endPoint, token, canEditDocs, setCanEditDocs,setAllowToAddCollaborator } =
-    useContext(MyContext);
+  const {
+    setEditor,
+    user,
+    endPoint,
+    token,
+    canEditDocs,
+    setCanEditDocs,
+    setAllowToAddCollaborator,
+  } = useContext(MyContext);
   const documentId = useParams();
   const [lastSavedContent, setLastSavedContent] = useState(null);
   const navigate = useNavigate();
@@ -115,6 +97,9 @@ const Editor = () => {
       //   onCursorMove(from);
       //   setLastCursorPosition(from); // Update the last known position
       // }
+      // console.log(from, to);
+
+      // Emit cursor position through Socket.IO
     },
 
     onBlur({ editor }) {
@@ -136,7 +121,7 @@ const Editor = () => {
           "focus:outline-none bg-white border border-[#C7C7C7] min-h-[1054px] w-[816px] py-10 pr-14 cursor-text ",
       },
     },
-    extensions,
+    extensions: [...extensions],
     editable: canEditDocs, // Editable flag based on canEditDocs state
   });
 
@@ -235,16 +220,6 @@ const Editor = () => {
         }
       }
     };
-
-    // const cursorHandler = (position) => {
-    //   console.log(position);
-    //   if (editor) {
-    //     // if(senderId )
-    //     // Set the cursor at the received position
-    //     // editor.commands.setTextSelection({ from: position, to: position });
-    //     // editor.commands.insertContent("<div class='vertical-line'></div>");
-    //   }
-    // };
 
     onReceiveUpdate(updateHandler);
     // onLoadCursor(cursorHandler);
