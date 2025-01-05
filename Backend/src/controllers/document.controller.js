@@ -29,7 +29,7 @@ export const createDocument = async (req, res, next) => {
 
 export const updateDocumentName = async (req, res, next) => {
   try {
-    const { docId, documentName } = req.body;
+    const { docId, documentName, userId } = req.body;
 
     if (!docId) {
       return res.status(400).json({ message: "Document ID is required" });
@@ -39,17 +39,23 @@ export const updateDocumentName = async (req, res, next) => {
       return res.status(400).json({ message: "Document name is required" });
     }
 
-    const updatedDoc = await Document.findOneAndUpdate(
-      { doc_id: docId },
-      { $set: { doc_title: documentName } },
-      { new: true } // To return the updated document
-    );
-    if (!updatedDoc) {
+    const UpdateDoc = await Document.findOne({ doc_id: docId });
+    if (!UpdateDoc) {
       return res.status(404).json({ message: "Document not found" });
     }
+
+    if (UpdateDoc.createdBy.toString() !== userId) {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to delete this document" });
+    }
+
+    UpdateDoc.doc_title = documentName;
+    await UpdateDoc.save();
+
     return res.status(200).json({
       message: "Document name successfully updated",
-      updatedDoc,
+      UpdateDoc,
     });
   } catch (error) {
     console.error(error);
@@ -83,10 +89,6 @@ export const deleteDocument = async (req, res, next) => {
       message: "Document successfully deleted",
       deletedDoc: deleteDoc,
     });
-
-    return res
-      .status(200)
-      .json({ message: "Document successfully deleted", deletedDoc });
   } catch (error) {
     console.error(error);
     next(error);

@@ -8,14 +8,8 @@ import { X } from "lucide-react";
 const RenameDialog = ({ docId, initialTitle, children }) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [title, setTitle] = useState(initialTitle);
-  const [open, setOpen] = useState(false);
-  const {
-    token,
-    endPoint,
-    setUpdateTrigger,
-    openRenameDialog,
-    setOpenRenameDialog,
-  } = useContext(MyContext);
+  const { token, endPoint, setUpdateTrigger, setOpenRenameDialog, user } =
+    useContext(MyContext);
 
   useEffect(() => {
     if (initialTitle) {
@@ -30,6 +24,7 @@ const RenameDialog = ({ docId, initialTitle, children }) => {
         {
           docId,
           documentName: title,
+          userId: user.userId,
         },
         {
           headers: {
