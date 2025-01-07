@@ -263,7 +263,7 @@ const Navbar = () => {
       </div>
 
       <div className="w-full flex items-center justify-end relative">
-        {allowToAddCollaborator === user.userId && <ShareDocument />}
+        {allowToAddCollaborator === user?.userId && <ShareDocument />}
         <UserProfile />
       </div>
     </nav>

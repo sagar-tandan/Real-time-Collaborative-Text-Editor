@@ -1,4 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
+import { useLiveblocksExtension } from "@liveblocks/react-tiptap";
+
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TaskItem from "@tiptap/extension-task-item";
@@ -33,9 +35,14 @@ import socket, {
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { FontSizeExtension } from "@/Custom_Extensions/FontSize";
+import { Threads } from "../Threads";
 
 const extensions = [
-  StarterKit,
+  StarterKit.configure({
+    // The Liveblocks extension comes with its own history handling
+    history: false,
+  }),
+  ,
   FontSizeExtension,
   TaskList,
   TaskItem.configure({ nested: true }),
@@ -77,6 +84,8 @@ const Editor = () => {
   const navigate = useNavigate();
   // const [lastCursorPosition, setLastCursorPosition] = useState(null); // Track last cursor position
 
+  const liveblocks = useLiveblocksExtension();
+
   const editor = useEditor({
     onCreate({ editor }) {
       setEditor(editor);
@@ -85,9 +94,10 @@ const Editor = () => {
       setEditor(null);
     },
     onUpdate({ editor }) {
-      const currentContent = editor.getJSON();
-      const { from } = editor.state.selection;
-      sendUpdate({ currentContent, from });
+      setEditor(editor);
+      // const currentContent = editor.getJSON();
+      // const { from } = editor.state.selection;
+      // sendUpdate({ currentContent, from });
     },
 
     onSelectionUpdate({ editor }) {
@@ -121,7 +131,7 @@ const Editor = () => {
           "focus:outline-none bg-white border border-[#C7C7C7] min-h-[1054px] w-[816px] py-10 pr-14 cursor-text ",
       },
     },
-    extensions: [...extensions],
+    extensions: [...extensions, liveblocks],
     editable: canEditDocs, // Editable flag based on canEditDocs state
   });
 
@@ -137,104 +147,105 @@ const Editor = () => {
       return;
     }
 
-    const fetchDetail = async () => {
-      try {
-        const response = await axios.get(
-          `${endPoint}/api/document/${documentId?.id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            params: { userId: user?.userId },
-          }
-        );
+    // const fetchDetail = async () => {
+    //   try {
+    //     const response = await axios.get(
+    //       `${endPoint}/api/document/${documentId?.id}`,
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${token}`,
+    //         },
+    //         params: { userId: user?.userId },
+    //       }
+    //     );
 
-        if (response.status === 200) {
-          console.log(response);
-          setCanEditDocs(response.data.canEdit);
-          setAllowToAddCollaborator(response.data.document.createdBy);
-          editor?.commands.setContent(
-            JSON.parse(response.data.document.content)
-          );
-          setLastSavedContent(JSON.parse(response.data.document.content));
-        } else {
-          console.log("Failed to fetch document, status:", response.status);
-        }
-      } catch (error) {
-        console.error("Error fetching document:", error);
-      }
-    };
+    //     if (response.status === 200) {
+    //       console.log(response);
+    //       setCanEditDocs(response.data.canEdit);
+    //       setAllowToAddCollaborator(response.data.document.createdBy);
+    //       editor?.commands.setContent(
+    //         JSON.parse(response.data.document.content)
+    //       );
+    //       setLastSavedContent(JSON.parse(response.data.document.content));
+    //     } else {
+    //       console.log("Failed to fetch document, status:", response.status);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching document:", error);
+    //   }
+    // };
 
-    fetchDetail();
+    // fetchDetail();
   }, [user?.userId, documentId?.id, endPoint, token, editor, setCanEditDocs]);
 
-  useEffect(() => {
-    if (documentId) {
-      sendDocumentId(documentId);
-    }
+  // useEffect(() => {
+  //   if (documentId) {
+  //     sendDocumentId(documentId);
+  //   }
 
-    const loadDocumentHandler = (content) => {
-      if (editor) {
-        editor.commands.setContent(JSON.parse(content));
-        setLastSavedContent(JSON.parse(content));
-      }
-    };
+  //   const loadDocumentHandler = (content) => {
+  //     if (editor) {
+  //       editor.commands.setContent(JSON.parse(content));
+  //       setLastSavedContent(JSON.parse(content));
+  //     }
+  //   };
 
-    onLoadDocument(loadDocumentHandler);
+  //   onLoadDocument(loadDocumentHandler);
 
-    return () => {
-      socket.off("load-document", loadDocumentHandler);
-    };
-  }, [documentId, editor]);
+  //   return () => {
+  //     socket.off("load-document", loadDocumentHandler);
+  //   };
+  // }, [documentId, editor]);
 
-  useEffect(() => {
-    if (!editor) return;
+  // useEffect(() => {
+  //   if (!editor) return;
 
-    const saveContent = () => {
-      const currentContent = editor.getJSON();
-      const currentContentString = JSON.stringify(currentContent);
-      const lastSavedContentString = JSON.stringify(lastSavedContent);
+  //   const saveContent = () => {
+  //     const currentContent = editor.getJSON();
+  //     const currentContentString = JSON.stringify(currentContent);
+  //     const lastSavedContentString = JSON.stringify(lastSavedContent);
 
-      if (currentContentString !== lastSavedContentString) {
-        socket.emit("save-content", { documentId, content: currentContent });
-        setLastSavedContent(currentContent);
-      }
-    };
+  //     if (currentContentString !== lastSavedContentString) {
+  //       socket.emit("save-content", { documentId, content: currentContent });
+  //       setLastSavedContent(currentContent);
+  //     }
+  //   };
 
-    const intervalId = setInterval(saveContent, 5000);
+  //   const intervalId = setInterval(saveContent, 5000);
 
-    return () => clearInterval(intervalId);
-  }, [editor, documentId, lastSavedContent]);
+  //   return () => clearInterval(intervalId);
+  // }, [editor, documentId, lastSavedContent]);
 
-  useEffect(() => {
-    const updateHandler = (delta) => {
-      console.log(delta);
-      if (editor) {
-        const currentContent = editor.getJSON();
-        const deltaString = JSON.stringify(delta.currentContent.content);
-        const currentContentString = JSON.stringify(currentContent);
+  // useEffect(() => {
+  //   const updateHandler = (delta) => {
+  //     console.log(delta);
+  //     if (editor) {
+  //       const currentContent = editor.getJSON();
+  //       const deltaString = JSON.stringify(delta.currentContent.content);
+  //       const currentContentString = JSON.stringify(currentContent);
 
-        if (deltaString !== currentContentString) {
-          editor.commands.setContent(delta.currentContent.content);
-          setLastSavedContent(delta.currentContent.content);
-        }
-      }
-    };
+  //       if (deltaString !== currentContentString) {
+  //         editor.commands.setContent(delta.currentContent.content);
+  //         setLastSavedContent(delta.currentContent.content);
+  //       }
+  //     }
+  //   };
 
-    onReceiveUpdate(updateHandler);
-    // onLoadCursor(cursorHandler);
+  //   onReceiveUpdate(updateHandler);
+  //   // onLoadCursor(cursorHandler);
 
-    return () => {
-      cleanupSocket();
-      socket.off("receive-update", updateHandler);
-      // socket.off("show-cursor", cursorHandler);
-    };
-  }, [editor]);
+  //   return () => {
+  //     cleanupSocket();
+  //     socket.off("receive-update", updateHandler);
+  //     // socket.off("show-cursor", cursorHandler);
+  //   };
+  // }, [editor]);
 
   return (
     <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:overflow-visible print:bg-white">
-      <div className="min-w-max flex justify-center w-[816px] py-4 mx-auto print:py-0 print:w-full print:min-w-0">
+      <div className="min-w-max flex justify-center w-[816px] py-4 mx-auto print:py-0 print:w-full print:min-w-0 ">
         <EditorContent editor={editor} />
+        <Threads editor={editor} />
       </div>
     </div>
   );

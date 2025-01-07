@@ -3,6 +3,7 @@ import Editor from "./Editor/Editor";
 import Toolbar from "./Toolbar/Toolbar";
 import Navbar from "./Navbar";
 import MyContext from "@/Context/MyContext";
+import Room from "./Room";
 
 const Page = () => {
   const { canEditDocs } = useContext(MyContext);
@@ -13,7 +14,9 @@ const Page = () => {
         {canEditDocs && <Toolbar />}
       </div>
       <div className={`${canEditDocs ? "pt-[114px]" : "pt-[80px]"} print:pt-0`}>
-        <Editor />
+        <Room>
+          <Editor />
+        </Room>
       </div>
     </div>
   );

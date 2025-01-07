@@ -4,6 +4,8 @@ import "./index.css";
 import App from "./App.jsx";
 import { MyProvider } from "./Context/MyContext.jsx";
 import { Toaster } from "@/components/ui/toaster";
+import "@liveblocks/react-ui/styles.css";
+import "@liveblocks/react-tiptap/styles.css";
 
 createRoot(document.getElementById("root")).render(
   // <StrictMode>

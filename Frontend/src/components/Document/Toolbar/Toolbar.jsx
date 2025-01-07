@@ -2,8 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import MyContext from "../../../Context/MyContext";
 import {
   BoldIcon,
+  Icon,
   ItalicIcon,
   ListTodoIcon,
+  MessageSquarePlusIcon,
   Printer,
   Redo2,
   RemoveFormattingIcon,
@@ -114,6 +116,12 @@ const Toolbar = () => {
 
   const Icons3 = [
     {
+      label: "Comment",
+      Icon: MessageSquarePlusIcon,
+      onClick: () => editor?.chain().focus().addPendingComment().run(),
+      isActive: editor?.isActive("liveblocksCommentMark"),
+    },
+    {
       label: "Tasklist",
       Icon: ListTodoIcon,
       isActive: activeMarks.taskList,
@@ -157,6 +165,7 @@ const Toolbar = () => {
       <ImageButton />
       <TextAlignButton />
       <ListButton />
+      <div className="h-6 w-[1px] bg-neutral-300" />
 
       {Icons3.map((icons) => (
         <ToolbarButton key={icons.label} {...icons} />
