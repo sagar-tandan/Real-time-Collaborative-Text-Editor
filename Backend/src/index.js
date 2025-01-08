@@ -5,7 +5,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import morgan from "morgan";
 import http from "http";
 import cors from "cors";
-import { Server } from "socket.io";
+// import { Server } from "socket.io";
 import { AuthRouter } from "./routes/v1/auth.js";
 import { DocumentRouter } from "./routes/v1/document.js";
 import Document from "./models/document.model.js";
