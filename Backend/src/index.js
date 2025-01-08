@@ -20,12 +20,12 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-// Initialize Socket.IO
-const io = new Server(server, {
-  cors: {
-    origin: "*",
-  },
-});
+// // Initialize Socket.IO
+// const io = new Server(server, {
+//   cors: {
+//     origin: "*",
+//   },
+// });
 
 // io.on("connection", (socket) => {
 //   console.log("User connected:", socket.id);
@@ -82,36 +82,36 @@ const io = new Server(server, {
 //   });
 // });
 
-let cursors = {}; // Store cursor positions by user ID
+// let cursors = {}; // Store cursor positions by user ID
 
-io.on("connection", (socket) => {
-  console.log("User connected: ", socket.id);
+// io.on("connection", (socket) => {
+//   console.log("User connected: ", socket.id);
 
-  // socket.on("send-data", (data) => {
-  //   console.log(data);
-  //   socket.broadcast.emit("send-response", {
-  //     data: JSON.stringify(data.currentContent),
-  //     from: data.from,
-  //   });
-  // });
+//   // socket.on("send-data", (data) => {
+//   //   console.log(data);
+//   //   socket.broadcast.emit("send-response", {
+//   //     data: JSON.stringify(data.currentContent),
+//   //     from: data.from,
+//   //   });
+//   // });
 
-  // Handle cursor updates
-  socket.on("cursor-update", (data) => {
-    // cursors[socket.id] = {
-    //   position: data.position,
-    //   user: data.user, // Contains name, color, etc.
-    // };
-    console.log(data.position);
-    io.emit("cursor-data", data.position); // Broadcast updated cursors
-  });
+//   // Handle cursor updates
+//   socket.on("cursor-update", (data) => {
+//     // cursors[socket.id] = {
+//     //   position: data.position,
+//     //   user: data.user, // Contains name, color, etc.
+//     // };
+//     console.log(data.position);
+//     io.emit("cursor-data", data.position); // Broadcast updated cursors
+//   });
 
-  // Handle disconnection
-  socket.on("disconnect", () => {
-    console.log(`User disconnected: ${socket.id}`);
-    delete cursors[socket.id];
-    io.emit("cursor-data", cursors); // Notify clients of the updated list
-  });
-});
+//   // Handle disconnection
+//   socket.on("disconnect", () => {
+//     console.log(`User disconnected: ${socket.id}`);
+//     delete cursors[socket.id];
+//     io.emit("cursor-data", cursors); // Notify clients of the updated list
+//   });
+// });
 
 app.use("/api/auth", AuthRouter);
 app.use("/api/document", DocumentRouter);
