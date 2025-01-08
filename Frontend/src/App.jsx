@@ -7,6 +7,9 @@ import MyContext from "./Context/MyContext.jsx";
 import AuthForm from "./components/AuthForm.jsx";
 import axios from "axios";
 import { Loader } from "lucide-react";
+import ThreadedEditor from "./ThreadEditor.jsx";
+import Chat from "./ThreadEditor.jsx";
+import TextEditor from "./ThreadEditor.jsx";
 
 function App() {
   const { endPoint, token } = useContext(MyContext);
@@ -57,6 +60,7 @@ function App() {
   return (
     <Router>
       <div className="w-full max-w-screen-2xl mx-auto font-inter">
+        {/* <TextEditor /> */}
         <Routes>
           <Route
             path="/"
