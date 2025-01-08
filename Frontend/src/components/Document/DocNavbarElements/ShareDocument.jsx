@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { PlusIcon, Share2Icon, X } from "lucide-react";
+import { PlusIcon, Share2Icon, UserRoundPlus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import MyContext from "@/Context/MyContext";
@@ -129,9 +129,11 @@ const ShareDocument = () => {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <button className="absolute top-0 right-[60px] flex gap-2 items-center justify-center py-2 px-4 bg-blue-300 rounded-full hover:bg-blue-400 transition-all duration-200 ease-in-out">
-          <PlusIcon className="size-4" />
-          <span className="font-medium">Add Collaborators</span>
+        <button className="absolute top-0 bottom-0 right-[60px] flex gap-2 items-center justify-center">
+          <div className="p-3 hover:bg-neutral-200/80  rounded-full transition-all duration-200 ease-in-out">
+            <UserRoundPlus className="size-5" />
+          </div>
+          {/* <span className="font-medium">Add Collaborators</span> */}
         </button>
       </DialogTrigger>
       <DialogContent>
