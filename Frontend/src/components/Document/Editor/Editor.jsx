@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
+import Placeholder from "@tiptap/extension-placeholder";
+
 import StarterKit from "@tiptap/starter-kit";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
@@ -108,6 +110,8 @@ const Editor = ({ ydoc, provider, room }) => {
   } = useContext(MyContext);
 
   const [status, setStatus] = useState("connecting");
+  const [activeUsers, setActiveUsers] = useState([]);
+
   const [currentUser, setCurrentUser] = useState({
     name: user?.userName,
     color: getRandomColor(),
@@ -121,12 +125,8 @@ const Editor = ({ ydoc, provider, room }) => {
       disableCollaboration();
     },
 
-    onCreate: ({ editor: currentEditor }) => {
-      provider.on("synced", () => {
-        if (currentEditor.isEmpty) {
-          currentEditor.commands.setContent(defaultContent);
-        }
-      });
+    onCreate({ editor }) {
+      setEditor(editor);
     },
     onDestroy() {
       setEditor(null);
@@ -149,9 +149,7 @@ const Editor = ({ ydoc, provider, room }) => {
     onFocus({ editor }) {
       setEditor(editor);
     },
-    // onContentError({ editor }) {
-    //   setEditor(editor);
-    // },
+
     editorProps: {
       attributes: {
         style: "padding-left: 56px; padding-right: 56px;",
@@ -175,23 +173,33 @@ const Editor = ({ ydoc, provider, room }) => {
   });
 
   useEffect(() => {
-    // Update status changes
     const statusHandler = (event) => {
       setStatus(event.status);
     };
+
+    // const updateActiveUsers = () => {
+    //   const users = editor.storage.collaborationCursor.users;
+    //   setActiveUsers(users);
+    //   console.log(activeUsers);
+    // };
+
+    // updateActiveUsers();
 
     provider.on("status", statusHandler);
 
     return () => {
       provider.off("status", statusHandler);
     };
-  }, [provider]);
+  }, [provider, editor]);
 
   // Save current user to localStorage and emit to editor
   useEffect(() => {
     if (editor && currentUser) {
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
       editor.chain().focus().updateUser(currentUser).run();
+      const users = editor.storage.collaborationCursor.users;
+      setActiveUsers(users);
+      console.log(activeUsers);
     }
   }, [editor, currentUser]);
 
@@ -239,7 +247,6 @@ const Editor = ({ ydoc, provider, room }) => {
     <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:overflow-visible print:bg-white">
       <div className="min-w-max flex justify-center w-[816px] py-4 mx-auto print:py-0 print:w-full print:min-w-0 ">
         <EditorContent editor={editor} />
-        {/* <Threads editor={editor} /> */}
       </div>
     </div>
   );

@@ -115,12 +115,12 @@ const Toolbar = () => {
   ];
 
   const Icons3 = [
-    {
-      label: "Comment",
-      Icon: MessageSquarePlusIcon,
-      onClick: () => editor?.chain().focus().addPendingComment().run(),
-      isActive: editor?.isActive("liveblocksCommentMark"),
-    },
+    // {
+    //   label: "Comment",
+    //   Icon: MessageSquarePlusIcon,
+    //   onClick: () => editor?.chain().focus().addPendingComment().run(),
+    //   isActive: editor?.isActive("liveblocksCommentMark"),
+    // },
     {
       label: "Tasklist",
       Icon: ListTodoIcon,

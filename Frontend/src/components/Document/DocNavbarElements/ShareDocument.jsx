@@ -138,7 +138,7 @@ const ShareDocument = () => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add memeber to "Untitled Document"</DialogTitle>
+          <DialogTitle>Add Collaborators to "Untitled Document"</DialogTitle>
           <DialogDescription>
             <form
               onSubmit={handleSubmit}
