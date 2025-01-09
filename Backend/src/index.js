@@ -5,7 +5,7 @@ import { errorHandler } from "./middleware/errorHandler.js";
 import morgan from "morgan";
 import http from "http";
 import cors from "cors";
-// import { Server } from "socket.io";
+import { Server } from "socket.io";
 import { AuthRouter } from "./routes/v1/auth.js";
 import { DocumentRouter } from "./routes/v1/document.js";
 import Document from "./models/document.model.js";
@@ -20,12 +20,21 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-// // Initialize Socket.IO
-// const io = new Server(server, {
-//   cors: {
-//     origin: "*",
-//   },
-// });
+// Initialize Socket.IO
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log("User connected: ", socket.id);
+
+  socket.on("user-connected", (data) => {
+    console.log(data);
+    socket.broadcast.emit("user-notify", data);
+  });
+});
 
 // io.on("connection", (socket) => {
 //   console.log("User connected:", socket.id);

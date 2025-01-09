@@ -32,6 +32,8 @@ import { FontSizeExtension } from "@/Custom_Extensions/FontSize";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Threads } from "../Threads";
+import socket from "@/Socket/Socket";
+import { useToast } from "@/hooks/use-toast";
 
 const extensions = [
   StarterKit.configure({
@@ -119,6 +121,7 @@ const Editor = ({ ydoc, provider, room }) => {
   });
 
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const editor = useEditor({
     enableContentCheck: true,
@@ -178,14 +181,6 @@ const Editor = ({ ydoc, provider, room }) => {
       setStatus(event.status);
     };
 
-    // const updateActiveUsers = () => {
-    //   const users = editor.storage.collaborationCursor.users;
-    //   setActiveUsers(users);
-    //   console.log(activeUsers);
-    // };
-
-    // updateActiveUsers();
-
     provider.on("status", statusHandler);
 
     return () => {
@@ -201,6 +196,15 @@ const Editor = ({ ydoc, provider, room }) => {
       const users = editor.storage.collaborationCursor.users;
       setActiveUsers(users);
       console.log(activeUsers);
+
+      socket.emit("user-connected", currentUser);
+      socket.on("user-notify", (data) => {
+        // console.log(data);
+        // setNotifyUser(data.name);
+        toast({
+          description: `${data.name} has joined the document.`,
+        });
+      });
     }
   }, [editor, currentUser]);
 

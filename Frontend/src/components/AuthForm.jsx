@@ -103,7 +103,6 @@ export default function AuthForm() {
             }
           );
           if (response.status == 200) {
-            toast.success("Registration Successfull!");
             toast({
               title: "Registration Successfull!",
               description: "You are successfully registered into our system.",
