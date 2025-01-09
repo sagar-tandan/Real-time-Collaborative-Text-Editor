@@ -25,6 +25,10 @@ export const MyProvider = ({ children }) => {
     JSON.parse(localStorage.getItem("currentProfile")) || null
   );
 
+  //Margin values
+  const [leftMargin, setLeftMargin] = useState(56);
+  const [rightMargin, setRightMargin] = useState(56);
+
   return (
     <MyContext.Provider
       value={{
@@ -51,6 +55,10 @@ export const MyProvider = ({ children }) => {
         setAllOrganization,
         allowToAddCollaborator,
         setAllowToAddCollaborator,
+        leftMargin,
+        setLeftMargin,
+        rightMargin,
+        setRightMargin,
       }}
     >
       {children}

@@ -111,6 +111,10 @@ const Editor = ({ ydoc, provider, room }) => {
     canEditDocs,
     setCanEditDocs,
     setAllowToAddCollaborator,
+    rightMargin,
+    setRightMargin,
+    leftMargin,
+    setLeftMargin,
   } = useContext(MyContext);
 
   const [status, setStatus] = useState("connecting");
@@ -158,7 +162,7 @@ const Editor = ({ ydoc, provider, room }) => {
 
     editorProps: {
       attributes: {
-        style: "padding-left: 56px; padding-right: 56px;",
+        style: `padding-left: ${leftMargin}px; padding-right: ${rightMargin}px;`,
         class:
           "focus:outline-none bg-white border border-[#C7C7C7] min-h-[1054px] w-[816px] py-10 pr-14 cursor-text ",
       },
@@ -197,9 +201,9 @@ const Editor = ({ ydoc, provider, room }) => {
       editor.chain().focus().updateUser(currentUser).run();
       const users = editor.storage.collaborationCursor.users;
       setActiveUsers(users);
-      console.log(activeUsers);
+      // console.log(activeUsers);
 
-      socket.emit("user-connected", currentUser);
+      socket.emit("user-connected", { currentUser, room });
       socket.on("user-notify", (data) => {
         toast({
           className: "bg-blue-300 font-medium text-lg ",
@@ -251,7 +255,7 @@ const Editor = ({ ydoc, provider, room }) => {
 
   return (
     <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:overflow-visible print:bg-white">
-      <Ruler />
+      <Ruler room={room} />
       <div className="min-w-max flex justify-center w-[816px] py-4 mx-auto print:py-0 print:w-full print:min-w-0 ">
         <EditorContent editor={editor} />
         {/* <Threads editor={editor} /> */}

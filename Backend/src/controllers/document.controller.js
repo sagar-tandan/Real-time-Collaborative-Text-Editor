@@ -199,3 +199,44 @@ export const addCollaborators = async (req, res, next) => {
     next(error);
   }
 };
+
+export const saveMarginPosition = async (leftMargin, rightMargin, docId) => {
+  try {
+    // console.log(leftMargin, rightMargin, docId);
+    const document = await Document.findOne({ doc_id: docId });
+    if (!document) {
+      console.log("Document not found");
+    }
+
+    document.Marginposition = {
+      leftMargin: leftMargin,
+      rightMargin: rightMargin,
+    };
+    await document.save();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getMarginPosition = async (req, res, next) => {
+  try {
+    const { room } = req.body;
+
+    if (!room) {
+      return res.status(400).json({ message: "Room ID is empty" });
+    }
+
+    // Fetch the document by doc_id (room)
+    const document = await Document.findOne({ doc_id: room });
+
+    if (!document) {
+      return res.status(404).json({ message: "Document not found" }); // 404 is more appropriate
+    }
+
+    // Return the margin position if document is found
+    return res.status(200).json(document.Marginposition);
+  } catch (error) {
+    // Pass the error to the error handler middleware
+    next(error);
+  }
+};

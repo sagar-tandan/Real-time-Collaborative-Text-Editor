@@ -5,6 +5,7 @@ import {
   deleteDocument,
   getAllUserDocument,
   getDocumentById,
+  getMarginPosition,
   updateDocumentName,
 } from "../../controllers/document.controller.js";
 import { authMiddleware } from "../../middleware/authMiddleware.js";
@@ -17,3 +18,4 @@ DocumentRouter.post("/deleteDocument", authMiddleware, deleteDocument);
 DocumentRouter.post("/updateDocument", authMiddleware, updateDocumentName);
 DocumentRouter.get("/:id", authMiddleware, getDocumentById);
 DocumentRouter.post("/add-collaborator", authMiddleware, addCollaborators);
+DocumentRouter.post("/get-margin-position", authMiddleware, getMarginPosition);

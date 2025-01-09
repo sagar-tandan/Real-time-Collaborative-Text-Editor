@@ -43,6 +43,11 @@ const documentSchema = new Schema(
         required: true,
       },
     ],
+
+    Marginposition: {
+      leftMargin: { type: Number, required: true },
+      rightMargin: { type: Number, required: true },
+    },
   },
   { timestamps: true }
 );

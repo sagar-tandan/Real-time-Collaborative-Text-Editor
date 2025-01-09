@@ -10,6 +10,7 @@ import { AuthRouter } from "./routes/v1/auth.js";
 import { DocumentRouter } from "./routes/v1/document.js";
 import Document from "./models/document.model.js";
 import { OrganizationRouter } from "./routes/v1/organization.js";
+import { saveMarginPosition } from "./controllers/document.controller.js";
 
 dotenv.config();
 const app = express();
@@ -30,9 +31,24 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("User connected: ", socket.id);
 
+  // Notify other users of a new connection
   socket.on("user-connected", (data) => {
-    console.log(data);
-    socket.broadcast.emit("user-notify", data);
+    console.log("User connected data: ", data.currentUser);
+    socket.join(data.room);
+    socket.broadcast.to(data.room).emit("user-notify", data.currentUser);
+  });
+
+  // Handle margin updates
+  socket.on("margin-cursor-update", async (data) => {
+    console.log("Received margin update: ", data);
+    socket.join(data.room);
+    socket.broadcast.to(data.room).emit("recieve-cursor-update", data);
+    await saveMarginPosition(data.leftMargin, data.rightMargin, data.room);
+  });
+
+  // Handle disconnection
+  socket.on("disconnect", () => {
+    console.log("User disconnected: ", socket.id);
   });
 });
 

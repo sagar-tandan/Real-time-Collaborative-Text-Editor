@@ -1,4 +1,8 @@
-import React, { useRef, useState } from "react";
+import MyContext from "@/Context/MyContext";
+import socket from "@/Socket/Socket";
+import { data } from "autoprefixer";
+import axios from "axios";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 
 const markers = Array.from({ length: 83 }, (_, i) => i);
@@ -33,9 +37,15 @@ const Marker = ({
   );
 };
 
-const Ruler = () => {
-  const [leftMargin, setLeftMargin] = useState(56);
-  const [rightMargin, setRightMargin] = useState(56);
+const Ruler = ({ room }) => {
+  const {
+    rightMargin,
+    setRightMargin,
+    leftMargin,
+    setLeftMargin,
+    endPoint,
+    token,
+  } = useContext(MyContext);
 
   const [isDraggingRight, setIsDraggingRight] = useState(false);
   const [isDraggingLeft, setIsDraggingLeft] = useState(false);
@@ -89,6 +99,59 @@ const Ruler = () => {
   const handleRightDoubleClick = () => {
     setRightMargin(56);
   };
+
+  // SOCKET IMPLEMENTATION FOR REALTIME MARGIN CHANGES
+
+  useEffect(() => {
+    socket.emit("margin-cursor-update", { leftMargin, rightMargin, room });
+  }, [isDraggingLeft, isDraggingRight]);
+
+  useEffect(() => {
+    // Listen for cursor updates
+    const handleCursorUpdate = (data) => {
+      setLeftMargin(data.leftMargin);
+      setRightMargin(data.rightMargin);
+      console.log(data);
+    };
+
+    if (socket) {
+      socket.on("recieve-cursor-update", handleCursorUpdate);
+    }
+
+    // Cleanup listener on unmount
+    return () => {
+      if (socket) {
+        socket.off("recieve-cursor-update", handleCursorUpdate);
+      }
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    const getMarginPosition = async () => {
+      try {
+        const response = await axios.post(
+          `${endPoint}/api/document/get-margin-position`,
+          { room: room },
+          {
+            // Wrap room in an object
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          console.log(response.data);
+          // setLeftMargin(response.data?.Marginposition.leftMargin);
+          // setRightMargin(response.data?.Marginposition.rightMargin);
+        }
+      } catch (error) {
+        console.log("This is error hree:", error);
+      }
+    };
+
+    getMarginPosition();
+  }, [room, token, endPoint]); // Added token and endPoint as dependencies for completeness
 
   return (
     <div
