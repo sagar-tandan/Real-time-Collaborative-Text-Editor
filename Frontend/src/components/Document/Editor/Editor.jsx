@@ -34,6 +34,7 @@ import axios from "axios";
 import { Threads } from "../Threads";
 import socket from "@/Socket/Socket";
 import { useToast } from "@/hooks/use-toast";
+import Ruler from "../Toolbar/Ruler";
 
 const extensions = [
   StarterKit.configure({
@@ -128,6 +129,7 @@ const Editor = ({ ydoc, provider, room }) => {
     onContentError: ({ disableCollaboration }) => {
       disableCollaboration();
     },
+    immediatelyRender: false,
 
     onCreate({ editor }) {
       setEditor(editor);
@@ -199,9 +201,8 @@ const Editor = ({ ydoc, provider, room }) => {
 
       socket.emit("user-connected", currentUser);
       socket.on("user-notify", (data) => {
-        // console.log(data);
-        // setNotifyUser(data.name);
         toast({
+          className: "bg-blue-300 font-medium text-lg ",
           description: `${data.name} has joined the document.`,
         });
       });
@@ -250,6 +251,7 @@ const Editor = ({ ydoc, provider, room }) => {
 
   return (
     <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:overflow-visible print:bg-white">
+      <Ruler />
       <div className="min-w-max flex justify-center w-[816px] py-4 mx-auto print:py-0 print:w-full print:min-w-0 ">
         <EditorContent editor={editor} />
         {/* <Threads editor={editor} /> */}
