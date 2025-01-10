@@ -38,7 +38,7 @@ import MyContext from "@/Context/MyContext";
 import UserProfile from "../Header/UserProfile";
 import ShareDocument from "./DocNavbarElements/ShareDocument";
 
-const Navbar = () => {
+const Navbar = ({ room }) => {
   const { editor, user, allowToAddCollaborator } = useContext(MyContext);
 
   const insertTable = (row, col) => {
@@ -92,7 +92,7 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="flex flex-col ml-2">
-        <DocumentInput />
+        <DocumentInput room={room} />
         <div className="flex ml-1">
           <Menubar className="border-none bg-transparent shadow-none h-auto p-0">
             <MenubarMenu>

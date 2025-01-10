@@ -112,9 +112,8 @@ const Editor = ({ ydoc, provider, room }) => {
     setCanEditDocs,
     setAllowToAddCollaborator,
     rightMargin,
-    setRightMargin,
     leftMargin,
-    setLeftMargin,
+    setDocumentName,
   } = useContext(MyContext);
 
   const [status, setStatus] = useState("connecting");
@@ -238,6 +237,7 @@ const Editor = ({ ydoc, provider, room }) => {
           console.log(response);
           setCanEditDocs(response.data.canEdit);
           setAllowToAddCollaborator(response.data.document.createdBy);
+          setDocumentName(response.data.document.doc_title);
           // editor?.commands.setContent(
           //   JSON.parse(response.data.document.content)
           // );

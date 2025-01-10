@@ -29,6 +29,9 @@ export const MyProvider = ({ children }) => {
   const [leftMargin, setLeftMargin] = useState(56);
   const [rightMargin, setRightMargin] = useState(56);
 
+  //Document Name
+  const [documentName, setDocumentName] = useState("Untitled Document");
+
   return (
     <MyContext.Provider
       value={{
@@ -59,6 +62,8 @@ export const MyProvider = ({ children }) => {
         setLeftMargin,
         rightMargin,
         setRightMargin,
+        documentName,
+        setDocumentName,
       }}
     >
       {children}
