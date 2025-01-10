@@ -136,9 +136,15 @@ const Editor = ({ ydoc, provider, room }) => {
 
     onCreate({ editor }) {
       setEditor(editor);
+      // useEffect(() => {
+
+      // }, [room]);
     },
     onDestroy() {
       setEditor(null);
+      // if (canEditDocs) {
+      //   socket.emit("editorClosed", { room, user });
+      // }
     },
 
     onUpdate({ editor }) {
@@ -151,12 +157,18 @@ const Editor = ({ ydoc, provider, room }) => {
 
     onBlur({ editor }) {
       setEditor(editor);
+      // if (canEditDocs) {
+      //   socket.emit("editorClosed", { room, user });
+      // }
     },
     onTransaction({ editor }) {
       setEditor(editor);
     },
     onFocus({ editor }) {
       setEditor(editor);
+      if (canEditDocs) {
+        socket.emit("new_user", { room, user });
+      }
     },
 
     editorProps: {

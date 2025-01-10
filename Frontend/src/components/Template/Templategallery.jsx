@@ -68,6 +68,8 @@ const Templategallery = () => {
           ownerEmail: user?.userEmail,
           doc_title: "Untitled Document",
           doc_type: "Personal",
+          rightMargin: 56,
+          leftMargin: 56,
         },
         {
           headers: {

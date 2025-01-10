@@ -52,6 +52,18 @@ io.on("connection", (socket) => {
     socket.broadcast.to(data.room).emit("updated-docName", data.documentName);
   });
 
+  //Handle userconnection
+  socket.on("new_user", (data) => {
+    // console.log(data);
+    socket.join(data.room);
+    socket.broadcast.to(data.room).emit("update_user", data.user);
+  });
+
+  socket.on("editorClosed", (data) => {
+    // console.log(data);
+    socket.join(data.room);
+    socket.broadcast.to(data.room).emit("remove_user", data.user);
+  });
   // Handle disconnection
   socket.on("disconnect", () => {
     console.log("User disconnected: ", socket.id);

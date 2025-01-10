@@ -6,10 +6,11 @@ import MyContext from "@/Context/MyContext";
 import { useParams } from "react-router-dom";
 import { TiptapCollabProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
-import { Loader2Icon, LoaderIcon } from "lucide-react";
+import { LoaderIcon } from "lucide-react";
+import socket from "@/Socket/Socket";
 
 const Page = () => {
-  const { canEditDocs } = useContext(MyContext);
+  const { canEditDocs, user } = useContext(MyContext);
   const documentId = useParams();
   const appId = "7j9y6m10";
   const room = `${documentId.id}`;
@@ -25,19 +26,44 @@ const Page = () => {
   // State to track loading status
   const [isLoading, setIsLoading] = useState(true);
 
+  // useEffect(() => {
+  //   if (canEditDocs) {
+  //     socket.emit("new_user", { room, user });
+  //   }
+  // });
+
+  // useEffect(() => {
+  //   console.log(ydoc);
+  //   const handleDocumentLoad = () => {
+  //     // Stop loading
+  //     setIsLoading(false);
+  //     console.log("Document loaded through event!");
+  //   };
+
+  //   ydoc.on("update", handleDocumentLoad); // Listen for updates
+
+  //   // Cleanup
+  //   return () => {
+  //     ydoc.off("update", handleDocumentLoad); // Remove event listener
+  //   };
+  // }, [ydoc]);
+
   useEffect(() => {
-    const handleDocumentLoad = () => {
-      // Stop loading
-      console.log("Document loaded through event!");
-      setIsLoading(false);
-    };
+    // console.log("mount");
 
-    ydoc.on("update", handleDocumentLoad); // Listen for updates
-
-    // Cleanup
     return () => {
-      ydoc.off("update", handleDocumentLoad); // Remove event listener
+      // console.log("unmount");
+
+      if (canEditDocs) {
+        socket.emit("editorClosed", { room, user });
+      }
     };
+  }, [canEditDocs]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
   }, [ydoc]);
 
   return (
@@ -56,15 +82,7 @@ const Page = () => {
           <div
             className={`${canEditDocs ? "pt-[114px]" : "pt-[80px]"} print:pt-0`}
           >
-            {isLoading ? (
-              // Display loading state while the document is loading
-              <div className="flex justify-center items-center h-full">
-                <p>Loading...</p>
-              </div>
-            ) : (
-              // Render the editor once the document is loaded
-              <Editor provider={provider} ydoc={ydoc} room={room} />
-            )}
+            <Editor provider={provider} ydoc={ydoc} room={room} />
           </div>
         </>
       )}

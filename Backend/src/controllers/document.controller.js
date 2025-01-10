@@ -3,8 +3,16 @@ import User from "../models/user.model.js";
 
 export const createDocument = async (req, res, next) => {
   // console.log(req.body);
-  const { doc_id, ownerId, ownerName, ownerEmail, doc_title, doc_type } =
-    req.body;
+  const {
+    doc_id,
+    ownerId,
+    ownerName,
+    ownerEmail,
+    doc_title,
+    doc_type,
+    leftMargin,
+    rightMargin,
+  } = req.body;
   try {
     if (!doc_id) {
       res.status(400).json({ message: "Docuemnt ID not found" });
@@ -19,6 +27,10 @@ export const createDocument = async (req, res, next) => {
       doc_title: doc_title,
       doc_type: doc_type,
       collaborators: [ownerId],
+      Marginposition: {
+        leftMargin: leftMargin,
+        rightMargin: rightMargin,
+      },
     });
 
     res.status(200).json(newDocument);

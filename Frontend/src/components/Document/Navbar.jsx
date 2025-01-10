@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import DocumentInput from "./DocNavbarElements/DocumentInput";
 import {
   Menubar,
@@ -37,9 +37,44 @@ import logo from "/logo.svg";
 import MyContext from "@/Context/MyContext";
 import UserProfile from "../Header/UserProfile";
 import ShareDocument from "./DocNavbarElements/ShareDocument";
+import socket from "@/Socket/Socket";
+import CustomAvatar from "./Toolbar/Avatar";
 
 const Navbar = ({ room }) => {
   const { editor, user, allowToAddCollaborator } = useContext(MyContext);
+  const [activeUsers, setActiveUsers] = useState([]); // Use useState here
+
+  useEffect(() => {
+    // Listen for 'update_user' event and update the user state
+    socket.on("update_user", (data) => {
+      setActiveUsers((prevUsers) => {
+        // Check if the user already exists in the activeUsers array
+        const userExists = prevUsers.some(
+          (user) => user.userId === data.userId
+        );
+
+        // Only add the user if they don't already exist
+        if (!userExists) {
+          return [...prevUsers, data];
+        }
+        return prevUsers;
+      });
+    });
+
+    // Listen for 'editorClosed' event and remove the user from activeUsers
+    socket.on("remove_user", (data) => {
+      setActiveUsers((prevUsers) =>
+        prevUsers.filter((user) => user.userId !== data.userId)
+      );
+      console.log(activeUsers);
+    });
+
+    // Clean up socket connections when the component unmounts
+    return () => {
+      socket.off("update_user");
+      socket.off("remove_user");
+    };
+  }, []);
 
   const insertTable = (row, col) => {
     editor
@@ -263,6 +298,12 @@ const Navbar = ({ room }) => {
       </div>
 
       <div className="w-full flex items-center justify-end relative">
+        {/* Active Users Section */}
+        <div className="flex items-center space-x-4 overflow-x-auto px-2">
+          {activeUsers.map((data) => (
+            <CustomAvatar key={data.userId} name={data.userName} />
+          ))}
+        </div>
         {allowToAddCollaborator === user?.userId && <ShareDocument />}
         <UserProfile />
       </div>
