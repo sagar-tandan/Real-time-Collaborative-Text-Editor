@@ -255,7 +255,7 @@ const Editor = ({ ydoc, provider, room }) => {
 
   return (
     <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:overflow-visible print:bg-white">
-      <Ruler room={room} />
+      {canEditDocs && <Ruler room={room} />}
       <div className="min-w-max flex justify-center w-[816px] py-4 mx-auto print:py-0 print:w-full print:min-w-0 ">
         <EditorContent editor={editor} />
         {/* <Threads editor={editor} /> */}
