@@ -74,7 +74,7 @@ const Ruler = ({ room }) => {
         if (isDraggingLeft) {
           const maxLeftPosition = PAGE_WIDTH - rightMargin - MINIMUM_SPACE;
           const newLeftPosition = Math.min(rawPosition, maxLeftPosition);
-          setLeftMargin(newLeftPosition); // TODO: Make collaborative
+          setLeftMargin(newLeftPosition);
         } else if (isDraggingRight) {
           const maxRightPosition = PAGE_WIDTH - (leftMargin + 100);
           const newRightPosition = Math.max(PAGE_WIDTH - rawPosition, 0);
@@ -95,9 +95,34 @@ const Ruler = ({ room }) => {
 
   const handleLeftDoubleClick = () => {
     setLeftMargin(56);
+    socket.emit("margin-cursor-update", { leftMargin: 56, rightMargin, room });
   };
   const handleRightDoubleClick = () => {
     setRightMargin(56);
+    socket.emit("margin-cursor-update", { leftMargin, rightMargin: 56, room });
+  };
+
+  const getMarginPosition = async () => {
+    try {
+      const response = await axios.post(
+        `${endPoint}/api/document/get-margin-position`,
+        { room: room },
+        {
+          // Wrap room in an object
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        // console.log(response.data);
+        setLeftMargin(response.data?.leftMargin);
+        setRightMargin(response.data?.rightMargin);
+      }
+    } catch (error) {
+      console.log("This is error hree:", error);
+    }
   };
 
   // SOCKET IMPLEMENTATION FOR REALTIME MARGIN CHANGES
@@ -111,7 +136,7 @@ const Ruler = ({ room }) => {
     const handleCursorUpdate = (data) => {
       setLeftMargin(data.leftMargin);
       setRightMargin(data.rightMargin);
-      console.log(data);
+      // console.log(data);
     };
 
     if (socket) {
@@ -127,29 +152,6 @@ const Ruler = ({ room }) => {
   }, [socket]);
 
   useEffect(() => {
-    const getMarginPosition = async () => {
-      try {
-        const response = await axios.post(
-          `${endPoint}/api/document/get-margin-position`,
-          { room: room },
-          {
-            // Wrap room in an object
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 200) {
-          // console.log(response.data);
-          setLeftMargin(response.data?.leftMargin);
-          setRightMargin(response.data?.rightMargin);
-        }
-      } catch (error) {
-        console.log("This is error hree:", error);
-      }
-    };
-
     getMarginPosition();
   }, [room, token, endPoint]); // Added token and endPoint as dependencies for completeness
 
