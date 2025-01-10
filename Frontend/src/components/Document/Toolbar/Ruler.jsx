@@ -141,9 +141,9 @@ const Ruler = ({ room }) => {
         );
 
         if (response.status === 200) {
-          console.log(response.data);
-          // setLeftMargin(response.data?.Marginposition.leftMargin);
-          // setRightMargin(response.data?.Marginposition.rightMargin);
+          // console.log(response.data);
+          setLeftMargin(response.data?.leftMargin);
+          setRightMargin(response.data?.rightMargin);
         }
       } catch (error) {
         console.log("This is error hree:", error);

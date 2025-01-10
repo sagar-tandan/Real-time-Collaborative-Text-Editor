@@ -40,7 +40,7 @@ io.on("connection", (socket) => {
 
   // Handle margin updates
   socket.on("margin-cursor-update", async (data) => {
-    console.log("Received margin update: ", data);
+    // console.log("Received margin update: ", data);
     socket.join(data.room);
     socket.broadcast.to(data.room).emit("recieve-cursor-update", data);
     await saveMarginPosition(data.leftMargin, data.rightMargin, data.room);
