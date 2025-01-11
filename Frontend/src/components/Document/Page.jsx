@@ -26,28 +26,6 @@ const Page = () => {
   // State to track loading status
   const [isLoading, setIsLoading] = useState(true);
 
-  // useEffect(() => {
-  //   if (canEditDocs) {
-  //     socket.emit("new_user", { room, user });
-  //   }
-  // });
-
-  // useEffect(() => {
-  //   console.log(ydoc);
-  //   const handleDocumentLoad = () => {
-  //     // Stop loading
-  //     setIsLoading(false);
-  //     console.log("Document loaded through event!");
-  //   };
-
-  //   ydoc.on("update", handleDocumentLoad); // Listen for updates
-
-  //   // Cleanup
-  //   return () => {
-  //     ydoc.off("update", handleDocumentLoad); // Remove event listener
-  //   };
-  // }, [ydoc]);
-
   useEffect(() => {
     // console.log("mount");
 

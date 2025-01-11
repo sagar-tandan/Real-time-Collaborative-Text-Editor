@@ -2,7 +2,10 @@ import MyContext from "@/Context/MyContext";
 import { useToast } from "@/hooks/use-toast";
 import socket from "@/Socket/Socket";
 import axios from "axios";
-import { CloudUploadIcon } from "lucide-react";
+import { TbCloudCheck } from "react-icons/tb";
+
+import { MdLoop } from "react-icons/md";
+
 import React, { useContext, useEffect, useState } from "react";
 
 const DocumentInput = ({ room }) => {
@@ -14,6 +17,7 @@ const DocumentInput = ({ room }) => {
     token,
     setUpdateTrigger,
     updateTrigger,
+    isSaving,
   } = useContext(MyContext);
 
   const { toast } = useToast();
@@ -73,7 +77,7 @@ const DocumentInput = ({ room }) => {
   };
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 w-fit">
       <input
         className="text-lg px-1.5 truncate w-[180px] outline-blue-500 border-[1px] border-white rounded-sm hover:border-[#c1c1c1]"
         type="text"
@@ -82,7 +86,18 @@ const DocumentInput = ({ room }) => {
         onBlur={handleBlur} // Trigger onBlur when input loses focus
         onKeyDown={handleKeyDown} // Trigger on Enter key press
       />
-      <CloudUploadIcon className="size-5" />
+
+      {isSaving ? (
+        <div className="flex gap-2 items-center justify-center">
+          <MdLoop className="size-5 text-neutral-600" />
+          <span className="text-[14px] text-neutral-600">Saving....</span>
+        </div>
+      ) : (
+        <div className="flex gap-2 items-center justify-center">
+          <TbCloudCheck className="size-5 text-neutral-600" />
+          <span className="text-[14px] text-neutral-600">Saved</span>
+        </div>
+      )}
     </div>
   );
 };

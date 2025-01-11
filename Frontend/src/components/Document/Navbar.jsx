@@ -39,6 +39,7 @@ import UserProfile from "../Header/UserProfile";
 import ShareDocument from "./DocNavbarElements/ShareDocument";
 import socket from "@/Socket/Socket";
 import CustomAvatar from "./Toolbar/Avatar";
+import AvatarStack from "./Toolbar/Avatar";
 
 const Navbar = ({ room }) => {
   const { editor, user, allowToAddCollaborator } = useContext(MyContext);
@@ -299,10 +300,16 @@ const Navbar = ({ room }) => {
 
       <div className="w-full flex items-center justify-end relative">
         {/* Active Users Section */}
-        <div className="flex items-center space-x-4 overflow-x-auto px-2">
-          {activeUsers.map((data) => (
-            <CustomAvatar key={data.userId} name={data.userName} />
-          ))}
+        <div className="flex items-center space-x-4 overflow-x-auto p-2">
+          {/* {activeUsers.map((data) => ( */}
+          <AvatarStack
+            className={allowToAddCollaborator === user?.userId}
+            // key={data.userId}
+            users={activeUsers}
+            limit={4}
+            size={35}
+          />
+          {/* ))} */}
         </div>
         {allowToAddCollaborator === user?.userId && <ShareDocument />}
         <UserProfile />

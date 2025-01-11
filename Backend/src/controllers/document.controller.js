@@ -252,3 +252,23 @@ export const getMarginPosition = async (req, res, next) => {
     next(error);
   }
 };
+
+export const saveDocumentContent = async (req, res, next) => {
+  const { content, doc_id } = req.body;
+
+  try {
+    if (!doc_id) {
+      return res.status(400).json({ message: "Doc Id is empty" });
+    }
+
+    const updatedDocument = await Document.findOneAndUpdate(
+      { doc_id: doc_id },
+      { content: JSON.stringify(content) },
+      { new: true }
+    );
+
+    return res.status(200).json({ message: "Saved" });
+  } catch (error) {
+    next(error);
+  }
+};

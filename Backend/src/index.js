@@ -31,6 +31,21 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("User connected: ", socket.id);
 
+  socket.on("WebRTC-offer", (offer) => {
+    console.log(offer);
+    socket.broadcast.emit("webRTC-offer", offer);
+  });
+
+  socket.on("webRTC-answer", (answer) => {
+    console.log(answer);
+    socket.broadcast.emit("webRTC-answer", answer);
+  });
+
+  socket.on("ice-candidate", (candidate) => {
+    console.log(candidate);
+    socket.broadcast.emit("ice-candidate", candidate);
+  });
+
   // Notify other users of a new connection
   socket.on("user-connected", (data) => {
     console.log("User connected data: ", data.currentUser);

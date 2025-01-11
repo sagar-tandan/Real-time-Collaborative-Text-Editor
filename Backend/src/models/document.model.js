@@ -12,7 +12,7 @@ const documentSchema = new Schema(
 
     content: {
       type: String,
-      required: true,
+      required: false,
     },
     doc_type: {
       type: String,

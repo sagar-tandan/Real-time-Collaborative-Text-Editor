@@ -14,7 +14,7 @@ import MyContext from "@/Context/MyContext";
 import { useParams } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
-const ShareDocument = () => {
+const ShareDocument = ({ className }) => {
   const { token, endPoint, user } = useContext(MyContext);
   const [emails, setEmails] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -129,7 +129,9 @@ const ShareDocument = () => {
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <button className="absolute top-0 bottom-0 right-[60px] flex gap-2 items-center justify-center">
+        <button
+          className={`absolute top-0 bottom-0 right-[60px] flex gap-2 items-center justify-center `}
+        >
           <div className="p-3 hover:bg-neutral-200/80  rounded-full transition-all duration-200 ease-in-out">
             <UserRoundPlus className="size-5" />
           </div>

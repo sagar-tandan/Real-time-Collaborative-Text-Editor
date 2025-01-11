@@ -10,6 +10,7 @@ import { Loader } from "lucide-react";
 import ThreadedEditor from "./ThreadEditor.jsx";
 import Chat from "./ThreadEditor.jsx";
 import TextEditor from "./ThreadEditor.jsx";
+import AudioTransmission from "./Audio/AudioTransmission.jsx";
 
 function App() {
   const { endPoint, token } = useContext(MyContext);
@@ -61,7 +62,8 @@ function App() {
     <Router>
       <div className="w-full max-w-screen-2xl mx-auto font-inter">
         {/* <TextEditor /> */}
-        <Routes>
+        <AudioTransmission />
+        {/* <Routes>
           <Route
             path="/"
             element={token ? <HomePage /> : <Navigate to="/login" />}
@@ -71,7 +73,7 @@ function App() {
             path="/login"
             element={token ? <Navigate to="/" /> : <AuthForm />}
           />
-        </Routes>
+        </Routes> */}
       </div>
     </Router>
   );

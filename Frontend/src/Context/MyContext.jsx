@@ -32,6 +32,8 @@ export const MyProvider = ({ children }) => {
   //Document Name
   const [documentName, setDocumentName] = useState("Untitled Document");
 
+  const [isSaving, setSaving] = useState(false);
+
   return (
     <MyContext.Provider
       value={{
@@ -64,6 +66,7 @@ export const MyProvider = ({ children }) => {
         setRightMargin,
         documentName,
         setDocumentName,
+        isSaving, setSaving
       }}
     >
       {children}

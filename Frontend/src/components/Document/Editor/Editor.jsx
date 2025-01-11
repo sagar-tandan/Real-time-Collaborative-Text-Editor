@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
-import Placeholder from "@tiptap/extension-placeholder";
-
 import StarterKit from "@tiptap/starter-kit";
 import TaskItem from "@tiptap/extension-task-item";
 import TaskList from "@tiptap/extension-task-list";
@@ -31,10 +29,11 @@ import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
 import { FontSizeExtension } from "@/Custom_Extensions/FontSize";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Threads } from "../Threads";
 import socket from "@/Socket/Socket";
 import { useToast } from "@/hooks/use-toast";
 import Ruler from "../Toolbar/Ruler";
+
+import { debounce } from "lodash";
 
 const extensions = [
   StarterKit.configure({
@@ -92,11 +91,6 @@ const colors = [
   "#E3F4F4",
 ];
 
-const defaultContent = `
-  <p>Hi 👋, this is a collaborative document.</p>
-  <p>Feel free to edit and collaborate in real-time!</p>
-`;
-
 const getRandomElement = (list) =>
   list[Math.floor(Math.random() * list.length)];
 
@@ -114,10 +108,10 @@ const Editor = ({ ydoc, provider, room }) => {
     rightMargin,
     leftMargin,
     setDocumentName,
+    setSaving,
   } = useContext(MyContext);
 
   const [status, setStatus] = useState("connecting");
-  const [activeUsers, setActiveUsers] = useState([]);
 
   const [currentUser, setCurrentUser] = useState({
     name: user?.userName,
@@ -136,19 +130,14 @@ const Editor = ({ ydoc, provider, room }) => {
 
     onCreate({ editor }) {
       setEditor(editor);
-      // useEffect(() => {
-
-      // }, [room]);
     },
     onDestroy() {
       setEditor(null);
-      // if (canEditDocs) {
-      //   socket.emit("editorClosed", { room, user });
-      // }
     },
 
     onUpdate({ editor }) {
       setEditor(editor);
+      setSaving(true);
     },
 
     onSelectionUpdate({ editor }) {
@@ -157,9 +146,6 @@ const Editor = ({ ydoc, provider, room }) => {
 
     onBlur({ editor }) {
       setEditor(editor);
-      // if (canEditDocs) {
-      //   socket.emit("editorClosed", { room, user });
-      // }
     },
     onTransaction({ editor }) {
       setEditor(editor);
@@ -210,9 +196,6 @@ const Editor = ({ ydoc, provider, room }) => {
     if (editor && currentUser) {
       localStorage.setItem("currentUser", JSON.stringify(currentUser));
       editor.chain().focus().updateUser(currentUser).run();
-      const users = editor.storage.collaborationCursor.users;
-      setActiveUsers(users);
-      // console.log(activeUsers);
 
       socket.emit("user-connected", { currentUser, room });
       socket.on("user-notify", (data) => {
@@ -264,6 +247,51 @@ const Editor = ({ ydoc, provider, room }) => {
 
     fetchDetail();
   }, [user?.userId, room, endPoint, token, editor, setCanEditDocs]);
+
+  //  --------------------------------- Save Data to database-------------------------
+
+  useEffect(() => {
+    if (editor) {
+      const debouncedSave = debounce(() => {
+        if (editor?.isEmpty) return; // Don't save if the document is empty
+
+        const docContent = editor.getJSON();
+        saveDocument(docContent);
+      }, 2000); // Debounce for 2000 milliseconds
+
+      editor.on("update", () => {
+        debouncedSave();
+      });
+
+      return () => {
+        debouncedSave.cancel();
+        editor.off("update", debouncedSave);
+        // Detach the event listener on cleanup
+      };
+    }
+  }, [editor]);
+
+  const saveDocument = async (content) => {
+    try {
+      const response = await axios.post(
+        `${endPoint}/api/document/save-document`,
+        {
+          doc_id: room,
+          content: content,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (response.status === 200) {
+        console.log("Document saved successfully");
+        setSaving(false);
+      }
+    } catch (error) {
+      console.error("Error saving document:", error);
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="size-full overflow-x-auto bg-[#F9FBFD] px-4 print:p-0 print:overflow-visible print:bg-white">
