@@ -8,9 +8,12 @@ import { TiptapCollabProvider } from "@hocuspocus/provider";
 import * as Y from "yjs";
 import { LoaderIcon } from "lucide-react";
 import socket from "@/Socket/Socket";
+import AudioChat from "@/Audio/AudioChat";
 
 const Page = () => {
-  const { canEditDocs, user } = useContext(MyContext);
+  const [isStart, setIsStart] = useState(false);
+  const [isOpenMicro, setOpenMicro] = useState(false);
+  const { canEditDocs, user, allowToAddCollaborator } = useContext(MyContext);
   const documentId = useParams();
   const appId = "7j9y6m10";
   const room = `${documentId.id}`;
@@ -44,8 +47,10 @@ const Page = () => {
     }, 1000);
   }, [ydoc]);
 
+
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white relative">
       {isLoading ? (
         <div className="w-full h-[100vh] flex items-center justify-center gap-x-3">
           <LoaderIcon className="animate-spin" />
@@ -62,6 +67,7 @@ const Page = () => {
           >
             <Editor provider={provider} ydoc={ydoc} room={room} />
           </div>
+          <AudioChat />
         </>
       )}
     </div>

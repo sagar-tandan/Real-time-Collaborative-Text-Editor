@@ -7,15 +7,11 @@ import MyContext from "./Context/MyContext.jsx";
 import AuthForm from "./components/AuthForm.jsx";
 import axios from "axios";
 import { Loader } from "lucide-react";
-import ThreadedEditor from "./ThreadEditor.jsx";
-import Chat from "./ThreadEditor.jsx";
-import TextEditor from "./ThreadEditor.jsx";
-import AudioTransmission from "./Audio/AudioTransmission.jsx";
 
 function App() {
   const { endPoint, token } = useContext(MyContext);
   const [isLoading, setIsLoading] = useState(true);
-
+  const [isAdmin, setAdmin] = useState(true);
   const fetchUserDetails = async (loginToken) => {
     try {
       const response = await axios.get(`${endPoint}/api/auth/getUser`, {
@@ -61,9 +57,7 @@ function App() {
   return (
     <Router>
       <div className="w-full max-w-screen-2xl mx-auto font-inter">
-        {/* <TextEditor /> */}
-        <AudioTransmission />
-        {/* <Routes>
+        <Routes>
           <Route
             path="/"
             element={token ? <HomePage /> : <Navigate to="/login" />}
@@ -73,7 +67,7 @@ function App() {
             path="/login"
             element={token ? <Navigate to="/" /> : <AuthForm />}
           />
-        </Routes> */}
+        </Routes>
       </div>
     </Router>
   );

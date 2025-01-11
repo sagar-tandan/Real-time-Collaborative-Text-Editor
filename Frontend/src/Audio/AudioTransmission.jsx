@@ -1,13 +1,11 @@
 import socket from "@/Socket/Socket";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState,  } from "react";
 
 const AudioTransmission = () => {
   const [isStreaming, setIsStreaming] = useState(false);
   const [localStream, setLocalStream] = useState(null);
   const peerConnectionRef = useRef(null);
-
-  const [message, setMessage] = useState(""); // For sending messages
-  const [receivedMessage, setReceivedMessage] = useState(""); //
+  const remoteAudioRef = useRef(null);
 
   const startStreaming = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -40,6 +38,14 @@ const AudioTransmission = () => {
       .getTracks()
       .forEach((track) => peerConnection.addTrack(track, stream));
 
+    // Handle the remote audio stream
+    peerConnection.ontrack = (event) => {
+      console.log("Received remote stream", event.streams[0]);
+      if (remoteAudioRef.current) {
+        remoteAudioRef.current.srcObject = event.streams[0]; // Attach the remote stream to the audio element
+      }
+    };
+
     //Create offer and send it to signaling server / socket.io in our case
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
@@ -68,6 +74,14 @@ const AudioTransmission = () => {
     stream
       .getTracks()
       .forEach((track) => peerConnection.addTrack(track, stream));
+
+    peerConnection.ontrack = (event) => {
+      console.log("Received remote stream", event.streams[0]);
+      if (remoteAudioRef.current) {
+        remoteAudioRef.current.srcObject = event.streams[0];
+      }
+    };
+
     await peerConnection.setRemoteDescription(offer);
 
     //Then creates an answer
@@ -120,6 +134,7 @@ const AudioTransmission = () => {
       <button onClick={isStreaming ? stopStreaming : startStreaming}>
         {isStreaming ? "Stop Sharing" : "Start Sharing"}
       </button>
+      <audio ref={remoteAudioRef} controls autoPlay></audio>
     </div>
   );
 };
