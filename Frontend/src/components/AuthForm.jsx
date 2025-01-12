@@ -54,8 +54,13 @@ export default function AuthForm() {
           password: loginForm.password,
         });
         if (response.status == 200) {
-          const data = response?.data.userData;
+          // const data = response?.data.userData;
           const token = response.data.token;
+          const data = {
+            userName: response.data.user.userName,
+            userEmail: response.data.user.userEmail,
+            userId: response.data.user.userId,
+          };
           localStorage.setItem("docsToken", token);
           console.log(response.data);
           localStorage.setItem("userInfo", JSON.stringify(data));
