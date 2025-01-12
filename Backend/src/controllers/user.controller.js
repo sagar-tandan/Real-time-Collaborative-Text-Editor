@@ -78,7 +78,7 @@ export const userLogin = async (req, res, next) => {
       userData: {
         userName: user.name,
         userEmail: user.email,
-        userId: user._id,
+        userId: user._id.toString(),
       },
     });
     return res.status(200).json({

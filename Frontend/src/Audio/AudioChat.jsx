@@ -75,8 +75,8 @@ const AudioChat = () => {
     };
   };
 
-  const startSession = async (e) => {
-    e.preventDefault();
+  const startSession = async () => {
+    // e.preventDefault();
     console.log(isStreaming);
     if (isStreaming) {
       // If streaming is active, stop it
@@ -141,6 +141,8 @@ const AudioChat = () => {
   };
 
   useEffect(() => {
+    startSession();
+
     socket.on("webRTC-offer", (offer) => {
       handleOffer(offer);
     });
@@ -162,13 +164,13 @@ const AudioChat = () => {
 
   return (
     <>
-      {allowToAddCollaborator === user?.userId && (
-        <div className="fixed top-[40vh] left-[20px] z-[10] bg-blue-50 rounded-md w-[250px] flex flex-col px-1 py-4">
-          <h1 className="w-full text-lg font-semibold text-center">
-            Audio Chat Session
-          </h1>
-          <hr />
-          <button
+      {/* {allowToAddCollaborator === user?.userId && ( */}
+      <div className="fixed top-[40vh] left-[20px] z-[10] bg-blue-50 rounded-md w-[250px] flex flex-col px-1 py-4">
+        <h1 className="w-full text-lg font-semibold text-center">
+          Audio Chat Session
+        </h1>
+        <hr />
+        {/* <button
             onClick={startSession}
             className={`${
               isStreaming
@@ -180,11 +182,11 @@ const AudioChat = () => {
             <span className="font-medium">
               {isStreaming ? "End Session" : "Start Session"}
             </span>
-          </button>
+          </button> */}
 
-          <audio ref={remoteAudioRef} controls autoPlay></audio>
+        <audio ref={remoteAudioRef} controls autoPlay></audio>
 
-          {isStreaming && (
+        {/* {isStreaming && (
             <div
               onClick={() => setOpenMicro((prev) => !prev)}
               className="rounded-md flex gap-x-2 items-center p-2 w-[80%] mx-auto mt-4 cursor-pointer"
@@ -201,11 +203,11 @@ const AudioChat = () => {
                 </>
               )}
             </div>
-          )}
-        </div>
-      )}
+          )} */}
+      </div>
+      {/* )} */}
 
-      {allowToAddCollaborator != user?.userId && canEditDocs && (
+      {/* {allowToAddCollaborator != user?.userId && canEditDocs && (
         <div className="fixed top-[40vh] left-[20px] z-[10] bg-blue-50 rounded-md w-[250px] flex flex-col px-1 py-4">
           <h1 className="w-full text-lg font-semibold text-center">
             Audio Chat Session
@@ -246,7 +248,7 @@ const AudioChat = () => {
             </div>
           )}
         </div>
-      )}
+      )} */}
     </>
   );
 };

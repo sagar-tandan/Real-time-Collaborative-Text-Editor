@@ -6,6 +6,9 @@ const MyContext = createContext();
 // 2. Create a provider component
 export const MyProvider = ({ children }) => {
   const [endPoint, setEndPoint] = useState("http://localhost:8000");
+  // const [endPoint, setEndPoint] = useState(
+  //   "https://miniature-waffle.onrender.com"
+  // );
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("userInfo"))
   );
@@ -66,7 +69,8 @@ export const MyProvider = ({ children }) => {
         setRightMargin,
         documentName,
         setDocumentName,
-        isSaving, setSaving
+        isSaving,
+        setSaving,
       }}
     >
       {children}

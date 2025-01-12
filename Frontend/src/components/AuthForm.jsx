@@ -57,7 +57,7 @@ export default function AuthForm() {
           const token = response.data.token;
           const data = response.data.userData;
           localStorage.setItem("docsToken", token);
-          // console.log(data);
+          console.log(data);
           localStorage.setItem("userInfo", JSON.stringify(data));
           setUser(data);
           setToken(token);
