@@ -73,7 +73,15 @@ export const userLogin = async (req, res, next) => {
     }
 
     const token = generateJWT(user._id.toString());
-    res.json({
+    console.log({
+      token: token,
+      userData: {
+        userName: user.name,
+        userEmail: user.email,
+        userId: user._id,
+      },
+    });
+    return res.status(200).json({
       token: token,
       userData: {
         userName: user.name,
