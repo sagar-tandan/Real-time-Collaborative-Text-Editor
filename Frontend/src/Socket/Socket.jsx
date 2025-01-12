@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:8000");
-// const socket = io("https://miniature-waffle.onrender.com");
+// const socket = io("http://localhost:8000");
+const socket = io("https://miniature-waffle.onrender.com");
 
 export const sendUpdate = (delta) => {
   socket.emit("send-update", delta);

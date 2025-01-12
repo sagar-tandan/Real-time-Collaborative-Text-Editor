@@ -54,10 +54,10 @@ export default function AuthForm() {
           password: loginForm.password,
         });
         if (response.status == 200) {
+          const data = response?.data.userData;
           const token = response.data.token;
-          const data = response.data.userData;
           localStorage.setItem("docsToken", token);
-          console.log(data);
+          console.log(response.data);
           localStorage.setItem("userInfo", JSON.stringify(data));
           setUser(data);
           setToken(token);
