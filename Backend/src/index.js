@@ -31,20 +31,20 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("User connected: ", socket.id);
 
-  socket.on("WebRTC-offer", (offer) => {
-    console.log(offer);
-    socket.broadcast.emit("webRTC-offer", offer);
-  });
+  // socket.on("WebRTC-offer", (offer) => {
+  //   console.log(offer);
+  //   socket.broadcast.emit("webRTC-offer", offer);
+  // });
 
-  socket.on("webRTC-answer", (answer) => {
-    console.log(answer);
-    socket.broadcast.emit("webRTC-answer", answer);
-  });
+  // socket.on("webRTC-answer", (answer) => {
+  //   console.log(answer);
+  //   socket.broadcast.emit("webRTC-answer", answer);
+  // });
 
-  socket.on("ice-candidate", (candidate) => {
-    console.log(candidate);
-    socket.broadcast.emit("ice-candidate", candidate);
-  });
+  // socket.on("ice-candidate", (candidate) => {
+  //   console.log(candidate);
+  //   socket.broadcast.emit("ice-candidate", candidate);
+  // });
 
   // Notify other users of a new connection
   socket.on("user-connected", (data) => {
@@ -84,92 +84,6 @@ io.on("connection", (socket) => {
     console.log("User disconnected: ", socket.id);
   });
 });
-
-// io.on("connection", (socket) => {
-//   console.log("User connected:", socket.id);
-
-//   // Emit user-connected event to the client
-//   socket.emit("user-connected", {
-//     socketId: socket.id,
-//     message: "Welcome to the document editor!",
-//   });
-
-//   socket.on("get-document", async ({ id: document_id }) => {
-//     try {
-//       const document = await Document.findOne({ doc_id: document_id });
-
-//       if (document) {
-//         socket.join(document_id);
-
-//         // Send the stored content back to the client
-//         socket.emit("load-document", document.content);
-
-//         socket.on("send-update", (delta) => {
-//           socket.broadcast.to(document_id).emit("receive-update", delta);
-//           console.log(delta);
-//         });
-
-//         socket.on("cursor-position", (position) => {
-//           console.log(position);
-//           // Broadcast the cursor position to all other clients in the same document room
-//           socket.broadcast.to(document_id).emit("show-cursor", position);
-//         });
-
-//         socket.on("save-content", async (data) => {
-//           try {
-//             await Document.findOneAndUpdate(
-//               { doc_id: data.documentId.id },
-//               { content: JSON.stringify(data.content.content) },
-//               { new: true }
-//             );
-//             console.log(`Document ${data.documentId.id} saved`);
-//           } catch (error) {
-//             console.error("Error saving document:", error);
-//           }
-//         });
-//       } else {
-//         console.log("Document not found!");
-//       }
-//     } catch (error) {
-//       console.error("Document retrieval error:", error);
-//     }
-//   });
-
-//   socket.on("disconnect", () => {
-//     console.log("User disconnected:", socket.id);
-//   });
-// });
-
-// let cursors = {}; // Store cursor positions by user ID
-
-// io.on("connection", (socket) => {
-//   console.log("User connected: ", socket.id);
-
-//   // socket.on("send-data", (data) => {
-//   //   console.log(data);
-//   //   socket.broadcast.emit("send-response", {
-//   //     data: JSON.stringify(data.currentContent),
-//   //     from: data.from,
-//   //   });
-//   // });
-
-//   // Handle cursor updates
-//   socket.on("cursor-update", (data) => {
-//     // cursors[socket.id] = {
-//     //   position: data.position,
-//     //   user: data.user, // Contains name, color, etc.
-//     // };
-//     console.log(data.position);
-//     io.emit("cursor-data", data.position); // Broadcast updated cursors
-//   });
-
-//   // Handle disconnection
-//   socket.on("disconnect", () => {
-//     console.log(`User disconnected: ${socket.id}`);
-//     delete cursors[socket.id];
-//     io.emit("cursor-data", cursors); // Notify clients of the updated list
-//   });
-// });
 
 app.use("/api/auth", AuthRouter);
 app.use("/api/document", DocumentRouter);

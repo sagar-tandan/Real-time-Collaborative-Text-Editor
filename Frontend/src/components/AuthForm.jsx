@@ -57,9 +57,9 @@ export default function AuthForm() {
           // const data = response?.data.userData;
           const token = response.data.token;
           const data = {
-            userName: response.data.user.userName,
-            userEmail: response.data.user.userEmail,
-            userId: response.data.user.userId,
+            userName: response.data.user.name,
+            userEmail: response.data.user.email,
+            userId: response.data.user._id,
           };
           localStorage.setItem("docsToken", token);
           console.log(response.data);
