@@ -2,6 +2,7 @@
 
 Welcome to the **Real-Time Collaborative Text Editor**! This project is a work-in-progress tool designed to allow users to collaborate on text documents in real time. With its current features and planned enhancements, this editor is a step toward creating a comprehensive collaborative workspace.
 
+
 ## 🚀 Features
 
 - **Real-Time Text Editing**: Multiple users can collaborate on the same document simultaneously.
